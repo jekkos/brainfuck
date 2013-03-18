@@ -1,0 +1,265 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>be.kuleuven.med</groupId>
+	<artifactId>brainfuck</artifactId>
+	<version>0.1-SNAPSHOT</version>
+	<description>An Arduino configurator for running experiments on a custom built LED array</description>
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/*.properties</include>
+					<include>**/*.xml</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+				<excludes>
+					<exclude>**/*.properties</exclude>
+					<exclude>**/*.xml</exclude>
+				</excludes>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<encoding>ISO-8859-1</encoding>
+					<escapeString>\</escapeString>
+				</configuration>
+				<!-- here the phase you need -->
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>aspectj-maven-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+					<execution>
+						<phase>compile</phase>
+						<goals>
+							<goal>compile</goal> <!-- use this goal to weave all your main classes -->
+							<goal>test-compile</goal> <!-- use this goal to weave all your test classes -->
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.aspectj</groupId>
+						<artifactId>aspectjtools</artifactId>
+						<version>${aspectj.version}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+					<!-- Tell javac not to compile sources for ajc will do it -->
+					<excludes>
+						<exclude>**/*</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.reflections</groupId>
+				<artifactId>reflections-maven</artifactId>
+				<version>0.9.8</version>
+				<executions>
+					<execution>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>reflections</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<scanners>org.reflections.scanners.TypeAnnotationsScanner</scanners>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>webstart-maven-plugin</artifactId>
+				<version>1.0-beta-3</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jnlp</goal> <!-- use jnlp, jnlp-inline or jnlp-single as appropriate -->
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<outputDirectory>${libFolderPath}</outputDirectory>
+					<workDirectory>${project.build.directory}</workDirectory>
+					<excludeTransitive>false</excludeTransitive>
+					<libPath>${libFolder}</libPath>
+					<!-- JNLP generation -->
+					<jnlp>
+						<inputTemplate>src/main/jnlp/jnlptemplate.vm</inputTemplate> <!-- relative to inputTemplateResourcePath -->
+						<outputFile>${jnlpOutputFilename}</outputFile> <!-- defaults to launch.jnlp -->
+						<j2seVersion>1.7+</j2seVersion>
+						<spec>6.0+</spec>
+						<mainClass>${mainClass}</mainClass>
+					</jnlp>
+					<!-- SIGNING -->
+					<sign>
+						<keystore>${keystore.location}</keystore>
+						<keypass>${keystore.password}</keypass>
+						<storepass>${keystore.password}</storepass>
+						<!--storetype>fillme</storetype -->
+						<alias>jdc</alias>
+						<validity>180</validity>
+
+						<!-- only required for generating the keystore -->
+						<!-- <dnameCn>${keystore.dnameCn}</dnameCn> <dnameOu>${keystore.dnameOu}</dnameOu> 
+							<dnameO>${keystore.dnameO}</dnameO> <dnameL>${keystore.dnameL}</dnameL> <dnameSt>${keystore.dnameSt}</dnameSt> 
+							<dnameC>${keystore.dnameC}></dnameC> <keystoreConfig> <delete>false</delete> 
+							<gen>true</gen> </keystoreConfig> <verify>true</verify> -->
+						<!-- KEYSTORE MANAGEMENT -->
+					</sign>
+
+					<!-- BUILDING PROCESS -->
+
+					<pack200>false</pack200>
+					<gzip>false</gzip>
+					<outputJarVersions>false</outputJarVersions>
+					<verbose>false</verbose>
+				</configuration>
+			</plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.reflections
+										</groupId>
+										<artifactId>
+											reflections-maven
+										</artifactId>
+										<versionRange>
+											[0.9.8,)
+										</versionRange>
+										<goals>
+											<goal>reflections</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+	<repositories>
+		<repository>
+			<id>maven2-repository.dev.java.net</id>
+			<name>Java.net Repository for Maven</name>
+			<url>http://download.java.net/maven/2/</url>
+			<layout>default</layout>
+		</repository>
+	</repositories>
+	<dependencies>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>${aspectj.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.collections</groupId>
+			<artifactId>google-collections</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jdesktop.bsaf</groupId>
+			<artifactId>bsaf</artifactId>
+			<version>1.9.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.miglayout</groupId>
+			<artifactId>miglayout-swing</artifactId>
+			<version>4.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.jgoodies</groupId>
+			<artifactId>jgoodies-binding</artifactId>
+			<version>2.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>gnu.io</groupId>
+			<artifactId>nrjavaserial</artifactId>
+			<version>3.8.8</version>
+		</dependency>
+	</dependencies>
+	<profiles>
+		<profile>
+			<id>m2e</id>
+			<activation>
+				<property>
+					<name>m2e.version</name>
+				</property>
+			</activation>
+			<properties>
+				<timestamp>incremental</timestamp>
+			</properties>
+		</profile>
+	</profiles>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<timestamp>${maven.build.timestamp}</timestamp>
+		<maven.build.timestamp.format>ddMMyyyy-HHmmss</maven.build.timestamp.format>
+		<aspectj.version>1.7.2</aspectj.version>
+
+		<!-- Keystore generation properties -->
+		<keystore.dnameCn>www.kuleuven.be</keystore.dnameCn>
+		<keystore.dnameO>KULeuvens</keystore.dnameO>
+		<keystore.dnameL>Leuven</keystore.dnameL>
+		<keystore.dnameSt>Vlaams Brabant</keystore.dnameSt>
+		<keystore.dnameC>Belgium</keystore.dnameC>
+		<keystore.dnameOu>None</keystore.dnameOu>
+		<keystore.location>${basedir}/src/main/jnlp/myKeys</keystore.location>
+		<keystore.password>yourPwd</keystore.password>
+		<!-- JNLP file generation properties -->
+		<mainClass>be.kuleuven.med.brainfuck.LedMatrixApp</mainClass>
+		<codeBase>file:///${project.build.directory}/</codeBase>
+		<libFolder>lib</libFolder>
+		<libFolderPath>${project.build.directory}/${libFolder}</libFolderPath>
+		<jnlpOutputFilename>brainfuck-${project.version}.jnlp</jnlpOutputFilename>
+		<!-- JNLP deployment properties -->
+		<ftp.url>your-ftp-server.com</ftp.url>
+		<ftp.user>ftpUser</ftp.user>
+		<ftp.password>ftpPwd</ftp.password>
+		<ftp.remotedir>ftpDir</ftp.remotedir>
+	</properties>
+</project>

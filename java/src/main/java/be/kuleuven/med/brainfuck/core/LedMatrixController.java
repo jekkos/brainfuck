@@ -4,12 +4,12 @@ import java.util.List;
 
 import org.jdesktop.application.TaskService;
 
-import com.jgoodies.binding.adapter.Bindings;
-import com.jgoodies.binding.beans.BeanAdapter;
-
 import be.kuleuven.med.brainfuck.io.SerialPortConnector;
 import be.kuleuven.med.brainfuck.task.AbstractTask;
 import be.kuleuven.med.brainfuck.view.LedMatrixView;
+
+import com.jgoodies.binding.adapter.Bindings;
+import com.jgoodies.binding.beans.BeanAdapter;
 
 public class LedMatrixController {
 
@@ -21,13 +21,14 @@ public class LedMatrixController {
 	
 	private LedMatrixModel ledMatrixModel;
 	
-	private SerialPortConnector serialConnector;
+	private SerialPortConnector serialPortConnector;
 	
 	private TaskService taskService;
 	
-	public LedMatrixController(TaskService taskService, LedMatrixModel ledMatrixModel) {
+	public LedMatrixController(TaskService taskService, LedMatrixModel ledMatrixModel, SerialPortConnector serialConnector) {
 		this.ledMatrixModel = ledMatrixModel;
 		this.taskService = taskService;
+		this.serialPortConnector = serialConnector;
 		// setup bindings here
 		initializeSerialPort(ledMatrixModel.getSelectedSerialPortName());
 	}
@@ -36,8 +37,8 @@ public class LedMatrixController {
 		this.ledMatrixView = ledMatrixView;
 		BeanAdapter<LedMatrixModel> ledMatrixModelAdapter = new BeanAdapter<LedMatrixModel>(ledMatrixModel);
 		//Bindings.bind(ledMatrixView.getSerialPortNamesBox(), "", ledMatrixModelAdapter.getValueModel("serialPortNames"));
-		Bindings.bind(ledMatrixView.getRowTextField(), ledMatrixModelAdapter.getValueModel("width"));
-		Bindings.bind(ledMatrixView.getColumnTextField(), ledMatrixModelAdapter.getValueModel("height"));
+		Bindings.bind(ledMatrixView.getRowTextField(), ledMatrixModelAdapter.getValueModel("widthString"));
+		Bindings.bind(ledMatrixView.getColumnTextField(), ledMatrixModelAdapter.getValueModel("heightString"));
 		// setup bindings with model here
 	}
 	
@@ -52,8 +53,8 @@ public class LedMatrixController {
 				
 				protected Void doInBackground() throws Exception {
 					message("startMessage", serialPort);
-					serialConnector.close();
-					serialConnector.initialize(serialPort);
+					serialPortConnector.close();
+					serialPortConnector.initialize(serialPort);
 					// should be updating the view on EDT
 					ledMatrixModel.setSelectedSerialPortName(serialPort);
 					message("endMessage");
@@ -69,7 +70,7 @@ public class LedMatrixController {
 
 			protected Void doInBackground() throws Exception {
 				message("startMessage");
-				List<String> result = serialConnector.getSerialPortNames();
+				List<String> result = serialPortConnector.getSerialPortNames();
 				// should be updating the view on EDT
 				ledMatrixModel.setSerialPortNames(result);
 				message("endMessage");

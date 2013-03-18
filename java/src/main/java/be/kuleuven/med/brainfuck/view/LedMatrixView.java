@@ -52,11 +52,11 @@ public class LedMatrixView extends JPanel implements PropertyChangeListener {
 		
 		rightPanel.add(new JLabel("Width"));
 		rowTextField = new JTextField();
-		rightPanel.add(rowTextField, "wrap, w 40");
+		rightPanel.add(rowTextField, "w 40, wrap");
 		
 		rightPanel.add(new JLabel("Height"));
 		columnTextField = new JTextField();
-		rightPanel.add(columnTextField, "wrap, w 40");
+		rightPanel.add(columnTextField, "w 40, wrap");
 		
 		JButton updateLedMatrixButton = new JButton("Generate");
 		updateLedMatrixButton.addActionListener(new ActionListener() {

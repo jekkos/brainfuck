@@ -38,6 +38,14 @@ public class LedMatrixModel extends AbstractBean {
 	public int getHeight() {
 		return ledMatrix.getHeight();
 	}
+	
+	public String getHeightString() {
+		return Integer.toString(getHeight());
+	}
+	
+	public String getWidthString() {
+		return Integer.toString(getWidth());
+	}
 
 	public void setHeight(int height) {
 		firePropertyChange(HEIGHT, ledMatrix.getHeight(), height);

@@ -6,6 +6,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class LedMatrix {
 	
 	private int width, height;
+	
+	public LedMatrix() { }
 
 	public LedMatrix(int i, int j) {
 		this.width = i;

@@ -4,6 +4,9 @@ import java.util.List;
 
 import org.jdesktop.application.TaskService;
 
+import com.jgoodies.binding.adapter.Bindings;
+import com.jgoodies.binding.beans.BeanAdapter;
+
 import be.kuleuven.med.brainfuck.io.SerialPortConnector;
 import be.kuleuven.med.brainfuck.task.AbstractTask;
 import be.kuleuven.med.brainfuck.view.LedMatrixView;
@@ -31,6 +34,10 @@ public class LedMatrixController {
 	
 	public void initView(LedMatrixView ledMatrixView) {
 		this.ledMatrixView = ledMatrixView;
+		BeanAdapter<LedMatrixModel> ledMatrixModelAdapter = new BeanAdapter<LedMatrixModel>(ledMatrixModel);
+		//Bindings.bind(ledMatrixView.getSerialPortNamesBox(), "", ledMatrixModelAdapter.getValueModel("serialPortNames"));
+		Bindings.bind(ledMatrixView.getRowTextField(), ledMatrixModelAdapter.getValueModel("width"));
+		Bindings.bind(ledMatrixView.getColumnTextField(), ledMatrixModelAdapter.getValueModel("height"));
 		// setup bindings with model here
 	}
 	

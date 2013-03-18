@@ -7,6 +7,11 @@ public class LedMatrix {
 	
 	private int width, height;
 
+	public LedMatrix(int i, int j) {
+		this.width = i;
+		this.height = j;
+	}
+
 	public int getWidth() {
 		return width;
 	}

@@ -220,7 +220,7 @@ public class SettingsManager {
 	@XmlAccessorType(XmlAccessType.FIELD)
 	public static class Settings {
        // add settings here??		
-		LedMatrix ledMatrix;
+		LedMatrix ledMatrix = new LedMatrix(3, 2);
 	}
 
 }

@@ -31,12 +31,15 @@ public class LedMatrixView extends JPanel implements PropertyChangeListener {
 
 	private JTextField rowTextField;
 
+	private JComboBox<String> serialPortNamesBox;
+
 	public LedMatrixView(final LedMatrixController ledMatrixController) {
 		JPanel rightPanel = new JPanel(new MigLayout("nogrid", "[right]10", "10"));
 		JPanel leftPanel = new JPanel(new MigLayout());
 		leftPanel.add(new Canvas());
 		
-		rightPanel.add(new JComboBox<String>());
+		serialPortNamesBox = new JComboBox<String>();
+		rightPanel.add(serialPortNamesBox);
 		JButton updateSerialPortNamesButton = new JButton("Ok");
 		updateSerialPortNamesButton.addActionListener(new ActionListener() {
 
@@ -111,6 +114,10 @@ public class LedMatrixView extends JPanel implements PropertyChangeListener {
 
 	public JTextField getRowTextField() {
 		return rowTextField;
+	}
+	
+	public JComboBox<String> getSerialPortNamesBox() {
+		return serialPortNamesBox;
 	}
 
 	@Override

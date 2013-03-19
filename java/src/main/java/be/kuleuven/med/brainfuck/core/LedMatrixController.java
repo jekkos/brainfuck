@@ -6,10 +6,10 @@ import org.jdesktop.application.TaskService;
 
 import be.kuleuven.med.brainfuck.io.SerialPortConnector;
 import be.kuleuven.med.brainfuck.task.AbstractTask;
-import be.kuleuven.med.brainfuck.view.LedMatrixView;
 
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.beans.BeanAdapter;
+import com.jgoodies.binding.beans.PropertyConnector;
 
 public class LedMatrixController {
 
@@ -25,21 +25,21 @@ public class LedMatrixController {
 	
 	private TaskService taskService;
 	
-	public LedMatrixController(TaskService taskService, LedMatrixModel ledMatrixModel, SerialPortConnector serialConnector) {
+	public LedMatrixController(TaskService taskService, LedMatrixModel ledMatrixModel, SerialPortConnector serialPortConnector) {
 		this.ledMatrixModel = ledMatrixModel;
 		this.taskService = taskService;
-		this.serialPortConnector = serialConnector;
+		this.serialPortConnector = serialPortConnector;
 		// setup bindings here
-		initializeSerialPort(ledMatrixModel.getSelectedSerialPortName());
+		updateSerialPortNames();
 	}
 	
 	public void initView(LedMatrixView ledMatrixView) {
 		this.ledMatrixView = ledMatrixView;
+		Bindings.bind(ledMatrixView.getSerialPortNamesBox(), ledMatrixModel.getSerialPortSelectionInList());
+		// init width and height
 		BeanAdapter<LedMatrixModel> ledMatrixModelAdapter = new BeanAdapter<LedMatrixModel>(ledMatrixModel);
-		//Bindings.bind(ledMatrixView.getSerialPortNamesBox(), "", ledMatrixModelAdapter.getValueModel("serialPortNames"));
-		Bindings.bind(ledMatrixView.getRowTextField(), ledMatrixModelAdapter.getValueModel("widthString"));
-		Bindings.bind(ledMatrixView.getColumnTextField(), ledMatrixModelAdapter.getValueModel("heightString"));
-		// setup bindings with model here
+		PropertyConnector.connectAndUpdate(ledMatrixModelAdapter.getValueModel("width"), Integer.valueOf(ledMatrixView.getWidth()), "text");
+		PropertyConnector.connectAndUpdate(ledMatrixModelAdapter.getValueModel("height"), Integer.valueOf(ledMatrixView.getHeight()), "text");
 	}
 	
 	public void updateLedMatrix() {
@@ -47,7 +47,8 @@ public class LedMatrixController {
 		ledMatrixView.drawLedMatrix(ledMatrixModel.getWidth(), ledMatrixModel.getHeight());
 	}
 	
-	public void initializeSerialPort(final String serialPort) {
+	public void initializeSerialPort() {
+		final String serialPort = ledMatrixModel.getSelectedSerialPortName();
 		if (serialPort != null && !"".equals(serialPort)) {
 			taskService.execute(new AbstractTask<Void, Void>(INIT_SERIAL_PORT_TASK) {
 				
@@ -56,7 +57,6 @@ public class LedMatrixController {
 					serialPortConnector.close();
 					serialPortConnector.initialize(serialPort);
 					// should be updating the view on EDT
-					ledMatrixModel.setSelectedSerialPortName(serialPort);
 					message("endMessage");
 					return null;
 				}
@@ -70,15 +70,17 @@ public class LedMatrixController {
 
 			protected Void doInBackground() throws Exception {
 				message("startMessage");
-				List<String> result = serialPortConnector.getSerialPortNames();
+				List<String> serialPortNames = serialPortConnector.getSerialPortNames();
+				String selectedSerialPortName = serialPortConnector.getSelectedSerialPortName();
 				// should be updating the view on EDT
-				ledMatrixModel.setSerialPortNames(result);
+				ledMatrixModel.setSerialPortNames(serialPortNames);
+				ledMatrixModel.setSelectedSerialPortName(selectedSerialPortName);
 				message("endMessage");
 				return null;
 			}
 			
 		});
 	}
-	
+
 }
 

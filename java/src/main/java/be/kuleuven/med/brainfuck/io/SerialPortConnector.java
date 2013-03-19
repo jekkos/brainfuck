@@ -13,9 +13,9 @@ import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
 import org.apache.log4j.Logger;
+
+import be.kuleuven.med.brainfuck.settings.SerialPortSettings;
 
 import com.google.common.collect.Lists;
 
@@ -31,10 +31,14 @@ public class SerialPortConnector implements SerialPortEventListener, PropertyCha
 	private OutputStream output;
 	/** Milliseconds to block while waiting for port open */
 	private static final int TIME_OUT = 2000;
-	/** Default bits per second for COM port. */
-	private static final int DATA_RATE = 9600;
 
 	private final static String NUMBER_SEQUENCE =  "abcdef";
+	
+	private SerialPortSettings arduinoSettings;
+	
+	public SerialPortConnector(SerialPortSettings arduinoSettings) {
+		this.arduinoSettings = arduinoSettings;
+	}
 
 	public void initialize(String serialPortName) throws Exception {
 		CommPortIdentifier portId = null;
@@ -49,15 +53,15 @@ public class SerialPortConnector implements SerialPortEventListener, PropertyCha
 				break;
 			}
 		}
-
+		arduinoSettings.setName(serialPortName);
 		// open serial port, and use class name for the appName.
 		serialPort = (SerialPort) portId.open(this.getClass().getName(),
 				TIME_OUT);
 
 		// set port parameters
-		serialPort.setSerialPortParams(DATA_RATE,
-				SerialPort.DATABITS_8,
-				SerialPort.STOPBITS_1,
+		serialPort.setSerialPortParams(arduinoSettings.getDataRate(),
+				arduinoSettings.getDataBits(),
+				arduinoSettings.getStopBits(),
 				SerialPort.PARITY_NONE);
 
 		// open the streams
@@ -79,6 +83,10 @@ public class SerialPortConnector implements SerialPortEventListener, PropertyCha
 			result.add(currPortId.getName());
 		}
 		return result;
+	}
+	
+	public String getSelectedSerialPortName() {
+		return arduinoSettings.getName();
 	}
 
  	/**
@@ -142,6 +150,10 @@ public class SerialPortConnector implements SerialPortEventListener, PropertyCha
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
+	}
+	
+	public SerialPort getSerialPort() {
+		return serialPort;
 	}
 
 	@Override

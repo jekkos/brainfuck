@@ -5,6 +5,9 @@ import java.util.List;
 import org.jdesktop.application.AbstractBean;
 
 import be.kuleuven.med.brainfuck.entity.LedMatrix;
+import be.kuleuven.med.brainfuck.settings.LedMatrixSettings;
+
+import com.jgoodies.binding.list.SelectionInList;
 
 public class LedMatrixModel extends AbstractBean {
 	
@@ -12,18 +15,13 @@ public class LedMatrixModel extends AbstractBean {
 
 	public static final String WIDTH = "width";
 
-	public static final String SERIAL_PORT_NAMES = "serialPortNames";
-	
-	public static final String SELECTED_SERIAL_PORT_NAME = "selectedSerialPort";
-	
 	private LedMatrix ledMatrix;
-		
-	private List<String> serialPortNames;
-	
-	private String selectedSerialPortName;
 
-	public LedMatrixModel(LedMatrix ledMatrix) {
-		this.ledMatrix = ledMatrix;
+	private SelectionInList<String> serialPortNameSelectionInList;
+	
+	public LedMatrixModel(LedMatrixSettings ledMatrixSettings) {
+		this.ledMatrix = ledMatrixSettings.getLedMatrix();
+		serialPortNameSelectionInList = new SelectionInList<String>();
 	}
 	
     public int getWidth() {
@@ -39,33 +37,29 @@ public class LedMatrixModel extends AbstractBean {
 		return ledMatrix.getHeight();
 	}
 	
-	public String getHeightString() {
-		return Integer.toString(getHeight());
-	}
-	
-	public String getWidthString() {
-		return Integer.toString(getWidth());
-	}
-
 	public void setHeight(int height) {
 		firePropertyChange(HEIGHT, ledMatrix.getHeight(), height);
 		ledMatrix.setHeight(height);
 	}
+	
+	public SelectionInList<String> getSerialPortSelectionInList() {
+		return serialPortNameSelectionInList;
+	}
 
-	public List<String> getSerialPortNames() {
-		return serialPortNames;
+ 	public List<String> getSerialPortNames() {
+		return this.serialPortNameSelectionInList.getList();
 	}
 
 	public void setSerialPortNames(List<String> serialPortNames) {
-		firePropertyChange(SERIAL_PORT_NAMES, this.serialPortNames, this.serialPortNames = serialPortNames);
+		this.serialPortNameSelectionInList.setList(serialPortNames);
 	}
 	
 	public String getSelectedSerialPortName() {
-		return selectedSerialPortName;
+		return serialPortNameSelectionInList.getSelection();
 	}
 
 	public void setSelectedSerialPortName(String selectedSerialPortName) {
-		firePropertyChange(SELECTED_SERIAL_PORT_NAME, this.selectedSerialPortName, this.selectedSerialPortName = selectedSerialPortName);
+		serialPortNameSelectionInList.setSelection(selectedSerialPortName);
 	}
 
 }

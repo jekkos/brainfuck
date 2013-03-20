@@ -14,10 +14,14 @@ public class LedMatrixModel extends AbstractBean {
 	public static final String HEIGHT = "height";
 
 	public static final String WIDTH = "width";
+	
+	public static final String ARDUINO_INITIALIZED = "arduinoInitialized";
 
 	private LedMatrix ledMatrix;
 
 	private SelectionInList<String> serialPortNameSelectionInList;
+	
+	private boolean arduinoInitialized;
 	
 	public LedMatrixModel(LedMatrixSettings ledMatrixSettings) {
 		this.ledMatrix = ledMatrixSettings.getLedMatrix();
@@ -60,6 +64,14 @@ public class LedMatrixModel extends AbstractBean {
 
 	public void setSelectedSerialPortName(String selectedSerialPortName) {
 		serialPortNameSelectionInList.setSelection(selectedSerialPortName);
+	}
+
+	public boolean isArduinoInitialized() {
+		return arduinoInitialized;
+	}
+
+	public void setArduinoInitialized(boolean arduinoInitialized) {
+		firePropertyChange(ARDUINO_INITIALIZED, this.arduinoInitialized, this.arduinoInitialized = arduinoInitialized);
 	}
 
 }

@@ -5,23 +5,23 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.text.NumberFormat;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
+import javax.swing.text.NumberFormatter;
 
 import net.miginfocom.swing.MigLayout;
 import be.kuleuven.med.brainfuck.core.LedMatrixController;
-import be.kuleuven.med.brainfuck.core.LedMatrixModel;
 
-public class LedMatrixView extends JPanel implements PropertyChangeListener {
+public class LedMatrixView extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -51,11 +51,11 @@ public class LedMatrixView extends JPanel implements PropertyChangeListener {
 		rightPanel.add(updateSerialPortNamesButton, "wrap");
 		
 		rightPanel.add(new JLabel("Width"));
-		rowTextField = new JTextField();
+		rowTextField = new JFormattedTextField(NumberFormat.getIntegerInstance());
 		rightPanel.add(rowTextField, "w 40, wrap");
 		
 		rightPanel.add(new JLabel("Height"));
-		columnTextField = new JTextField();
+		columnTextField = new JFormattedTextField(NumberFormat.getIntegerInstance());
 		rightPanel.add(columnTextField, "w 40, wrap");
 		
 		JButton updateLedMatrixButton = new JButton("Generate");
@@ -70,9 +70,9 @@ public class LedMatrixView extends JPanel implements PropertyChangeListener {
 		
 		rightPanel.add(new JSeparator());
 		rightPanel.add(new JLabel("PIN for column"));
-		rightPanel.add(rowTextField, "wrap, w 40, gapy 50");
+		rightPanel.add(new JFormattedTextField(NumberFormat.getIntegerInstance()), "wrap, w 40, gapy 50");
 		rightPanel.add(new JLabel("PIN for row"));
-		rightPanel.add(rowTextField, "wrap, w 40");
+		rightPanel.add(new JFormattedTextField(NumberFormat.getIntegerInstance()), "wrap, w 40");
 		
 		ledCanvas = new Canvas();
 		ledCanvas.setBackground(Color.WHITE);
@@ -119,14 +119,4 @@ public class LedMatrixView extends JPanel implements PropertyChangeListener {
 	public JComboBox<String> getSerialPortNamesBox() {
 		return serialPortNamesBox;
 	}
-
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		if (LedMatrixModel.SERIAL_PORT_NAMES.equals(evt.getPropertyName())) {
-			@SuppressWarnings("unchecked")
-			List<String> newValue = (List<String>) evt.getNewValue();
-			updateSerialPortNames(newValue);
-		}
-	}
-	
 }

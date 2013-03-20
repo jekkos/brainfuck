@@ -10,13 +10,17 @@ import be.kuleuven.med.brainfuck.task.AbstractTask;
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.beans.BeanAdapter;
 import com.jgoodies.binding.beans.PropertyConnector;
+import com.jgoodies.binding.value.ConverterFactory;
+import com.jgoodies.binding.value.ValueModel;
 
 public class LedMatrixController {
 
 	private static final String UPDATE_SERIAL_PORTS_TASK = "updateSerialPorts";
 
 	private static final String INIT_SERIAL_PORT_TASK = "initSerialPort";
-
+	
+	private static final String CLOSE_SERIAL_PORT_TASK = "closeSerialPort";
+	
 	private LedMatrixView ledMatrixView;
 	
 	private LedMatrixModel ledMatrixModel;
@@ -38,8 +42,10 @@ public class LedMatrixController {
 		Bindings.bind(ledMatrixView.getSerialPortNamesBox(), ledMatrixModel.getSerialPortSelectionInList());
 		// init width and height
 		BeanAdapter<LedMatrixModel> ledMatrixModelAdapter = new BeanAdapter<LedMatrixModel>(ledMatrixModel);
-		PropertyConnector.connectAndUpdate(ledMatrixModelAdapter.getValueModel("width"), Integer.valueOf(ledMatrixView.getWidth()), "text");
-		PropertyConnector.connectAndUpdate(ledMatrixModelAdapter.getValueModel("height"), Integer.valueOf(ledMatrixView.getHeight()), "text");
+		PropertyConnector.connectAndUpdate(ledMatrixModelAdapter.getValueModel("width"), ledMatrixView.getRowTextField(), "value");
+		PropertyConnector.connectAndUpdate(ledMatrixModelAdapter.getValueModel("height"), ledMatrixView.getColumnTextField(), "text");
+		ValueModel arduinoReleased = ConverterFactory.createBooleanNegator(ledMatrixModelAdapter.getValueModel("arduinoInitialized"));
+		PropertyConnector.connectAndUpdate(arduinoReleased, ledMatrixView.getSerialPortNamesBox(), "enabled");
 	}
 	
 	public void updateLedMatrix() {
@@ -49,14 +55,27 @@ public class LedMatrixController {
 	
 	public void initializeSerialPort() {
 		final String serialPort = ledMatrixModel.getSelectedSerialPortName();
-		if (serialPort != null && !"".equals(serialPort)) {
+		if (serialPort != null && !"".equals(serialPort) && !ledMatrixModel.isArduinoInitialized()) {
 			taskService.execute(new AbstractTask<Void, Void>(INIT_SERIAL_PORT_TASK) {
 				
 				protected Void doInBackground() throws Exception {
 					message("startMessage", serialPort);
-					serialPortConnector.close();
 					serialPortConnector.initialize(serialPort);
+					// will disable enabled state of in the gui..
+					ledMatrixModel.setArduinoInitialized(true);
 					// should be updating the view on EDT
+					message("endMessage");
+					return null;
+				}
+				
+			});
+		} else {
+			taskService.execute(new AbstractTask<Void, Void>(CLOSE_SERIAL_PORT_TASK) {
+
+				protected Void doInBackground() throws Exception {
+					message("startMessage", serialPort);
+					serialPortConnector.close();
+					ledMatrixModel.setArduinoInitialized(false);
 					message("endMessage");
 					return null;
 				}

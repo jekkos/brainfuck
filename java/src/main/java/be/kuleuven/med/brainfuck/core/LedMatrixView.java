@@ -25,6 +25,10 @@ public class LedMatrixView extends JPanel {
 	private JTextField columnTextField;
 
 	private JTextField rowTextField;
+	
+	private JTextField pinRowTextField;
+	
+	private JTextField columnRowTextField;
 
 	private JComboBox<String> serialPortNamesBox;
 
@@ -47,7 +51,7 @@ public class LedMatrixView extends JPanel {
 		
 		rightPanel.add(new JLabel("Width"));
 		rowTextField = new JFormattedTextField(0);
-		rightPanel.add(rowTextField, "w 40, wrap");
+		rightPanel.add(rowTextField, "wrap");
 		
 		rightPanel.add(new JLabel("Height"));
 		columnTextField = new JFormattedTextField(0);
@@ -65,9 +69,9 @@ public class LedMatrixView extends JPanel {
 		
 		rightPanel.add(new JSeparator());
 		rightPanel.add(new JLabel("PIN for column"));
-		rightPanel.add(rowTextField, "wrap, w 40, gapy 50");
+		rightPanel.add(pinRowTextField, "wrap, w 40");
 		rightPanel.add(new JLabel("PIN for row"));
-		rightPanel.add(rowTextField, "wrap, w 40");
+		rightPanel.add(columnRowTextField, "wrap, w 40");
 		
 		ledCanvas = new Canvas();
 		ledCanvas.setBackground(Color.WHITE);

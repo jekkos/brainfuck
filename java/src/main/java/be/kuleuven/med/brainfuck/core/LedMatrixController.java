@@ -43,7 +43,7 @@ public class LedMatrixController {
 		// init width and height
 		BeanAdapter<LedMatrixModel> ledMatrixModelAdapter = new BeanAdapter<LedMatrixModel>(ledMatrixModel);
 		PropertyConnector.connectAndUpdate(ledMatrixModelAdapter.getValueModel("width"), ledMatrixView.getRowTextField(), "value");
-		PropertyConnector.connectAndUpdate(ledMatrixModelAdapter.getValueModel("height"), ledMatrixView.getColumnTextField(), "text");
+		PropertyConnector.connectAndUpdate(ledMatrixModelAdapter.getValueModel("height"), ledMatrixView.getColumnTextField(), "value");
 		ValueModel arduinoReleased = ConverterFactory.createBooleanNegator(ledMatrixModelAdapter.getValueModel("arduinoInitialized"));
 		PropertyConnector.connectAndUpdate(arduinoReleased, ledMatrixView.getSerialPortNamesBox(), "enabled");
 	}

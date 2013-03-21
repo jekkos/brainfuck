@@ -113,7 +113,6 @@ public class SettingsManager {
 	}
 
 	public void loadSettings() {
-		loadAddtionalLog4JSettings();
 		logger.debug("Initializing ApplicationSettings..");
 		File settingsFile = null;
 		try { 
@@ -142,18 +141,6 @@ public class SettingsManager {
 		}
 	}
 	
-	/**
-	 * Looks for additional log4j files in the user.home directory of the application.
-	 * Use this to store specific appenders that require easy configuration. 
-	 */
-	private void loadAddtionalLog4JSettings() {
-		File resource = new File(getLocalStorageDir(), "log4j.properties");
-		if (resource.exists()) {
-			logger.debug("Loading additional log4J properties from " + resource.getAbsolutePath());
-			PropertyConfigurator.configure(resource.getAbsolutePath());
-		}
-	}
-
 	public void saveSettings() {
 		try {
 			Marshaller marshaller = jaxbContext.createMarshaller();

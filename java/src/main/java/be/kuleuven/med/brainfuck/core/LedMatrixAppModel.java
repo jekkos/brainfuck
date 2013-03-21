@@ -9,11 +9,15 @@ import be.kuleuven.med.brainfuck.settings.LedMatrixSettings;
 
 import com.jgoodies.binding.list.SelectionInList;
 
-public class LedMatrixModel extends AbstractBean {
+public class LedMatrixAppModel extends AbstractBean {
 	
 	public static final String HEIGHT = "height";
 
 	public static final String WIDTH = "width";
+	
+	public static final String ROW_PIN = "rowPin";
+	
+	public static final String COLUMN_PIN = "columnPin";
 	
 	public static final String ARDUINO_INITIALIZED = "arduinoInitialized";
 
@@ -23,7 +27,11 @@ public class LedMatrixModel extends AbstractBean {
 	
 	private boolean arduinoInitialized;
 	
-	public LedMatrixModel(LedMatrixSettings ledMatrixSettings) {
+	private int rowPin;
+	
+	private int columnPin;
+	
+	public LedMatrixAppModel(LedMatrixSettings ledMatrixSettings) {
 		this.ledMatrix = ledMatrixSettings.getLedMatrix();
 		serialPortNameSelectionInList = new SelectionInList<String>();
 	}
@@ -45,7 +53,23 @@ public class LedMatrixModel extends AbstractBean {
 		firePropertyChange(HEIGHT, ledMatrix.getHeight(), height);
 		ledMatrix.setHeight(height);
 	}
-	
+
+	public int getRowPin() {
+		return rowPin;
+	}
+
+	public void setRowPin(int rowPin) {
+		firePropertyChange(ROW_PIN, this.rowPin , this.rowPin = rowPin);
+	}
+
+	public int getColumnPin() {
+		return columnPin;
+	}
+
+	public void setColumnPin(int columnPin) {
+		firePropertyChange(COLUMN_PIN, this.columnPin , this.columnPin = columnPin);
+	}
+
 	public SelectionInList<String> getSerialPortSelectionInList() {
 		return serialPortNameSelectionInList;
 	}

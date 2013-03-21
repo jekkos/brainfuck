@@ -1,5 +1,11 @@
 package be.kuleuven.med.brainfuck.core;
 
+import static be.kuleuven.med.brainfuck.core.LedMatrixAppModel.COLUMN_PIN;
+import static be.kuleuven.med.brainfuck.core.LedMatrixAppModel.HEIGHT;
+import static be.kuleuven.med.brainfuck.core.LedMatrixAppModel.ROW_PIN;
+import static be.kuleuven.med.brainfuck.core.LedMatrixAppModel.WIDTH;
+
+import java.awt.Shape;
 import java.util.List;
 
 import org.jdesktop.application.TaskService;
@@ -13,7 +19,7 @@ import com.jgoodies.binding.beans.PropertyConnector;
 import com.jgoodies.binding.value.ConverterFactory;
 import com.jgoodies.binding.value.ValueModel;
 
-public class LedMatrixController {
+public class LedMatrixAppController {
 
 	private static final String UPDATE_SERIAL_PORTS_TASK = "updateSerialPorts";
 
@@ -21,15 +27,15 @@ public class LedMatrixController {
 	
 	private static final String CLOSE_SERIAL_PORT_TASK = "closeSerialPort";
 	
-	private LedMatrixView ledMatrixView;
+	private LedMatrixAppView ledMatrixView;
 	
-	private LedMatrixModel ledMatrixModel;
+	private LedMatrixAppModel ledMatrixModel;
 	
 	private SerialPortConnector serialPortConnector;
 	
 	private TaskService taskService;
 	
-	public LedMatrixController(TaskService taskService, LedMatrixModel ledMatrixModel, SerialPortConnector serialPortConnector) {
+	public LedMatrixAppController(TaskService taskService, LedMatrixAppModel ledMatrixModel, SerialPortConnector serialPortConnector) {
 		this.ledMatrixModel = ledMatrixModel;
 		this.taskService = taskService;
 		this.serialPortConnector = serialPortConnector;
@@ -37,20 +43,30 @@ public class LedMatrixController {
 		updateSerialPortNames();
 	}
 	
-	public void initView(LedMatrixView ledMatrixView) {
+	public void initView(LedMatrixAppView ledMatrixView) {
 		this.ledMatrixView = ledMatrixView;
 		Bindings.bind(ledMatrixView.getSerialPortNamesBox(), ledMatrixModel.getSerialPortSelectionInList());
 		// init width and height
-		BeanAdapter<LedMatrixModel> ledMatrixModelAdapter = new BeanAdapter<LedMatrixModel>(ledMatrixModel);
-		PropertyConnector.connectAndUpdate(ledMatrixModelAdapter.getValueModel("width"), ledMatrixView.getRowTextField(), "value");
-		PropertyConnector.connectAndUpdate(ledMatrixModelAdapter.getValueModel("height"), ledMatrixView.getColumnTextField(), "value");
+		BeanAdapter<LedMatrixAppModel> ledMatrixModelAdapter = new BeanAdapter<LedMatrixAppModel>(ledMatrixModel);
+		PropertyConnector.connectAndUpdate(ledMatrixModelAdapter.getValueModel(HEIGHT), ledMatrixView.getRowTextField(), "value");
+		PropertyConnector.connectAndUpdate(ledMatrixModelAdapter.getValueModel(WIDTH), ledMatrixView.getColumnTextField(), "value");
 		ValueModel arduinoReleased = ConverterFactory.createBooleanNegator(ledMatrixModelAdapter.getValueModel("arduinoInitialized"));
 		PropertyConnector.connectAndUpdate(arduinoReleased, ledMatrixView.getSerialPortNamesBox(), "enabled");
+		// connect pin mappings for row and columns
+		PropertyConnector.connectAndUpdate(ledMatrixModelAdapter.getValueModel(ROW_PIN), ledMatrixView.getRowPinTextField(), "value");
+		PropertyConnector.connectAndUpdate(ledMatrixModelAdapter.getValueModel(COLUMN_PIN), ledMatrixView.getColumnPinTextField(), "value");
 	}
 	
 	public void updateLedMatrix() {
 		// should send data to arduino as well??
 		ledMatrixView.drawLedMatrix(ledMatrixModel.getWidth(), ledMatrixModel.getHeight());
+	}
+	
+	public void updateSelectedLed(Shape indices) {
+		if (indices != null) {
+			// set selected led based on passed coordinates
+			// so all subsequent input can be bound to this led..
+		}
 	}
 	
 	public void initializeSerialPort() {

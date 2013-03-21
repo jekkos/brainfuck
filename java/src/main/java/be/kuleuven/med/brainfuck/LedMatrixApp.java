@@ -18,10 +18,9 @@ import org.jdesktop.application.SingleFrameApplication;
 import org.jdesktop.application.TaskService;
 import org.jdesktop.application.utils.AppHelper;
 
-import be.kuleuven.med.brainfuck.core.LedMatrixController;
-import be.kuleuven.med.brainfuck.core.LedMatrixModel;
-import be.kuleuven.med.brainfuck.core.LedMatrixView;
-import be.kuleuven.med.brainfuck.entity.LedMatrix;
+import be.kuleuven.med.brainfuck.core.LedMatrixAppController;
+import be.kuleuven.med.brainfuck.core.LedMatrixAppModel;
+import be.kuleuven.med.brainfuck.core.LedMatrixAppView;
 import be.kuleuven.med.brainfuck.io.SerialPortConnector;
 import be.kuleuven.med.brainfuck.settings.SettingsManager;
 
@@ -33,11 +32,11 @@ public class LedMatrixApp extends SingleFrameApplication {
 	public static final String APP_BUILD_DATE = "Application.build.date";
 	public static final String APP_MAIN_FONT = "Application.mainFont";
 
-	private final static Logger LOGGER = Logger.getLogger(LedMatrixApp.class);
+	private static final Logger LOGGER = Logger.getLogger(LedMatrixApp.class);
 
 	private SettingsManager settingsManager;
 	
-	private LedMatrixController ledMatrixController;
+	private LedMatrixAppController ledMatrixController;
 
 	/*
 	 * Main method launching the application. 
@@ -66,8 +65,8 @@ public class LedMatrixApp extends SingleFrameApplication {
 		settingsManager = new SettingsManager(getContext().getLocalStorage().getDirectory());
 		settingsManager.loadSettings();
 		SerialPortConnector serialConnector = new SerialPortConnector(settingsManager.getArduinoSettings());
-		LedMatrixModel ledMatrixModel = new LedMatrixModel(settingsManager.getLedMatrixSettings());
-		ledMatrixController = new LedMatrixController(getContext().getTaskService(), ledMatrixModel, serialConnector);
+		LedMatrixAppModel ledMatrixModel = new LedMatrixAppModel(settingsManager.getLedMatrixSettings());
+		ledMatrixController = new LedMatrixAppController(getContext().getTaskService(), ledMatrixModel, serialConnector);
 	}
 
 	/**
@@ -76,7 +75,7 @@ public class LedMatrixApp extends SingleFrameApplication {
 	@Override
 	protected void startup() {
 		JPanel mainPanel = new JPanel(new MigLayout("fill, nogrid, flowy, insets 10"));
-		LedMatrixView ledMatrixView = new LedMatrixView(ledMatrixController);
+		LedMatrixAppView ledMatrixView = new LedMatrixAppView(ledMatrixController);
 		ledMatrixController.initView(ledMatrixView);
 		mainPanel.add(ledMatrixView);
 		//StatusPanel statusPanel = new StatusPanel();

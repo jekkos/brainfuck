@@ -5,8 +5,6 @@ import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -19,20 +17,19 @@ import be.kuleuven.med.brainfuck.settings.SerialPortSettings;
 
 import com.google.common.collect.Lists;
 
-public class SerialPortConnector implements SerialPortEventListener, PropertyChangeListener {
-	
-	private SerialPort serialPort;
+public class SerialPortConnector implements SerialPortEventListener {
 	
 	private final static Logger LOGGER = Logger.getLogger(SerialPortConnector.class);
+
+	/** Milliseconds to block while waiting for port open */
+	private final static int TIME_OUT = 2000;
+
+	private SerialPort serialPort;
 
 	/** Buffered input stream from the port */
 	private InputStream input;
 	/** The output stream to the port */
 	private OutputStream output;
-	/** Milliseconds to block while waiting for port open */
-	private static final int TIME_OUT = 2000;
-
-	private final static String NUMBER_SEQUENCE =  "abcdef";
 	
 	private SerialPortSettings arduinoSettings;
 	
@@ -62,7 +59,7 @@ public class SerialPortConnector implements SerialPortEventListener, PropertyCha
 		serialPort.setSerialPortParams(arduinoSettings.getDataRate(),
 				arduinoSettings.getDataBits(),
 				arduinoSettings.getStopBits(),
-				SerialPort.PARITY_NONE);
+				arduinoSettings.getParityBits());
 
 		// open the streams
 		input = serialPort.getInputStream();
@@ -98,7 +95,6 @@ public class SerialPortConnector implements SerialPortEventListener, PropertyCha
 			serialPort.removeEventListener();
 			serialPort.close();
 		}
-		// TODO cleanup
 	}
 
 	/**
@@ -135,30 +131,6 @@ public class SerialPortConnector implements SerialPortEventListener, PropertyCha
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-	}
-
-	public void lightLeds(int level) {
-		try {
-			if (output != null) {
-				for (int i = 0; i < 3; i++) {
-					output.write( "agbhcidjekdjcibh\r\n".getBytes());
-				}
-				output.write(new String(NUMBER_SEQUENCE.substring(0, level) +  "\r\n").getBytes());
-			} else {
-				LOGGER.info("no serial device attached..");
-			}
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-	}
-	
-	public SerialPort getSerialPort() {
-		return serialPort;
-	}
-
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		// listen for property changes on another componenent?
 	}
 
 }

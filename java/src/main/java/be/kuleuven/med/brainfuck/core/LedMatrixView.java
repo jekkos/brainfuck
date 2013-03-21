@@ -1,130 +1,68 @@
 package be.kuleuven.med.brainfuck.core;
 
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Point;
+import java.awt.Shape;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Ellipse2D.Double;
 
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
-import javax.swing.JTextField;
-
-import net.miginfocom.swing.MigLayout;
 
 public class LedMatrixView extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	
-	private final Canvas ledCanvas;
-	
-	private JTextField columnTextField;
 
-	private JTextField rowTextField;
-	
-	private JTextField pinRowTextField;
-	
-	private JTextField columnRowTextField;
+	private Ellipse2D.Double[][] ellipseMatrix;
 
-	private JComboBox<String> serialPortNamesBox;
+	public LedMatrixView() {	}
 
-	public LedMatrixView(final LedMatrixController ledMatrixController) {
-		JPanel rightPanel = new JPanel(new MigLayout("nogrid", "[right]10", "10"));
-		JPanel leftPanel = new JPanel(new MigLayout());
-		leftPanel.add(new Canvas());
-		
-		serialPortNamesBox = new JComboBox<String>();
-		rightPanel.add(serialPortNamesBox);
-		JButton updateSerialPortNamesButton = new JButton("Ok");
-		updateSerialPortNamesButton.addActionListener(new ActionListener() {
+	public LedMatrixView(int width, int height) {
+		ellipseMatrix = new Ellipse2D.Double[width][height];
+	}
 
-			public void actionPerformed(ActionEvent e) {
-				ledMatrixController.initializeSerialPort();
+	@Override
+	protected void paintComponent(Graphics graphics) {
+		super.paintComponent(graphics);
+		Graphics g = graphics.create();
+		g.setColor(Color.WHITE);
+		g.fillRect(0,  0, getWidth(), getHeight());
+		for (int i = 0; i < ellipseMatrix.length; i++) {
+			for (int j = 0; j < ellipseMatrix[0].length; j++) {
+				Double shape = ellipseMatrix[i][j];
+				g.drawOval((int) shape.x, (int) shape.y, (int) shape.width, (int) shape.height);
 			}
-			
-		});
-		rightPanel.add(updateSerialPortNamesButton, "wrap");
-		
-		rightPanel.add(new JLabel("Width"));
-		rowTextField = new JFormattedTextField(0);
-		rightPanel.add(rowTextField, "wrap");
-		
-		rightPanel.add(new JLabel("Height"));
-		columnTextField = new JFormattedTextField(0);
-		rightPanel.add(columnTextField, "wrap");
-		
-		JButton updateLedMatrixButton = new JButton("Generate");
-		updateLedMatrixButton.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				ledMatrixController.updateLedMatrix();
-			}
-			
-		});
-		rightPanel.add(updateLedMatrixButton, "wrap");
-		
-		rightPanel.add(new JSeparator());
-		rightPanel.add(new JLabel("PIN for column"));
-		rightPanel.add(pinRowTextField, "wrap, w 40");
-		rightPanel.add(new JLabel("PIN for row"));
-		rightPanel.add(columnRowTextField, "wrap, w 40");
-		
-		ledCanvas = new Canvas();
-		ledCanvas.setBackground(Color.WHITE);
-		leftPanel.add(ledCanvas, "wmin 300, hmin 300, grow");
-		this.add(leftPanel);
-		this.add(rightPanel);
+		}
+		g.dispose();
 	}
 	
-	/**
-	 * Draw the led matrix.. will be called on the EDT
-	 * @param ledMatrix
-	 */
-	public void drawLedMatrix(int width, int height) {
+	public Shape calculateMatrixIndices(MouseEvent event) {
+		int x = event.getX();
+		int y = event.getY();
+		for (int i = 0; i < ellipseMatrix.length; i++) {
+			for (int j = 0; j < ellipseMatrix[0].length; j++) {
+				Double shape = ellipseMatrix[i][j];
+				if (shape.contains(x, y)) {
+					return shape;
+				}
+			}
+		}
+		return null;
+	}
+
+	public void setMatrixSize(int width, int height) {
+		ellipseMatrix = buildShapeMatrix(width, height);
+	}
+
+	private Ellipse2D.Double[][] buildShapeMatrix(int width, int height) {
+		Ellipse2D.Double[][] result = new Ellipse2D.Double[width][height];
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
-				Graphics graphics = ledCanvas.getGraphics();
-				graphics.setColor(Color.WHITE);
-				graphics.fillRect(0,  0, ledCanvas.getWidth(), ledCanvas.getHeight());
-				graphics.setColor(Color.BLACK);
-				graphics.drawArc(10 + 20 * i, 10 + 20 * j, 15, 15, 0, 360);
+				result[i][j] = new Ellipse2D.Double(10+20*i, 10+20*j, 20, 20);
 			}
 		}
-	}
-	
-/*	public void updateSerialPortNames(List<String> serialPortNames) {
-		DefaultComboBoxModel<String> defaultModel = new DefaultComboBoxModel<String>();
-		for(String serialPortName : serialPortNames) {
-			defaultModel.addElement(serialPortName);
-	}
-	*/
-	public Canvas getLedCanvas() {
-		return ledCanvas;
+		return result;
 	}
 
-	public JTextField getColumnTextField() {
-		return columnTextField;
-	}
-
-	public JTextField getRowTextField() {
-		return rowTextField;
-	}
-	
-	public JComboBox<String> getSerialPortNamesBox() {
-		return serialPortNamesBox;
-	}
-
-	/*@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		if (LedMatrixModel.SERIAL_PORT_NAMES.equals(evt.getPropertyName())) {
-			@SuppressWarnings("unchecked")
-			List<String> newValue = (List<String>) evt.getNewValue();
-			updateSerialPortNames(newValue);
-		}
-	}*/
-	
 }

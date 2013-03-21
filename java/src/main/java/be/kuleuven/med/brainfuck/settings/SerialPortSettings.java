@@ -10,6 +10,8 @@ public class SerialPortSettings {
 	private static final int DEFAULT_DATA_BITS = SerialPort.DATABITS_8;
 	
 	private static final int DEFAULT_STOP_BITS = SerialPort.STOPBITS_1;
+	
+	private static final int DEFAULT_PARITY_BITS = SerialPort.PARITY_NONE;
 
 	private String name;
 	
@@ -18,6 +20,8 @@ public class SerialPortSettings {
 	private int dataBits = DEFAULT_DATA_BITS;
 	
 	private int stopBits = DEFAULT_STOP_BITS;
+	
+	private int parityBits = DEFAULT_PARITY_BITS;
 
 	public String getName() {
 		return name;
@@ -49,6 +53,14 @@ public class SerialPortSettings {
 
 	public void setDataBits(int dataBits) {
 		this.dataBits = dataBits;
+	}
+
+	public int getParityBits() {
+		return parityBits;
+	}
+
+	public void setParityBits(int parityBits) {
+		this.parityBits = parityBits;
 	}
 	
 }

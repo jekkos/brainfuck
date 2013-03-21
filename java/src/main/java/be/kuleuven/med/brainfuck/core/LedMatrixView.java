@@ -3,18 +3,23 @@ package be.kuleuven.med.brainfuck.core;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.Shape;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Ellipse2D.Double;
+import java.util.Set;
 
 import javax.swing.JPanel;
+
+import com.google.common.collect.Sets;
 
 public class LedMatrixView extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
 	private Ellipse2D.Double[][] ellipseMatrix;
+	
+	private Set<Ellipse2D.Double> selectedEllipses = Sets.newHashSet();
 
 	public LedMatrixView() {	}
 
@@ -28,23 +33,35 @@ public class LedMatrixView extends JPanel {
 		Graphics g = graphics.create();
 		g.setColor(Color.WHITE);
 		g.fillRect(0,  0, getWidth(), getHeight());
-		for (int i = 0; i < ellipseMatrix.length; i++) {
+		for (int i = 0; ellipseMatrix != null && i < ellipseMatrix.length; i++) {
 			for (int j = 0; j < ellipseMatrix[0].length; j++) {
 				Double shape = ellipseMatrix[i][j];
-				g.drawOval((int) shape.x, (int) shape.y, (int) shape.width, (int) shape.height);
+				if (selectedEllipses.contains(shape)) {
+					g.setColor(Color.RED);
+					g.fillOval((int) shape.x, (int) shape.y, (int) shape.width, (int) shape.height);
+				} else {
+					g.setColor(Color.BLACK);
+					g.drawOval((int) shape.x, (int) shape.y, (int) shape.width, (int) shape.height);
+				}
 			}
 		}
 		g.dispose();
 	}
 	
-	public Shape calculateMatrixIndices(MouseEvent event) {
+	public Point selectLed(MouseEvent event) {
 		int x = event.getX();
 		int y = event.getY();
+		if ((event.getModifiers() & InputEvent.BUTTON1_DOWN_MASK) != 0) {
+			// shift was pressed?? multi select enabled
+		} else {
+			selectedEllipses.clear();
+		}
 		for (int i = 0; i < ellipseMatrix.length; i++) {
 			for (int j = 0; j < ellipseMatrix[0].length; j++) {
 				Double shape = ellipseMatrix[i][j];
 				if (shape.contains(x, y)) {
-					return shape;
+					selectedEllipses.add(shape);
+					return new Point(x, y);
 				}
 			}
 		}
@@ -54,12 +71,29 @@ public class LedMatrixView extends JPanel {
 	public void setMatrixSize(int width, int height) {
 		ellipseMatrix = buildShapeMatrix(width, height);
 	}
-
+	
+	private int getLedDiameterX(int nbRows) {
+		return getWidth() / nbRows - nbRows*10;
+	}
+	
+	private int getLedDiameterY(int nbColumns) {
+		return getHeight() / nbColumns - nbColumns*10;
+	}
+	
+	private int getPosX(int x, int nbRows) {
+		return getLedDiameterX(nbRows)*x + (x+1)*20;
+	}
+	
+	private int getPosY(int y, int nbColumns) {
+		return getLedDiameterY(nbColumns)*y + (y+1)*20;
+	}
+	
 	private Ellipse2D.Double[][] buildShapeMatrix(int width, int height) {
 		Ellipse2D.Double[][] result = new Ellipse2D.Double[width][height];
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
-				result[i][j] = new Ellipse2D.Double(10+20*i, 10+20*j, 20, 20);
+				int size = Math.min(getLedDiameterX(width), getLedDiameterY(height));
+				result[i][j] = new Ellipse2D.Double(getPosX(i, width), getPosY(j, height), size, size);
 			}
 		}
 		return result;

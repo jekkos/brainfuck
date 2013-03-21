@@ -1,13 +1,16 @@
 package be.kuleuven.med.brainfuck.core;
 
+import static be.kuleuven.med.brainfuck.LedMatrixApp.SAVE_SETTINGS_TASK;
+
 import java.awt.Canvas;
-import java.awt.Shape;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.NumberFormat;
 
+import javax.swing.ActionMap;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
@@ -35,7 +38,7 @@ public class LedMatrixAppView extends JPanel {
 
 	private final JComboBox<String> serialPortNamesBox;
 
-	public LedMatrixAppView(final LedMatrixAppController ledMatrixController) {
+	public LedMatrixAppView(final LedMatrixAppController ledMatrixController, final ActionMap actionMap) {
 		JPanel rightPanel = new JPanel(new MigLayout("nogrid", "[right]10", "10"));
 		JPanel leftPanel = new JPanel(new MigLayout());
 		leftPanel.add(new Canvas());
@@ -46,7 +49,7 @@ public class LedMatrixAppView extends JPanel {
 		updateSerialPortNamesButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				ledMatrixController.updateSerialPortNames();
+				ledMatrixController.initializeSerialPort();
 			}
 
 		});
@@ -73,24 +76,34 @@ public class LedMatrixAppView extends JPanel {
 		rightPanel.add(new JSeparator(SwingConstants.HORIZONTAL), "wrap");
 		rightPanel.add(new JLabel("PIN for column"));
 		rowPinTextField = new JFormattedTextField(NumberFormat.getIntegerInstance());
-		rightPanel.add(rowPinTextField, "wrap, w 40, gapy 50");
+		rightPanel.add(rowPinTextField, "wrap, w 40, gapy 20");
 		rightPanel.add(new JLabel("PIN for row"));
 		columnPinTextField = new JFormattedTextField(NumberFormat.getIntegerInstance());
 		rightPanel.add(columnPinTextField, "wrap, w 40");
-
+		rightPanel.add(new JSeparator(SwingConstants.HORIZONTAL), "wrap");
+		rightPanel.add(new JButton(actionMap.get(SAVE_SETTINGS_TASK)));
+		
 		ledMatrixView = new LedMatrixView();
 		ledMatrixView.addMouseListener(new MouseAdapter() {
 
 			@Override
 			public void mouseClicked(MouseEvent event) {
-				Shape indices = ledMatrixView.calculateMatrixIndices(event);
-				ledMatrixController.updateSelectedLed(indices);
+				Point index = ledMatrixView.selectLed(event);
+				ledMatrixView.repaint();
+				ledMatrixController.updateSelectedLed(index);
 			}
 			
 		});
+		
+		// add led matrix view 
 		leftPanel.add(ledMatrixView, "wmin 300, hmin 300, grow");
 		this.add(leftPanel);
 		this.add(rightPanel);
+	}
+
+	public void drawLedMatrix(int width, int height) {
+		ledMatrixView.setMatrixSize(width, height);
+		ledMatrixView.repaint();
 	}
 	
 	public JTextField getColumnTextField() {
@@ -113,8 +126,5 @@ public class LedMatrixAppView extends JPanel {
 		return rowPinTextField;
 	}
 
-	public void drawLedMatrix(int width, int height) {
-		ledMatrixView.setMatrixSize(width, height);
-	}
 	
 }

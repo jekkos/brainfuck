@@ -12,9 +12,12 @@ import net.miginfocom.swing.MigLayout;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.jdesktop.application.Action;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.application.SingleFrameApplication;
+import org.jdesktop.application.Task;
+import org.jdesktop.application.Task.BlockingScope;
 import org.jdesktop.application.TaskService;
 import org.jdesktop.application.utils.AppHelper;
 
@@ -23,9 +26,12 @@ import be.kuleuven.med.brainfuck.core.LedMatrixAppModel;
 import be.kuleuven.med.brainfuck.core.LedMatrixAppView;
 import be.kuleuven.med.brainfuck.io.SerialPortConnector;
 import be.kuleuven.med.brainfuck.settings.SettingsManager;
+import be.kuleuven.med.brainfuck.task.AbstractTask;
 
 public class LedMatrixApp extends SingleFrameApplication {
 
+	public static final String SAVE_SETTINGS_TASK = "saveSettings";
+	
 	public static final String APP_VERSION = "Application.version";
 	public static final String APP_TITLE = "Application.title";
 	public static final String APP_NAME = "Application.name";
@@ -75,7 +81,7 @@ public class LedMatrixApp extends SingleFrameApplication {
 	@Override
 	protected void startup() {
 		JPanel mainPanel = new JPanel(new MigLayout("fill, nogrid, flowy, insets 10"));
-		LedMatrixAppView ledMatrixView = new LedMatrixAppView(ledMatrixController);
+		LedMatrixAppView ledMatrixView = new LedMatrixAppView(ledMatrixController, getContext().getActionMap());
 		ledMatrixController.initView(ledMatrixView);
 		mainPanel.add(ledMatrixView);
 		//StatusPanel statusPanel = new StatusPanel();
@@ -101,6 +107,18 @@ public class LedMatrixApp extends SingleFrameApplication {
 				awaitShutdown(event);
 			}
 		}
+	}
+	
+	@Action(block=BlockingScope.APPLICATION)
+	public Task<Void, Void> saveSettings() {
+		return new AbstractTask<Void, Void>(SAVE_SETTINGS_TASK) {
+
+			protected Void doInBackground() throws Exception {
+				settingsManager.saveSettings();
+				return null;
+			}
+			
+		};
 	}
 
 	/**

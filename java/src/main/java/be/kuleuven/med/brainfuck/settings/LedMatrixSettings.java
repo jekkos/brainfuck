@@ -1,20 +1,35 @@
 package be.kuleuven.med.brainfuck.settings;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Collections;
+import java.util.List;
 
-import be.kuleuven.med.brainfuck.entity.LedMatrix;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class LedMatrixSettings {
 
-	private LedMatrix ledMatrix = new LedMatrix(3, 2);
+	private List<LedSettings> ledSettings;
+	
+	int width, height;
 
-	public LedMatrix getLedMatrix() {
-		return ledMatrix;
+	public List<LedSettings> getLedSettings() {
+		return Collections.unmodifiableList(ledSettings);
 	}
 
-	public void setLedMatrix(LedMatrix ledMatrix) {
-		this.ledMatrix = ledMatrix;
+	public int getWidth() {
+		return width;
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
 	}
 	
 }

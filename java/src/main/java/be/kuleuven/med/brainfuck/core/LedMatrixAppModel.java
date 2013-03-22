@@ -4,9 +4,7 @@ import java.util.List;
 
 import org.jdesktop.application.AbstractBean;
 
-import be.kuleuven.med.brainfuck.entity.Led;
-import be.kuleuven.med.brainfuck.entity.LedMatrix;
-import be.kuleuven.med.brainfuck.settings.LedMatrixSettings;
+import be.kuleuven.med.brainfuck.settings.LedSettings;
 
 import com.jgoodies.binding.list.SelectionInList;
 
@@ -22,52 +20,57 @@ public class LedMatrixAppModel extends AbstractBean {
 	
 	public static final String ARDUINO_INITIALIZED = "arduinoInitialized";
 
-	private LedMatrix ledMatrix;
-
+	public static final String SELECTED_LED_SETTINGS = "selectedLedSettings";
+	
 	private SelectionInList<String> serialPortNameSelectionInList;
 	
 	private boolean arduinoInitialized;
 	
-	private Long rowPin;
+	private int rowPin;
 	
-	private Long columnPin;
+	private int columnPin;
 	
-	public LedMatrixAppModel(LedMatrixSettings ledMatrixSettings) {
-		this.ledMatrix = ledMatrixSettings.getLedMatrix();
+	private int width;
+	
+	private int height;
+
+	private LedSettings selectedLedSettings;
+	
+	public LedMatrixAppModel(int width, int height) {
+		this.width = width;
+		this.height = height;
 		serialPortNameSelectionInList = new SelectionInList<String>();
 	}
 	
-    public Long getWidth() {
-		return Long.valueOf(ledMatrix.getWidth());
+    public int getWidth() {
+    	return width;
 	}
 
-	public void setWidth(Long width) {
-		firePropertyChange(WIDTH, ledMatrix.getWidth(), width.intValue());
-		ledMatrix.setWidth(width.intValue());
+	public void setWidth(int width) {
+		firePropertyChange(WIDTH, this.width, this.width = width);
 	}
 
-	public Long getHeight() {
-		return Long.valueOf(ledMatrix.getHeight());
+	public int getHeight() {
+		return height;
 	}
 	
-	public void setHeight(Long height) {
-		firePropertyChange(HEIGHT, ledMatrix.getHeight(), height.intValue());
-		ledMatrix.setHeight(height.intValue());
+	public void setHeight(int height) {
+		firePropertyChange(HEIGHT, this.height, this.height = height);
 	}
 
-	public Long getRowPin() {
+	public int getRowPin() {
 		return rowPin;
 	}
 
-	public void setRowPin(Long rowPin) {
+	public void setRowPin(int rowPin) {
 		firePropertyChange(ROW_PIN, this.rowPin , this.rowPin = rowPin);
 	}
 
-	public Long getColumnPin() {
+	public int getColumnPin() {
 		return columnPin;
 	}
 
-	public void setColumnPin(Long columnPin) {
+	public void setColumnPin(int columnPin) {
 		firePropertyChange(COLUMN_PIN, this.columnPin , this.columnPin = columnPin);
 	}
 
@@ -99,8 +102,12 @@ public class LedMatrixAppModel extends AbstractBean {
 		firePropertyChange(ARDUINO_INITIALIZED, this.arduinoInitialized, this.arduinoInitialized = arduinoInitialized);
 	}
 
-	public LedMatrix getLedMatrix() {
-		return ledMatrix;
+	public void setSelectedLedSettings(LedSettings selectedLedSettings) {
+		firePropertyChange(SELECTED_LED_SETTINGS, this.selectedLedSettings, this.selectedLedSettings = selectedLedSettings);
 	}
-	
+
+	public LedSettings getSelectedLedSettings() {
+		return selectedLedSettings;
+	}
+
 }

@@ -11,6 +11,8 @@ import java.util.Set;
 
 import javax.swing.JPanel;
 
+import be.kuleuven.med.brainfuck.entity.LedPosition;
+
 import com.google.common.collect.Sets;
 
 public class LedMatrixView extends JPanel {
@@ -48,7 +50,7 @@ public class LedMatrixView extends JPanel {
 		g.dispose();
 	}
 	
-	public Point selectLed(MouseEvent event) {
+	public LedPosition selectLed(MouseEvent event) {
 		int x = event.getX();
 		int y = event.getY();
 		if ((event.getModifiers() & InputEvent.BUTTON1_DOWN_MASK) != 0) {
@@ -61,7 +63,7 @@ public class LedMatrixView extends JPanel {
 				Double shape = ellipseMatrix[i][j];
 				if (shape.contains(x, y)) {
 					selectedEllipses.add(shape);
-					return new Point(x, y);
+					return LedPosition.ledPositionFor(x, y);
 				}
 			}
 		}

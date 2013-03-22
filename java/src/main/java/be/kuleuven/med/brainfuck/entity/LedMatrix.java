@@ -1,52 +1,54 @@
 package be.kuleuven.med.brainfuck.entity;
 
-import java.util.List;
+import java.util.Map;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import be.kuleuven.med.brainfuck.settings.LedMatrixSettings;
+import be.kuleuven.med.brainfuck.settings.LedSettings;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
-@XmlRootElement
 public class LedMatrix {
 	
-	private int width, height;
+	private Map<LedPosition, LedSettings> leds;
 	
-	private List<Led> leds = Lists.newArrayList();
+	private LedMatrixSettings ledMatrixSettings;
 	
 	public LedMatrix() { }
 
-	public LedMatrix(int i, int j) {
-		this.width = i;
-		this.height = j;
+	public LedMatrix(LedMatrixSettings ledMatrixSettings) {
+		this.ledMatrixSettings = ledMatrixSettings;
+		// popuplate internal data structure
+		buildMatrix(ledMatrixSettings);
 	}
-
+	
+	private Map<LedPosition, LedSettings> buildMatrix(LedMatrixSettings ledMatrixSettings) {
+		Map<LedPosition, LedSettings> result = Maps.newHashMap();
+		for(LedSettings ledSettings : ledMatrixSettings.getLedSettings()) {
+			result.put(ledSettings.getLedPosition(), ledSettings);
+		}
+		return null;
+	}
+	
+	public void resizeMatrix(int width, int height) {
+		// add or remove nodes..
+		ledMatrixSettings.setWidth(width);
+		ledMatrixSettings.setHeight(height);
+	}
+	
 	public int getWidth() {
-		return width;
-	}
-
-	public void setWidth(int width) {
-		this.width = width;
+		return ledMatrixSettings.getWidth();
 	}
 
 	public int getHeight() {
-		return height;
+		return ledMatrixSettings.getHeight();
 	}
 
-	public void setHeight(int height) {
-		this.height = height;
-	}
-	
-	public void addLed(Led led) {
-		leds.add(led);
+	public void addLed(LedPosition ledPosition, LedSettings led) {
+		leds.put(ledPosition, led);
 	}
 
-	public Led getLed(int x, int y) {
-		for (Led led : leds) {
-			if (led.getX() == x && led.getY() == y) {
-				return led;
-			}
-		}
-		return null;
+	public LedSettings getLed(LedPosition ledPosition) {
+		return leds.get(ledPosition);
 	}
 	
 }

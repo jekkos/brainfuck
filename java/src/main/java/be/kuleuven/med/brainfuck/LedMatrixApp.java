@@ -24,6 +24,7 @@ import org.jdesktop.application.utils.AppHelper;
 import be.kuleuven.med.brainfuck.core.LedMatrixAppController;
 import be.kuleuven.med.brainfuck.core.LedMatrixAppModel;
 import be.kuleuven.med.brainfuck.core.LedMatrixAppView;
+import be.kuleuven.med.brainfuck.entity.LedMatrix;
 import be.kuleuven.med.brainfuck.io.SerialPortConnector;
 import be.kuleuven.med.brainfuck.settings.SettingsManager;
 import be.kuleuven.med.brainfuck.task.AbstractTask;
@@ -71,8 +72,9 @@ public class LedMatrixApp extends SingleFrameApplication {
 		settingsManager = new SettingsManager(getContext().getLocalStorage().getDirectory());
 		settingsManager.loadSettings();
 		SerialPortConnector serialConnector = new SerialPortConnector(settingsManager.getArduinoSettings());
-		LedMatrixAppModel ledMatrixModel = new LedMatrixAppModel(settingsManager.getLedMatrixSettings());
-		ledMatrixController = new LedMatrixAppController(getContext().getTaskService(), ledMatrixModel, serialConnector);
+		LedMatrix ledMatrix = new LedMatrix(settingsManager.getLedMatrixSettings());
+		LedMatrixAppModel ledMatrixModel = new LedMatrixAppModel(ledMatrix.getWidth(), ledMatrix.getHeight());
+		ledMatrixController = new LedMatrixAppController(ledMatrixModel, ledMatrix, serialConnector);
 	}
 
 	/**

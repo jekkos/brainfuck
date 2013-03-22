@@ -9,8 +9,11 @@ import static be.kuleuven.med.brainfuck.core.LedMatrixAppModel.WIDTH;
 import java.awt.Point;
 import java.util.List;
 
+import org.jdesktop.application.Action;
+import org.jdesktop.application.Task.BlockingScope;
 import org.jdesktop.application.TaskService;
 
+import be.kuleuven.med.brainfuck.bsaf.AppComponent;
 import be.kuleuven.med.brainfuck.entity.Led;
 import be.kuleuven.med.brainfuck.io.SerialPortConnector;
 import be.kuleuven.med.brainfuck.task.AbstractTask;
@@ -21,13 +24,16 @@ import com.jgoodies.binding.beans.PropertyConnector;
 import com.jgoodies.binding.value.ConverterFactory;
 import com.jgoodies.binding.value.ValueModel;
 
+@AppComponent
 public class LedMatrixAppController {
 
-	private static final String UPDATE_SERIAL_PORTS_TASK = "updateSerialPorts";
+	public static final String UPDATE_SERIAL_PORTS_TASK = "updateSerialPorts";
 
-	private static final String INIT_SERIAL_PORT_TASK = "initSerialPort";
+	public static final String INIT_SERIAL_PORT_ACTION = "initializeSerialPort";
 	
-	private static final String CLOSE_SERIAL_PORT_TASK = "closeSerialPort";
+	public static final String CLOSE_SERIAL_PORT_ACTION = "closeSerialPort";
+	
+	public static final String GENERATE_LED_MATRIX_ACTION = "generatedLedMatrix";
 	
 	private LedMatrixAppView ledMatrixAppView;
 	
@@ -55,8 +61,10 @@ public class LedMatrixAppController {
 		ValueModel arduinoReleased = ConverterFactory.createBooleanNegator(ledMatrixModelAdapter.getValueModel(ARDUINO_INITIALIZED));
 		PropertyConnector.connectAndUpdate(arduinoReleased, ledMatrixAppView.getSerialPortNamesBox(), "enabled");
 		// connect pin mappings for row and columns
-		PropertyConnector.connectAndUpdate(ledMatrixModelAdapter.getValueModel(ROW_PIN), ledMatrixAppView.getRowPinTextField(), "value");
-		PropertyConnector.connectAndUpdate(ledMatrixModelAdapter.getValueModel(COLUMN_PIN), ledMatrixAppView.getColumnPinTextField(), "value");
+		//PropertyConnector.connectAndUpdate(ledMatrixModelAdapter.getValueModel(ROW_PIN), ledMatrixAppView.getRowPinTextField(), "value");
+		//PropertyConnector.connectAndUpdate(ledMatrixModelAdapter.getValueModel(COLUMN_PIN), ledMatrixAppView.getColumnPinTextField(), "value");
+		Bindings.bind(ledMatrixAppView.getRowPinTextField(), ledMatrixModelAdapter.getValueModel(ROW_PIN));
+		Bindings.bind(ledMatrixAppView.getColumnPinTextField(), ledMatrixModelAdapter.getValueModel(COLUMN_PIN));
 	}
 	
 	public void updateLedMatrix() {
@@ -74,10 +82,11 @@ public class LedMatrixAppController {
 		}
 	}
 	
-	public void initializeSerialPort() {
+	@Action(block=BlockingScope.APPLICATION)
+	public void initializeArduino() {
 		final String serialPort = ledMatrixAppModel.getSelectedSerialPortName();
 		if (serialPort != null && !"".equals(serialPort) && !ledMatrixAppModel.isArduinoInitialized()) {
-			taskService.execute(new AbstractTask<Void, Void>(INIT_SERIAL_PORT_TASK) {
+			taskService.execute(new AbstractTask<Void, Void>(INIT_SERIAL_PORT_ACTION) {
 				
 				protected Void doInBackground() throws Exception {
 					message("startMessage", serialPort);
@@ -91,7 +100,7 @@ public class LedMatrixAppController {
 				
 			});
 		} else {
-			taskService.execute(new AbstractTask<Void, Void>(CLOSE_SERIAL_PORT_TASK) {
+			taskService.execute(new AbstractTask<Void, Void>(CLOSE_SERIAL_PORT_ACTION) {
 
 				protected Void doInBackground() throws Exception {
 					message("startMessage", serialPort);
@@ -105,6 +114,7 @@ public class LedMatrixAppController {
 		}
 	}
 	
+	@Action(block=BlockingScope.APPLICATION)
 	public void updateSerialPortNames() {
 		taskService.execute(new AbstractTask<Void, Void>(UPDATE_SERIAL_PORTS_TASK) {
 

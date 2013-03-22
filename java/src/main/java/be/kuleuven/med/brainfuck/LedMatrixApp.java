@@ -30,7 +30,7 @@ import be.kuleuven.med.brainfuck.task.AbstractTask;
 
 public class LedMatrixApp extends SingleFrameApplication {
 
-	public static final String SAVE_SETTINGS_TASK = "saveSettings";
+	public static final String SAVE_SETTINGS_ACTION = "saveSettings";
 	
 	public static final String APP_VERSION = "Application.version";
 	public static final String APP_TITLE = "Application.title";
@@ -81,7 +81,7 @@ public class LedMatrixApp extends SingleFrameApplication {
 	@Override
 	protected void startup() {
 		JPanel mainPanel = new JPanel(new MigLayout("fill, nogrid, flowy, insets 10"));
-		LedMatrixAppView ledMatrixView = new LedMatrixAppView(ledMatrixController, getContext().getActionMap());
+		LedMatrixAppView ledMatrixView = new LedMatrixAppView(ledMatrixController);
 		ledMatrixController.initView(ledMatrixView);
 		mainPanel.add(ledMatrixView);
 		//StatusPanel statusPanel = new StatusPanel();
@@ -111,7 +111,7 @@ public class LedMatrixApp extends SingleFrameApplication {
 	
 	@Action(block=BlockingScope.APPLICATION)
 	public Task<Void, Void> saveSettings() {
-		return new AbstractTask<Void, Void>(SAVE_SETTINGS_TASK) {
+		return new AbstractTask<Void, Void>(SAVE_SETTINGS_ACTION) {
 
 			protected Void doInBackground() throws Exception {
 				settingsManager.saveSettings();

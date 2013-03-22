@@ -1,7 +1,7 @@
 package be.kuleuven.med.brainfuck.core;
 
 import static be.kuleuven.med.brainfuck.LedMatrixApp.SAVE_SETTINGS_ACTION;
-import static be.kuleuven.med.brainfuck.core.LedMatrixAppController.GENERATE_LED_MATRIX_ACTION;
+import static be.kuleuven.med.brainfuck.core.LedMatrixAppController.UPDATE_LED_MATRIX_ACTION;
 import static be.kuleuven.med.brainfuck.core.LedMatrixAppController.INIT_SERIAL_PORT_ACTION;
 
 import java.awt.Point;
@@ -58,7 +58,7 @@ public class LedMatrixAppView extends JPanel {
 		rightPanel.add(columnTextField, "w 40, wrap");
 
 		JButton updateLedMatrixButton = new JButton("Generate");
-		updateLedMatrixButton.addActionListener(actionMap.get(GENERATE_LED_MATRIX_ACTION));
+		updateLedMatrixButton.addActionListener(actionMap.get(UPDATE_LED_MATRIX_ACTION));
 		rightPanel.add(updateLedMatrixButton, "wrap");
 
 		rightPanel.add(new JSeparator(SwingConstants.HORIZONTAL), "wrap");

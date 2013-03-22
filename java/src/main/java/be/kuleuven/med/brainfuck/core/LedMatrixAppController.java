@@ -33,7 +33,7 @@ public class LedMatrixAppController {
 	
 	public static final String CLOSE_SERIAL_PORT_ACTION = "closeSerialPort";
 	
-	public static final String GENERATE_LED_MATRIX_ACTION = "generatedLedMatrix";
+	public static final String UPDATE_LED_MATRIX_ACTION = "updateLedMatrix";
 	
 	private LedMatrixAppView ledMatrixAppView;
 	
@@ -67,6 +67,7 @@ public class LedMatrixAppController {
 		Bindings.bind(ledMatrixAppView.getColumnPinTextField(), ledMatrixModelAdapter.getValueModel(COLUMN_PIN));
 	}
 	
+	@Action
 	public void updateLedMatrix() {
 		// should regenerate led matrix??
 		
@@ -83,7 +84,7 @@ public class LedMatrixAppController {
 	}
 	
 	@Action(block=BlockingScope.APPLICATION)
-	public void initializeArduino() {
+	public void initializeSerialPort() {
 		final String serialPort = ledMatrixAppModel.getSelectedSerialPortName();
 		if (serialPort != null && !"".equals(serialPort) && !ledMatrixAppModel.isArduinoInitialized()) {
 			taskService.execute(new AbstractTask<Void, Void>(INIT_SERIAL_PORT_ACTION) {

@@ -18,7 +18,7 @@ public class LedMatrix {
 	public LedMatrix(LedMatrixSettings ledMatrixSettings) {
 		this.ledMatrixSettings = ledMatrixSettings;
 		// popuplate internal data structure
-		buildMatrix(ledMatrixSettings);
+		leds = buildMatrix(ledMatrixSettings);
 	}
 	
 	private Map<LedPosition, LedSettings> buildMatrix(LedMatrixSettings ledMatrixSettings) {
@@ -26,10 +26,43 @@ public class LedMatrix {
 		for(LedSettings ledSettings : ledMatrixSettings.getLedSettings()) {
 			result.put(ledSettings.getLedPosition(), ledSettings);
 		}
-		return null;
+		return result;
+	}
+	
+	private void removeLedSettings(int width, int height) {
+		int oldWidth = ledMatrixSettings.getWidth();
+		int oldHeight = ledMatrixSettings.getHeight();
+		for (int i = 0; i < oldWidth; i++) {
+			boolean removeRow = i >= width;
+			for (int j = 0; j < oldHeight; j++) {
+				boolean removeColumn = j >= height;
+				LedPosition ledPosition = LedPosition.ledPositionFor(i, j);
+				LedSettings ledSettings = leds.get(ledPosition);
+				if (ledSettings != null && (removeRow || removeColumn)) {
+					leds.remove(ledPosition);
+					ledMatrixSettings.removeLedSettings(ledSettings);
+				}
+			}
+		}
+	}
+	
+	private void addLedSettings(int width, int height) {
+		// go throguh all available settings and create new entries
+		for (int i = 0; i < width; i ++) {
+			for (int j = 0; j < height; j ++) {
+				LedPosition ledPosition = LedPosition.ledPositionFor(i, j);
+				if (leds.get(ledPosition) == null) {
+					LedSettings ledSettings = new LedSettings(ledPosition);
+					leds.put(ledPosition, ledSettings);
+					ledMatrixSettings.addLedSettings(ledSettings);
+				}
+			}
+		}
 	}
 	
 	public void resizeMatrix(int width, int height) {
+		removeLedSettings(width, height);
+		addLedSettings(width, height);
 		// add or remove nodes..
 		ledMatrixSettings.setWidth(width);
 		ledMatrixSettings.setHeight(height);
@@ -47,7 +80,7 @@ public class LedMatrix {
 		leds.put(ledPosition, led);
 	}
 
-	public LedSettings getLed(LedPosition ledPosition) {
+	public LedSettings getLedSettings(LedPosition ledPosition) {
 		return leds.get(ledPosition);
 	}
 	

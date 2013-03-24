@@ -76,7 +76,7 @@ public class LedMatrixAppController {
 	
 	public void updateSelectedLed(LedPosition ledPosition) {
 		if (ledPosition != null) {
-			LedSettings ledSettings = ledMatrix.getLed(ledPosition);
+			LedSettings ledSettings = ledMatrix.getLedSettings(ledPosition);
 			ledMatrixAppModel.setSelectedLedSettings(ledSettings);
 			// set selected led based on passed coordinates
 			// so all subsequent input can be bound to this led..

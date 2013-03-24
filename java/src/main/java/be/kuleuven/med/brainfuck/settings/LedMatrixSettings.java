@@ -5,15 +5,19 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.google.common.collect.Lists;
+
 @XmlRootElement
 public class LedMatrixSettings {
 
-	private List<LedSettings> ledSettings;
+	private List<LedSettings> ledSettingsList = Lists.newArrayList();
 	
 	int width, height;
+	
+	LedMatrixSettings() {	}
 
 	public List<LedSettings> getLedSettings() {
-		return Collections.unmodifiableList(ledSettings);
+		return Collections.unmodifiableList(ledSettingsList);
 	}
 
 	public int getWidth() {
@@ -30,6 +34,14 @@ public class LedMatrixSettings {
 
 	public void setHeight(int height) {
 		this.height = height;
+	}
+	
+	public boolean addLedSettings(LedSettings ledSettings) {
+		return ledSettingsList.add(ledSettings);
+	}
+	
+	public boolean removeLedSettings(LedSettings ledSettings) {
+		return ledSettingsList.remove(ledSettings);
 	}
 	
 }

@@ -10,16 +10,28 @@ public class LedSettings {
 	
 	private int columnPin;
 	
-	public int getxPosition() {
+	public LedSettings(LedPosition ledPosition) {
+		this.ledPosition = ledPosition;
+	}
+
+	public int getX() {
 		return ledPosition.getX();
+	}
+	
+	public void setX(int x) {
+		ledPosition.setX(x);
 	}
 
 	public LedPosition getLedPosition() {
 		return ledPosition;
 	}
 
-	public void setyPosition(int yPosition) {
+	public void setY(int yPosition) {
 		ledPosition.setY(yPosition);
+	}
+
+	public int getY() {
+		return ledPosition.getY();
 	}
 
 	public int getRowPin() {

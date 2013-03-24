@@ -47,5 +47,10 @@ public class LedPosition {
 		}
 		return result;
 	}
+
+	@Override
+	public String toString() {
+		return "LedPosition [x=" + x + ", y=" + y + "]";
+	}
 	
 }

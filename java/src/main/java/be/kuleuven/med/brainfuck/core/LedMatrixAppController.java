@@ -24,6 +24,7 @@ import com.jgoodies.binding.beans.BeanAdapter;
 import com.jgoodies.binding.beans.PropertyConnector;
 import com.jgoodies.binding.value.ConverterFactory;
 import com.jgoodies.binding.value.ValueModel;
+import com.jgoodies.common.base.Strings;
 
 @AppComponent
 public class LedMatrixAppController {
@@ -86,7 +87,7 @@ public class LedMatrixAppController {
 	@Action(block=BlockingScope.APPLICATION)
 	public Task<?, ?> initializeSerialPort() {
 		final String serialPort = ledMatrixAppModel.getSelectedSerialPortName();
-		if (serialPort != null && !"".equals(serialPort) && !ledMatrixAppModel.isArduinoInitialized()) {
+		if (!Strings.isBlank(serialPort) && !ledMatrixAppModel.isArduinoInitialized()) {
 			return new AbstractTask<Void, Void>(INIT_SERIAL_PORT_ACTION) {
 				
 				protected Void doInBackground() throws Exception {

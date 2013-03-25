@@ -2,7 +2,6 @@ package be.kuleuven.med.brainfuck.core;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Ellipse2D.Double;
@@ -49,13 +48,14 @@ public class LedMatrixView extends JPanel {
 		g.dispose();
 	}
 	
-	public LedPosition selectLed(MouseEvent event) {
+	public LedPosition selectLed(MouseEvent event, boolean clear) {
 		int x = event.getX();
 		int y = event.getY();
-		if ((event.getModifiers() & InputEvent.BUTTON1_DOWN_MASK) != 0) {
+		if (clear) {
+			selectedEllipses.clear();
 			// shift was pressed?? multi select enabled
 		} else {
-			selectedEllipses.clear();
+			
 		}
 		for (int i = 0; i < ellipseMatrix.length; i++) {
 			for (int j = 0; j < ellipseMatrix[0].length; j++) {

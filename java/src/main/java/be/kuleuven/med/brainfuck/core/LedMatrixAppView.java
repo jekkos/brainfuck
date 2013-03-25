@@ -3,6 +3,7 @@ package be.kuleuven.med.brainfuck.core;
 import static be.kuleuven.med.brainfuck.LedMatrixApp.SAVE_SETTINGS_ACTION;
 import static be.kuleuven.med.brainfuck.core.LedMatrixAppController.INIT_SERIAL_PORT_ACTION;
 import static be.kuleuven.med.brainfuck.core.LedMatrixAppController.UPDATE_LED_MATRIX_ACTION;
+import static be.kuleuven.med.brainfuck.core.LedMatrixAppController.TOGGLE_LED_ACTION;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -13,14 +14,18 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import net.miginfocom.swing.MigLayout;
 
 import org.jdesktop.application.ResourceMap;
 
 import be.kuleuven.med.brainfuck.entity.LedPosition;
+import be.kuleuven.med.brainfuck.settings.LedSettings;
 
 public class LedMatrixAppView extends JPanel {
 
@@ -40,6 +45,9 @@ public class LedMatrixAppView extends JPanel {
 
 	private JButton updateLedMatrixButton;
 
+	private JSlider intensitySlider;
+
+	private JButton toggleLedButton;
 
 	public LedMatrixAppView(final LedMatrixAppController ledMatrixController) {
 		final ActionMap actionMap = ledMatrixController.getApplicationActionMap();
@@ -67,10 +75,22 @@ public class LedMatrixAppView extends JPanel {
 		rightPanel.add(new JSeparator(SwingConstants.HORIZONTAL), "wrap");
 		rightPanel.add(new JLabel(resourceMap.getString("rowPinLabel.text")));
 		rowPinTextField = createFormattedTextField();
-		rightPanel.add(rowPinTextField, "wrap, w 40, gapy 20");
+		rightPanel.add(rowPinTextField, "wrap, w 40, gapy 10");
 		rightPanel.add(new JLabel(resourceMap.getString("columnPinLabel.text")));
 		columnPinTextField = createFormattedTextField();
 		rightPanel.add(columnPinTextField, "wrap, w 40");
+		intensitySlider = new JSlider(LedSettings.MIN_INTENSITY, LedSettings.MAX_INTENSITY, LedSettings.MAX_INTENSITY);
+		intensitySlider.setOrientation(JSlider.HORIZONTAL);
+		intensitySlider.addChangeListener(new ChangeListener() {
+			
+			public void stateChanged(ChangeEvent event) {
+				ledMatrixController.adjustIntensity(event);
+			}
+			
+		});
+		rightPanel.add(intensitySlider, "w 150, wrap");
+		toggleLedButton = new JButton(TOGGLE_LED_ACTION);
+		rightPanel.add(toggleLedButton, "wrap");
 		rightPanel.add(new JSeparator(SwingConstants.HORIZONTAL), "wrap");
 		rightPanel.add(new JButton(actionMap.get(SAVE_SETTINGS_ACTION)));
 		
@@ -79,7 +99,8 @@ public class LedMatrixAppView extends JPanel {
 
 			@Override
 			public void mouseClicked(MouseEvent event) {
-				LedPosition ledPosition = ledMatrixView.selectLed(event);
+				// TODO could implement multi select here.. but will need to review the bean's model
+				LedPosition ledPosition = ledMatrixView.selectLed(event, true);
 				ledMatrixView.repaint();
 				ledMatrixController.updateSelectedLed(ledPosition);
 			}
@@ -87,7 +108,7 @@ public class LedMatrixAppView extends JPanel {
 		});
 		
 		// add led matrix view 
-		leftPanel.add(ledMatrixView, "wmin 300, hmin 300, grow");
+		leftPanel.add(ledMatrixView, "wmin 300, hmin 350, grow");
 		this.add(leftPanel);
 		this.add(rightPanel);
 	}
@@ -119,6 +140,14 @@ public class LedMatrixAppView extends JPanel {
 
 	public JTextField getRowPinTextField() {
 		return rowPinTextField;
+	}
+
+	public JSlider getIntensitySlider() {
+		return intensitySlider;
+	}
+
+	public JButton getToggleLedButton() {
+		return toggleLedButton;
 	}
 	
 }

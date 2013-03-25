@@ -5,7 +5,6 @@ import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
@@ -17,9 +16,9 @@ import be.kuleuven.med.brainfuck.settings.SerialPortSettings;
 
 import com.google.common.collect.Lists;
 
-public class SerialPortConnector implements SerialPortEventListener {
+public abstract class SerialPortConnector implements SerialPortEventListener {
 	
-	private final static Logger LOGGER = Logger.getLogger(SerialPortConnector.class);
+	protected final static Logger LOGGER = Logger.getLogger(SerialPortConnector.class);
 
 	/** Milliseconds to block while waiting for port open */
 	private final static int TIME_OUT = 2000;
@@ -27,11 +26,23 @@ public class SerialPortConnector implements SerialPortEventListener {
 	private SerialPort serialPort;
 
 	/** Buffered input stream from the port */
-	private InputStream input;
+	protected InputStream input;
 	/** The output stream to the port */
 	private OutputStream output;
 	
 	private SerialPortSettings serialPortSettings;
+	
+	public static List<String> getSerialPortNames() {
+		List<String> result = Lists.newArrayList();
+		@SuppressWarnings("rawtypes")
+		Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();
+		// iterate through, looking for the port
+		while (portEnum.hasMoreElements()) {
+			CommPortIdentifier currPortId = (CommPortIdentifier) portEnum.nextElement();
+			result.add(currPortId.getName());
+		}
+		return result;
+	}
 	
 	public SerialPortConnector(SerialPortSettings serialPortSettings) {
 		this.serialPortSettings = serialPortSettings;
@@ -70,23 +81,15 @@ public class SerialPortConnector implements SerialPortEventListener {
 		serialPort.notifyOnDataAvailable(true);
 	}
 	
-	public List<String> getSerialPortNames() {
-		List<String> result = Lists.newArrayList();
-		@SuppressWarnings("rawtypes")
-		Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();
-		// iterate through, looking for the port
-		while (portEnum.hasMoreElements()) {
-			CommPortIdentifier currPortId = (CommPortIdentifier) portEnum.nextElement();
-			result.add(currPortId.getName());
-		}
-		return result;
-	}
-	
 	public String getSelectedSerialPortName() {
 		return serialPortSettings.getName();
 	}
+	
+ 	protected OutputStream getOutput() {
+		return output;
+	}
 
- 	/**
+	/**
 	 * This should be called when you stop using the port.
 	 * This will prevent port locking on platforms like Linux.
 	 */
@@ -100,36 +103,7 @@ public class SerialPortConnector implements SerialPortEventListener {
 	/**
 	 * Handle an event on the serial port. Read the data and print it.
 	 */
-	public synchronized void serialEvent(SerialPortEvent oEvent) {
-		if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
-			try {
-				int available = input.available();
-				byte chunk[] = new byte[available];
-				input.read(chunk, 0, available);
-				// Displayed results are codepage dependent
-				String result = new String(chunk);
-				// result coming back from arduino
-				LOGGER.info(result);
-			} catch (Exception e) {
-				LOGGER.error(e);
-			}
-		}
-		// Ignore all the other eventTypes, but you should consider the other ones.
-	}
-
-	public void shock(int strength) {
-		try {
-			if (output != null) {
-				// writeout to arduino
-				output.write(new String(strength + "\r\n").getBytes());
-				LOGGER.info("SHOCK LEVEL " + strength);
-			} else {
-				LOGGER.info("no serial device attached..");
-			}
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-	}
+	public abstract void serialEvent(SerialPortEvent oEvent);
 
 }
 

@@ -205,8 +205,8 @@ public class SettingsManager {
 		return getSettings().ledMatrixSettings;
 	}
 	
-	public SerialPortSettings getArduinoSettings() {
-		return getSettings().arduinoSettings;
+	public SerialPortSettings getLedMatrixPortSettings() {
+		return getSettings().ledMatrixPortSettings;
 	}
 	
 	@XmlRootElement
@@ -216,7 +216,7 @@ public class SettingsManager {
         @XmlAnyElement(lax=true)
 		LedMatrixSettings ledMatrixSettings = new LedMatrixSettingsBuilder().withSize(2, 3).build();
 		
-		SerialPortSettings arduinoSettings = new SerialPortSettings();
+		SerialPortSettings ledMatrixPortSettings = new SerialPortSettings();
 	}
 
 }

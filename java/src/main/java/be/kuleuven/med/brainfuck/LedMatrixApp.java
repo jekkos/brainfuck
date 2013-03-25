@@ -25,7 +25,7 @@ import be.kuleuven.med.brainfuck.core.LedMatrixAppController;
 import be.kuleuven.med.brainfuck.core.LedMatrixAppModel;
 import be.kuleuven.med.brainfuck.core.LedMatrixAppView;
 import be.kuleuven.med.brainfuck.entity.LedMatrix;
-import be.kuleuven.med.brainfuck.io.SerialPortConnector;
+import be.kuleuven.med.brainfuck.io.LedMatrixConnector;
 import be.kuleuven.med.brainfuck.settings.SettingsManager;
 import be.kuleuven.med.brainfuck.task.AbstractTask;
 
@@ -71,7 +71,7 @@ public class LedMatrixApp extends SingleFrameApplication {
 		// register an exception handler on the EDT
 		settingsManager = new SettingsManager(getContext().getLocalStorage().getDirectory());
 		settingsManager.loadSettings();
-		SerialPortConnector serialConnector = new SerialPortConnector(settingsManager.getArduinoSettings());
+		LedMatrixConnector serialConnector = new LedMatrixConnector(settingsManager.getLedMatrixPortSettings());
 		LedMatrix ledMatrix = new LedMatrix(settingsManager.getLedMatrixSettings());
 		LedMatrixAppModel ledMatrixModel = new LedMatrixAppModel(ledMatrix.getWidth(), ledMatrix.getHeight());
 		ledMatrixController = new LedMatrixAppController(ledMatrixModel, ledMatrix, serialConnector);
@@ -90,6 +90,7 @@ public class LedMatrixApp extends SingleFrameApplication {
 		//mainPanel.add(statusPanel, "height 30!, gapleft push");
 		getMainFrame().add(mainPanel);
 		show(getMainFrame());
+		getMainFrame().pack();
 		ledMatrixController.updateLedMatrix();
 	}
 

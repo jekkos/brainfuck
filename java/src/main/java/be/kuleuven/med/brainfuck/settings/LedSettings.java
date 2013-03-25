@@ -10,11 +10,19 @@ import be.kuleuven.med.brainfuck.entity.LedPosition;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LedSettings {
 
+	public static final int MAX_INTENSITY = 254;
+	
+	public static final int MIN_INTENSITY = 0;
+
 	private LedPosition ledPosition;
 	
 	private int rowPin;
 	
 	private int columnPin;
+	
+	private boolean illuminated;
+	
+	private int intensity = MAX_INTENSITY;
 	
 	public LedSettings() { }
 
@@ -60,6 +68,22 @@ public class LedSettings {
 
 	public void setColumnPin(int columnPin) {
 		this.columnPin = columnPin;
+	}
+
+	public boolean isIlluminated() {
+		return illuminated;
+	}
+
+	public void setIlluminated(boolean illuminated) {
+		this.illuminated = illuminated;
+	}
+
+	public int getIntensity() {
+		return intensity;
+	}
+
+	public void setIntensity(int intensity) {
+		this.intensity = intensity;
 	}
 	
 }

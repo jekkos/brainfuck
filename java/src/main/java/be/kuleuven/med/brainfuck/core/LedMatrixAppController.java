@@ -33,7 +33,7 @@ import be.kuleuven.med.brainfuck.task.AbstractTask;
 @AppComponent
 public class LedMatrixAppController {
 
-	public static final String UPDATE_SERIAL_PORTS_TASK = "updateSerialPorts";
+	public static final String UPDATE_SERIAL_PORTS_ACTION = "updateSerialPorts";
 
 	public static final String INIT_SERIAL_PORT_ACTION = "initializeSerialPort";
 
@@ -169,7 +169,7 @@ public class LedMatrixAppController {
 
 	@Action(block=BlockingScope.APPLICATION)
 	public Task<?, ?> updateSerialPortNames() {
-		return new AbstractTask<Void, Void>(UPDATE_SERIAL_PORTS_TASK) {
+		return new AbstractTask<Void, Void>(UPDATE_SERIAL_PORTS_ACTION) {
 
 			protected Void doInBackground() throws Exception {
 				message("startMessage");

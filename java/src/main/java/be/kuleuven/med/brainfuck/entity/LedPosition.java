@@ -1,5 +1,8 @@
 package be.kuleuven.med.brainfuck.entity;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class LedPosition {
 
 	private int x, y;
@@ -7,6 +10,8 @@ public class LedPosition {
 	public static LedPosition ledPositionFor(int x, int y) {
 		return new LedPosition(x, y);
 	}
+	
+	public LedPosition() { }
 
 	public LedPosition(int x, int y) {
 		this.x = x;

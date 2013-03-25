@@ -1,7 +1,13 @@
 package be.kuleuven.med.brainfuck.settings;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import be.kuleuven.med.brainfuck.entity.LedPosition;
 
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class LedSettings {
 
 	private LedPosition ledPosition;
@@ -10,6 +16,8 @@ public class LedSettings {
 	
 	private int columnPin;
 	
+	public LedSettings() { }
+
 	public LedSettings(LedPosition ledPosition) {
 		this.ledPosition = ledPosition;
 	}
@@ -24,6 +32,10 @@ public class LedSettings {
 
 	public LedPosition getLedPosition() {
 		return ledPosition;
+	}
+	
+	public void setLedPosition(LedPosition ledPosition) {
+		this.ledPosition = ledPosition;
 	}
 
 	public void setY(int yPosition) {

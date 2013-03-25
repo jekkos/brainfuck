@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.logging.Level;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -15,6 +16,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -24,6 +26,7 @@ import javax.xml.xpath.XPathFactory;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+import org.jdesktop.beansbinding.ELProperty;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -66,6 +69,7 @@ public class SettingsManager {
 		logger = Logger.getLogger(SettingsManager.class);
 		FileAppender appndr = (FileAppender) Logger.getRootLogger().getAppender(FILE_APPENDER_NAME);
 		logger.debug("Logging to file with location " + appndr.getFile());
+        org.jdesktop.beansbinding.util.logging.Logger.getLogger(ELProperty.class.getName()).setLevel(Level.SEVERE);
 	}
 
 	public SettingsManager(File localStorageDir) {
@@ -209,6 +213,7 @@ public class SettingsManager {
 	@XmlAccessorType(XmlAccessType.FIELD)
 	public static class Settings {
        // add settings here??		
+        @XmlAnyElement(lax=true)
 		LedMatrixSettings ledMatrixSettings = new LedMatrixSettingsBuilder().withSize(2, 3).build();
 		
 		SerialPortSettings arduinoSettings = new SerialPortSettings();

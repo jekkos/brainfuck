@@ -90,6 +90,7 @@ public class LedMatrixApp extends SingleFrameApplication {
 		//mainPanel.add(statusPanel, "height 30!, gapleft push");
 		getMainFrame().add(mainPanel);
 		show(getMainFrame());
+		ledMatrixController.updateLedMatrix();
 	}
 
 	@Override

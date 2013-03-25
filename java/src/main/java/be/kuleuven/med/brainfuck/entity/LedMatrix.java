@@ -23,7 +23,7 @@ public class LedMatrix {
 	
 	private Map<LedPosition, LedSettings> buildMatrix(LedMatrixSettings ledMatrixSettings) {
 		Map<LedPosition, LedSettings> result = Maps.newHashMap();
-		for(LedSettings ledSettings : ledMatrixSettings.getLedSettings()) {
+		for(LedSettings ledSettings : ledMatrixSettings.getLedSettingsList()) {
 			result.put(ledSettings.getLedPosition(), ledSettings);
 		}
 		return result;

@@ -2,7 +2,6 @@ package be.kuleuven.med.brainfuck.core;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Point;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
@@ -63,7 +62,7 @@ public class LedMatrixView extends JPanel {
 				Double shape = ellipseMatrix[i][j];
 				if (shape.contains(x, y)) {
 					selectedEllipses.add(shape);
-					return LedPosition.ledPositionFor(x, y);
+					return LedPosition.ledPositionFor(i, j);
 				}
 			}
 		}

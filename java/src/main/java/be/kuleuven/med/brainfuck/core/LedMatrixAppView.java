@@ -6,23 +6,21 @@ import static be.kuleuven.med.brainfuck.core.LedMatrixAppController.UPDATE_LED_M
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.text.NumberFormat;
 
 import javax.swing.ActionMap;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.text.NumberFormatter;
 
 import net.miginfocom.swing.MigLayout;
-import be.kuleuven.med.brainfuck.entity.LedPosition;
 
-import com.jgoodies.common.format.EmptyNumberFormat;
+import org.jdesktop.application.ResourceMap;
+
+import be.kuleuven.med.brainfuck.entity.LedPosition;
 
 public class LedMatrixAppView extends JPanel {
 
@@ -40,34 +38,37 @@ public class LedMatrixAppView extends JPanel {
 
 	private final JComboBox<String> serialPortNamesBox;
 
+	private JButton updateLedMatrixButton;
+
+
 	public LedMatrixAppView(final LedMatrixAppController ledMatrixController) {
 		final ActionMap actionMap = ledMatrixController.getApplicationActionMap();
+		final ResourceMap resourceMap = ledMatrixController.getResourceMap();
+		
 		JPanel rightPanel = new JPanel(new MigLayout("nogrid", "[right]10", "10"));
 		JPanel leftPanel = new JPanel(new MigLayout());
 
 		serialPortNamesBox = new JComboBox<String>();
 		rightPanel.add(serialPortNamesBox);
-		JButton initSerialPortNamesButton = new JButton("Ok");
-		initSerialPortNamesButton.addActionListener(actionMap.get(INIT_SERIAL_PORT_ACTION));
+		JButton initSerialPortNamesButton = new JButton(actionMap.get(INIT_SERIAL_PORT_ACTION));
 		rightPanel.add(initSerialPortNamesButton, "wrap");
 
-		rightPanel.add(new JLabel("Width"));
+		rightPanel.add(new JLabel(resourceMap.getString("widthLabel.text")));
 		rowTextField = createFormattedTextField();
 		rightPanel.add(rowTextField, "w 40, wrap");
 
-		rightPanel.add(new JLabel("Height"));
+		rightPanel.add(new JLabel(resourceMap.getString("heightLabel.text")));
 		columnTextField = createFormattedTextField();
 		rightPanel.add(columnTextField, "w 40, wrap");
 
-		JButton updateLedMatrixButton = new JButton("Generate");
-		updateLedMatrixButton.addActionListener(actionMap.get(UPDATE_LED_MATRIX_ACTION));
+		updateLedMatrixButton = new JButton(actionMap.get(UPDATE_LED_MATRIX_ACTION));
 		rightPanel.add(updateLedMatrixButton, "wrap");
 
 		rightPanel.add(new JSeparator(SwingConstants.HORIZONTAL), "wrap");
-		rightPanel.add(new JLabel("PIN for column"));
+		rightPanel.add(new JLabel(resourceMap.getString("rowPinLabel.text")));
 		rowPinTextField = createFormattedTextField();
 		rightPanel.add(rowPinTextField, "wrap, w 40, gapy 20");
-		rightPanel.add(new JLabel("PIN for row"));
+		rightPanel.add(new JLabel(resourceMap.getString("columnPinLabel.text")));
 		columnPinTextField = createFormattedTextField();
 		rightPanel.add(columnPinTextField, "wrap, w 40");
 		rightPanel.add(new JSeparator(SwingConstants.HORIZONTAL), "wrap");
@@ -91,11 +92,8 @@ public class LedMatrixAppView extends JPanel {
 		this.add(rightPanel);
 	}
 	
-	private JFormattedTextField createFormattedTextField() {
-		NumberFormatter numberFormatter =
-	            new NumberFormatter(new EmptyNumberFormat(NumberFormat.getIntegerInstance(), 0));
-	        numberFormatter.setValueClass(Integer.class);
-	        return new JFormattedTextField(numberFormatter);
+	private JTextField createFormattedTextField() {
+		return new JTextField();
 	}
 
 	public void drawLedMatrix(int width, int height) {
@@ -122,6 +120,5 @@ public class LedMatrixAppView extends JPanel {
 	public JTextField getRowPinTextField() {
 		return rowPinTextField;
 	}
-
 	
 }

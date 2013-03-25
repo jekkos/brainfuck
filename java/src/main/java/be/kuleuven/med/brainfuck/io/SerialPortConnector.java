@@ -31,10 +31,10 @@ public class SerialPortConnector implements SerialPortEventListener {
 	/** The output stream to the port */
 	private OutputStream output;
 	
-	private SerialPortSettings arduinoSettings;
+	private SerialPortSettings serialPortSettings;
 	
-	public SerialPortConnector(SerialPortSettings arduinoSettings) {
-		this.arduinoSettings = arduinoSettings;
+	public SerialPortConnector(SerialPortSettings serialPortSettings) {
+		this.serialPortSettings = serialPortSettings;
 	}
 
 	public void initialize(String serialPortName) throws Exception {
@@ -50,16 +50,16 @@ public class SerialPortConnector implements SerialPortEventListener {
 				break;
 			}
 		}
-		arduinoSettings.setName(serialPortName);
+		serialPortSettings.setName(serialPortName);
 		// open serial port, and use class name for the appName.
 		serialPort = (SerialPort) portId.open(this.getClass().getName(),
 				TIME_OUT);
 
 		// set port parameters
-		serialPort.setSerialPortParams(arduinoSettings.getDataRate(),
-				arduinoSettings.getDataBits(),
-				arduinoSettings.getStopBits(),
-				arduinoSettings.getParityBits());
+		serialPort.setSerialPortParams(serialPortSettings.getDataRate(),
+				serialPortSettings.getDataBits(),
+				serialPortSettings.getStopBits(),
+				serialPortSettings.getParityBits());
 
 		// open the streams
 		input = serialPort.getInputStream();
@@ -83,7 +83,7 @@ public class SerialPortConnector implements SerialPortEventListener {
 	}
 	
 	public String getSelectedSerialPortName() {
-		return arduinoSettings.getName();
+		return serialPortSettings.getName();
 	}
 
  	/**
@@ -108,12 +108,10 @@ public class SerialPortConnector implements SerialPortEventListener {
 				input.read(chunk, 0, available);
 				// Displayed results are codepage dependent
 				String result = new String(chunk);
-				
 				// result coming back from arduino
 				LOGGER.info(result);
-
 			} catch (Exception e) {
-				System.err.println(e.toString());
+				LOGGER.error(e);
 			}
 		}
 		// Ignore all the other eventTypes, but you should consider the other ones.

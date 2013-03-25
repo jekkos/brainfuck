@@ -1,12 +1,13 @@
 package be.kuleuven.med.brainfuck.core;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.jdesktop.application.AbstractBean;
 
 import be.kuleuven.med.brainfuck.settings.LedSettings;
 
-import com.jgoodies.binding.list.SelectionInList;
+import com.google.common.collect.Lists;
 
 public class LedMatrixAppModel extends AbstractBean {
 	
@@ -22,7 +23,9 @@ public class LedMatrixAppModel extends AbstractBean {
 
 	public static final String SELECTED_LED_SETTINGS = "selectedLedSettings";
 	
-	private SelectionInList<String> serialPortNameSelectionInList;
+	private List<String> serialPortNames = Lists.newArrayList();
+	
+	private String selectedSerialPortName;
 	
 	private boolean arduinoInitialized;
 	
@@ -39,7 +42,6 @@ public class LedMatrixAppModel extends AbstractBean {
 	public LedMatrixAppModel(int width, int height) {
 		this.width = width;
 		this.height = height;
-		serialPortNameSelectionInList = new SelectionInList<String>();
 	}
 	
     public int getWidth() {
@@ -74,24 +76,20 @@ public class LedMatrixAppModel extends AbstractBean {
 		firePropertyChange(COLUMN_PIN, this.columnPin , this.columnPin = columnPin);
 	}
 
-	public SelectionInList<String> getSerialPortSelectionInList() {
-		return serialPortNameSelectionInList;
-	}
-
  	public List<String> getSerialPortNames() {
-		return this.serialPortNameSelectionInList.getList();
+		return Collections.unmodifiableList(serialPortNames);
 	}
 
 	public void setSerialPortNames(List<String> serialPortNames) {
-		this.serialPortNameSelectionInList.setList(serialPortNames);
+		this.serialPortNames = serialPortNames;
 	}
 	
 	public String getSelectedSerialPortName() {
-		return serialPortNameSelectionInList.getSelection();
+		return selectedSerialPortName;
 	}
 
 	public void setSelectedSerialPortName(String selectedSerialPortName) {
-		serialPortNameSelectionInList.setSelection(selectedSerialPortName);
+		this.selectedSerialPortName = selectedSerialPortName;
 	}
 
 	public boolean isArduinoInitialized() {

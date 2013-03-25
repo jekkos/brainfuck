@@ -19,7 +19,7 @@ public class LedMatrixTest extends TestCase {
 		ledMatrix.resizeMatrix(1,  1);
 		assertEquals(ledMatrixSettings.getWidth(), 1);
 		assertEquals(ledMatrixSettings.getHeight(), 1);
-		assertEquals(1, ledMatrixSettings.getLedSettings().size());
+		assertEquals(1, ledMatrixSettings.getLedSettingsList().size());
 		// fetch some led settings
 		LedSettings ledSettings = ledMatrix.getLedSettings(LedPosition.ledPositionFor(0,0));
 		assertNotNull(ledSettings);
@@ -42,7 +42,7 @@ public class LedMatrixTest extends TestCase {
 		ledMatrix.resizeMatrix(2,  5);
 		assertEquals(ledMatrixSettings.getWidth(), 2);
 		assertEquals(ledMatrixSettings.getHeight(), 5);
-		assertEquals(10, ledMatrixSettings.getLedSettings().size());
+		assertEquals(10, ledMatrixSettings.getLedSettingsList().size());
 		// fetch some led settings
 		ledSettings = ledMatrix.getLedSettings(LedPosition.ledPositionFor(1,4));
 		assertNotNull(ledSettings);

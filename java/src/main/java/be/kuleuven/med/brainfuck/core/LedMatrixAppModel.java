@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.jdesktop.application.AbstractBean;
 
+import be.kuleuven.med.brainfuck.settings.ExperimentSettings;
+import be.kuleuven.med.brainfuck.settings.LedMatrixSettings;
 import be.kuleuven.med.brainfuck.settings.LedSettings;
 
 import com.google.common.collect.Lists;
@@ -22,6 +24,8 @@ public class LedMatrixAppModel extends AbstractBean {
 	public static final String ARDUINO_INITIALIZED = "arduinoInitialized";
 
 	public static final String SELECTED_LED_SETTINGS = "selectedLedSettings";
+
+	public static final String EXPERIMENT_SETTINGS = "experimentSettings";
 	
 	private List<String> serialPortNames = Lists.newArrayList();
 	
@@ -36,12 +40,15 @@ public class LedMatrixAppModel extends AbstractBean {
 	private int width;
 	
 	private int height;
-
-	private LedSettings selectedLedSettings;
 	
-	public LedMatrixAppModel(int width, int height) {
-		this.width = width;
-		this.height = height;
+	private LedSettings selectedLedSettings;
+
+	private ExperimentSettings experimentSettings;
+	
+	public LedMatrixAppModel(LedMatrixSettings ledMatrixSettings, ExperimentSettings experimentSettings) {
+		this.width = ledMatrixSettings.getWidth();
+		this.height = ledMatrixSettings.getHeight();
+		this.experimentSettings = experimentSettings;
 	}
 	
     public int getWidth() {
@@ -108,4 +115,12 @@ public class LedMatrixAppModel extends AbstractBean {
 		return selectedLedSettings;
 	}
 
+	public ExperimentSettings getExperimentSettings() {
+		return experimentSettings;
+	}
+
+	public void setExperimentSettings(ExperimentSettings experimentSettings) {
+		firePropertyChange(EXPERIMENT_SETTINGS, this.experimentSettings, this.experimentSettings = experimentSettings);
+	}
+	
 }

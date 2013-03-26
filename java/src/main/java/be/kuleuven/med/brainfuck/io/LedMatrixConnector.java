@@ -28,6 +28,11 @@ public class LedMatrixConnector extends SerialPortConnector {
 	public LedMatrixConnector(SerialPortSettings serialPortSettings) {
 		super(serialPortSettings);
 	}
+	
+	public void toggleLed(LedSettings ledSettings, boolean illuminated) {
+		ledSettings.setIlluminated(illuminated);
+		toggleLed(ledSettings);
+	}
 
 	public void toggleLed(LedSettings ledSettings) {
 		initPins(ledSettings);

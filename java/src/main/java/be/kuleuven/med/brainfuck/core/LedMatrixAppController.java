@@ -76,18 +76,18 @@ public class LedMatrixAppController {
 		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixAppModel, heightProperty, ledMatrixAppView.getColumnTextField(), TEXT);
 		bindingGroup.addBinding(valueBinding);
 		// bind row and column pin numbers
-		ELProperty<LedMatrixAppModel, Boolean> itemSelectedProperty = ELProperty.create("${selectedLedSettings != null}");
 		BeanProperty<LedMatrixAppModel, Integer> pinRowProperty = BeanProperty.create("selectedLedSettings.rowPin");
 		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixAppModel, pinRowProperty, ledMatrixAppView.getRowPinTextField(), TEXT);
 		valueBinding.setTargetNullValue(0);
 		bindingGroup.addBinding(valueBinding);
-		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixAppModel, itemSelectedProperty, ledMatrixAppView.getRowPinTextField(), ENABLED);
+		ELProperty<LedMatrixAppModel, Boolean> ledSelectedProperty = ELProperty.create("${selectedLedSettings != null}");
+		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixAppModel, ledSelectedProperty, ledMatrixAppView.getRowPinTextField(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
 		BeanProperty<LedMatrixAppModel, Integer> pinColumnProperty = BeanProperty.create("selectedLedSettings.columnPin");
 		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixAppModel, pinColumnProperty, ledMatrixAppView.getColumnPinTextField(), TEXT);
 		valueBinding.setTargetNullValue(0);
 		bindingGroup.addBinding(valueBinding);
-		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixAppModel, itemSelectedProperty, ledMatrixAppView.getColumnPinTextField(), ENABLED);
+		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixAppModel, ledSelectedProperty, ledMatrixAppView.getColumnPinTextField(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
 		// bind serial port info
 		BeanProperty<LedMatrixAppModel, List<String>> serialPortNamesProperty = BeanProperty.create("serialPortNames");
@@ -103,9 +103,10 @@ public class LedMatrixAppController {
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixAppModel, arduinoInitialized, ledMatrixAppView.getSerialPortNamesBox(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
 		// bind led controls (just the enabled state)
-		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixAppModel, itemSelectedProperty, ledMatrixAppView.getIntensitySlider(), ENABLED);
+		ELProperty<LedMatrixAppModel, Boolean> ledControlsEnabledProperty = ELProperty.create("${selectedLedSettings != null && arduinoInitialized}");
+		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixAppModel, ledControlsEnabledProperty, ledMatrixAppView.getIntensitySlider(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
-		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixAppModel, itemSelectedProperty, ledMatrixAppView.getToggleLedButton(), ENABLED);
+		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixAppModel, ledControlsEnabledProperty, ledMatrixAppView.getToggleLedButton(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
 		// bind experiment settings controls
 		ELProperty<LedMatrixAppModel, Boolean> experimentInitialized = ELProperty.create("${arduinoInitialized && experimentInitialized}"); 

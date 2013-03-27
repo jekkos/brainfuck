@@ -98,18 +98,18 @@ public class LedMatrixAppView extends JPanel {
 			
 		});
 		rightPanel.add(intensitySlider, "w 150, wrap");
-		toggleLedButton = new JButton(TOGGLE_LED_ACTION);
+		toggleLedButton = new JButton(actionMap.get(TOGGLE_LED_ACTION));
 		rightPanel.add(toggleLedButton, "wrap");
 		
 		// add experiment controls
 		rightPanel.add(new JSeparator(SwingConstants.HORIZONTAL), "wrap");
-		rightPanel.add(new JLabel("flickerFrequencyLabel.text"));
+		rightPanel.add(new JLabel(resourceMap.getString("flickerFrequencyLabel.text")));
 		flickerFrequencyTextField = createFormattedTextField();
 		rightPanel.add(flickerFrequencyTextField, "wrap, w 40");
-		rightPanel.add(new JLabel("secondsToRunLabel.text"));
+		rightPanel.add(new JLabel(resourceMap.getString("secondsToRunLabel.text")));
 		secondsToRunTextField = createFormattedTextField();
 		rightPanel.add(secondsToRunTextField, "wrap, w 40");
-		startExperimentButton = new JButton(START_EXPERIMENT_ACTION);
+		startExperimentButton = new JButton(actionMap.get(START_EXPERIMENT_ACTION));
 		rightPanel.add(startExperimentButton, "wrap");
 		// add save settings button
 		rightPanel.add(new JSeparator(SwingConstants.HORIZONTAL), "wrap");

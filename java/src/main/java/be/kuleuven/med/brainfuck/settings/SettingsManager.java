@@ -213,7 +213,6 @@ public class SettingsManager {
 	@XmlAccessorType(XmlAccessType.FIELD)
 	public static class Settings {
        // add settings here??		
-        @XmlAnyElement(lax=true)
 		LedMatrixSettings ledMatrixSettings = new LedMatrixSettingsBuilder().withSize(2, 3).build();
 		
 		SerialPortSettings ledMatrixPortSettings = new SerialPortSettings();

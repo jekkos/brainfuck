@@ -209,6 +209,10 @@ public class SettingsManager {
 		return getSettings().ledMatrixPortSettings;
 	}
 	
+	public ExperimentSettings getExperimentSettings() {
+		return getSettings().experimentSettings;
+	}
+	
 	@XmlRootElement
 	@XmlAccessorType(XmlAccessType.FIELD)
 	public static class Settings {
@@ -216,6 +220,8 @@ public class SettingsManager {
 		LedMatrixSettings ledMatrixSettings = new LedMatrixSettingsBuilder().withSize(2, 3).build();
 		
 		SerialPortSettings ledMatrixPortSettings = new SerialPortSettings();
+		
+		ExperimentSettings experimentSettings = new ExperimentSettings();
 	}
 
 }

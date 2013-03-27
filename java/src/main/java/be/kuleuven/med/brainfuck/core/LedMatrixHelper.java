@@ -1,21 +1,22 @@
-package be.kuleuven.med.brainfuck.entity;
+package be.kuleuven.med.brainfuck.core;
 
 import java.util.Map;
 
+import be.kuleuven.med.brainfuck.entity.LedPosition;
 import be.kuleuven.med.brainfuck.settings.LedMatrixSettings;
 import be.kuleuven.med.brainfuck.settings.LedSettings;
 
 import com.google.common.collect.Maps;
 
-public class LedMatrix {
+public class LedMatrixHelper {
 	
 	private Map<LedPosition, LedSettings> leds;
 	
 	private LedMatrixSettings ledMatrixSettings;
 	
-	public LedMatrix() { }
+	public LedMatrixHelper() { }
 
-	public LedMatrix(LedMatrixSettings ledMatrixSettings) {
+	public LedMatrixHelper(LedMatrixSettings ledMatrixSettings) {
 		this.ledMatrixSettings = ledMatrixSettings;
 		// popuplate internal data structure
 		leds = buildMatrix(ledMatrixSettings);

@@ -1,7 +1,6 @@
 package be.kuleuven.med.brainfuck.core;
 
 import junit.framework.TestCase;
-import be.kuleuven.med.brainfuck.entity.LedMatrix;
 import be.kuleuven.med.brainfuck.entity.LedPosition;
 import be.kuleuven.med.brainfuck.settings.LedMatrixSettings;
 import be.kuleuven.med.brainfuck.settings.LedMatrixSettingsBuilder;
@@ -11,7 +10,7 @@ public class LedMatrixTest extends TestCase {
 	
 	public void testDecreaseLedMatrixResize() throws Exception {
 		LedMatrixSettings ledMatrixSettings = new LedMatrixSettingsBuilder().withSize(3, 2).build();
-		LedMatrix ledMatrix = new LedMatrix(ledMatrixSettings);
+		LedMatrixHelper ledMatrix = new LedMatrixHelper(ledMatrixSettings);
 		
 		assertEquals(ledMatrixSettings.getWidth(), ledMatrix.getWidth());
 		assertEquals(ledMatrixSettings.getHeight(), ledMatrix.getHeight());
@@ -31,7 +30,7 @@ public class LedMatrixTest extends TestCase {
 	
 	public void testIncreaseLedMatrixSize() throws Exception {
 		LedMatrixSettings ledMatrixSettings = new LedMatrixSettingsBuilder().withSize(3, 2).build();
-		LedMatrix ledMatrix = new LedMatrix(ledMatrixSettings);
+		LedMatrixHelper ledMatrix = new LedMatrixHelper(ledMatrixSettings);
 		LedSettings ledSettings = ledMatrix.getLedSettings(LedPosition.ledPositionFor(0, 1));
 		ledSettings.setColumnPin(3);
 		ledSettings.setRowPin(15);

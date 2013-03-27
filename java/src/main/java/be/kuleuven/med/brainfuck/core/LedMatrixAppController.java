@@ -23,7 +23,6 @@ import org.jdesktop.beansbinding.ELProperty;
 import org.jdesktop.swingbinding.SwingBindings;
 
 import be.kuleuven.med.brainfuck.bsaf.AppComponent;
-import be.kuleuven.med.brainfuck.entity.LedMatrix;
 import be.kuleuven.med.brainfuck.entity.LedPosition;
 import be.kuleuven.med.brainfuck.io.LedMatrixConnector;
 import be.kuleuven.med.brainfuck.io.SerialPortConnector;
@@ -41,6 +40,8 @@ public class LedMatrixAppController {
 
 	public static final String UPDATE_LED_MATRIX_ACTION = "updateLedMatrix";
 	
+	public static final String START_EXPERIMENT_ACTION = "startExperiment";
+	
 	public static final String TOGGLE_LED_ACTION = "toggleLed";
 
 	private final static BeanProperty<JComponent, Boolean> ENABLED = BeanProperty.create("enabled");
@@ -53,12 +54,12 @@ public class LedMatrixAppController {
 
 	private LedMatrixConnector ledMatrixConnector;
 
-	private LedMatrix ledMatrix;
+	private LedMatrixHelper ledMatrixHelper;
 
-	public LedMatrixAppController(LedMatrixAppModel ledMatrixAppModel, LedMatrix ledMatrix, LedMatrixConnector serialPortConnector) {
+	public LedMatrixAppController(LedMatrixAppModel ledMatrixAppModel, LedMatrixHelper ledMatrixHelper, LedMatrixConnector ledMatrixConnector) {
 		this.ledMatrixAppModel = ledMatrixAppModel;
-		this.ledMatrix = ledMatrix;
-		this.ledMatrixConnector = serialPortConnector;
+		this.ledMatrixHelper = ledMatrixHelper;
+		this.ledMatrixConnector = ledMatrixConnector;
 		// setup bindings here
 		updateSerialPortNames();
 	}
@@ -107,23 +108,42 @@ public class LedMatrixAppController {
 		bindingGroup.addBinding(enabledBinding);
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixAppModel, itemSelectedProperty, ledMatrixAppView.getToggleLedButton(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
+		// bind experiment settings controls
+		ELProperty<LedMatrixAppModel, Boolean> experimentInitialized = ELProperty.create("${arduinoInitialized && experimentInitialized}"); 
+		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixAppModel, experimentInitialized, ledMatrixAppView.getSecondsToRunTextField(), ENABLED);
+		bindingGroup.addBinding(enabledBinding);
+		BeanProperty<LedMatrixAppModel, Integer> secondsToRunProperty = BeanProperty.create("experimentSettings.secondsToRun");
+		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixAppModel, secondsToRunProperty, ledMatrixAppView.getSecondsToRunTextField(), TEXT);
+		bindingGroup.addBinding(valueBinding);
+		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixAppModel, experimentInitialized, ledMatrixAppView.getFlickerFrequencyTextField(), ENABLED);
+		bindingGroup.addBinding(enabledBinding);
+		BeanProperty<LedMatrixAppModel, Integer> flickerFrequencyProperty = BeanProperty.create("experimentSettings.flickerFrequency");
+		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixAppModel, flickerFrequencyProperty, ledMatrixAppView.getFlickerFrequencyTextField(), TEXT);
+		bindingGroup.addBinding(valueBinding);
+		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixAppModel, experimentInitialized, ledMatrixAppView.getStartExperimentButton(), ENABLED);
+		bindingGroup.addBinding(enabledBinding);
 		bindingGroup.bind();
 	}
 
 	@Action
 	public void updateLedMatrix() {
 		// should regenerate led matrix??
-		ledMatrix.resizeMatrix(ledMatrixAppModel.getWidth(), ledMatrixAppModel.getHeight());
-		// should send data to arduino as well??
-		ledMatrixAppView.drawLedMatrix(ledMatrix.getWidth(), ledMatrix.getHeight());
+		int width = ledMatrixAppModel.getWidth();
+		int height = ledMatrixAppModel.getHeight();
+		if (width > 0 && height > 0) {
+			ledMatrixAppModel.setExperimentInitialized(true);
+			ledMatrixHelper.resizeMatrix(width, height);
+			// should send data to arduino as well??
+			ledMatrixAppView.drawLedMatrix(width, height);
+		}
 	}
 
 	public void updateSelectedLed(LedPosition ledPosition) {
 		if (ledPosition != null) {
-			LedSettings ledSettings = ledMatrix.getLedSettings(ledPosition);
+			LedSettings ledSettings = ledMatrixHelper.getLedSettings(ledPosition);
 			ledMatrixAppModel.setSelectedLedSettings(ledSettings);
 			// set selected led based on passed coordinates
-			// so all subsequent input can be bound to this led..
+			// so all subsequent input can be bound to this led.
 		}
 	}
 	
@@ -209,11 +229,17 @@ public class LedMatrixAppController {
 					selectedLedSettings.setIntensity(slider.getValue());
 				}
 				ledMatrixConnector.toggleLed(selectedLedSettings);
-				message("endMessage");
+				message("endMessage", selectedLedSettings.getLedPosition(), selectedLedSettings.isIlluminated());
 				return null;
 			}
 			
 		};
+	}
+	
+	@Action
+	public Task<?, ?> startExperiment() {
+		// TODO implement task
+		return null;
 	}
 }
 

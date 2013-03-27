@@ -12,7 +12,7 @@ import com.google.common.collect.Sets;
 
 public class LedMatrixConnector extends SerialPortConnector {
 	// default value for digital write
-	private static final String MAX_INTENSITY = "00";
+	private static final String NO_VALUE = "00";
 	// function constants
 	public static final String ANALOG_WRITE = "aw";
 	public static final String DIGITAL_WRITE = "dw";
@@ -27,6 +27,11 @@ public class LedMatrixConnector extends SerialPortConnector {
 
 	public LedMatrixConnector(SerialPortSettings serialPortSettings) {
 		super(serialPortSettings);
+	}
+	
+	public void toggleLed(LedSettings ledSettings, boolean illuminated) {
+		ledSettings.setIlluminated(illuminated);
+		toggleLed(ledSettings);
 	}
 
 	public void toggleLed(LedSettings ledSettings) {
@@ -50,15 +55,15 @@ public class LedMatrixConnector extends SerialPortConnector {
 	}
 	
 	private String buildInitCommand(int pin) {
-		StringBuilder result = new StringBuilder(MAX_INTENSITY);
+		StringBuilder result = new StringBuilder(NO_VALUE);
 		result.append(PIN_MODE).append(pin).append(OUTPUT);
 		return result.toString();
 	}
 	
 	private String buildCommand(LedSettings ledSettings) {
-		StringBuilder result = new StringBuilder(MAX_INTENSITY);
+		StringBuilder result = new StringBuilder(NO_VALUE);
 		if (isMaxIntensity(ledSettings)) {
-			result.append(MAX_INTENSITY).append(DIGITAL_WRITE);
+			result.append(NO_VALUE).append(DIGITAL_WRITE);
 		} else {
 			result.append(ledSettings.getIntensity()).append(ANALOG_WRITE);
 		}
@@ -85,9 +90,9 @@ public class LedMatrixConnector extends SerialPortConnector {
 	public synchronized void serialEvent(SerialPortEvent oEvent) {
 		if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 			try {
-				int available = input.available();
+				int available = getInput().available();
 				byte chunk[] = new byte[available];
-				input.read(chunk, 0, available);
+				getInput().read(chunk, 0, available);
 				// Displayed results are codepage dependent
 				String result = new String(chunk);
 				// result coming back from arduino

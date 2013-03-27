@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.jdesktop.application.AbstractBean;
 
+import be.kuleuven.med.brainfuck.settings.ExperimentSettings;
+import be.kuleuven.med.brainfuck.settings.LedMatrixSettings;
 import be.kuleuven.med.brainfuck.settings.LedSettings;
 
 import com.google.common.collect.Lists;
@@ -20,14 +22,20 @@ public class LedMatrixAppModel extends AbstractBean {
 	public static final String COLUMN_PIN = "columnPin";
 	
 	public static final String ARDUINO_INITIALIZED = "arduinoInitialized";
+	
+	public static final String EXPERIMENT_INITIALIZED = "experimentInitialized";
 
 	public static final String SELECTED_LED_SETTINGS = "selectedLedSettings";
+
+	public static final String EXPERIMENT_SETTINGS = "experimentSettings";
 	
 	private List<String> serialPortNames = Lists.newArrayList();
 	
 	private String selectedSerialPortName;
 	
 	private boolean arduinoInitialized;
+	
+	private boolean experimentInitialized;
 	
 	private int rowPin;
 	
@@ -36,12 +44,15 @@ public class LedMatrixAppModel extends AbstractBean {
 	private int width;
 	
 	private int height;
-
-	private LedSettings selectedLedSettings;
 	
-	public LedMatrixAppModel(int width, int height) {
-		this.width = width;
-		this.height = height;
+	private LedSettings selectedLedSettings;
+
+	private ExperimentSettings experimentSettings;
+	
+	public LedMatrixAppModel(LedMatrixSettings ledMatrixSettings, ExperimentSettings experimentSettings) {
+		this.width = ledMatrixSettings.getWidth();
+		this.height = ledMatrixSettings.getHeight();
+		this.experimentSettings = experimentSettings;
 	}
 	
     public int getWidth() {
@@ -99,6 +110,14 @@ public class LedMatrixAppModel extends AbstractBean {
 	public void setArduinoInitialized(boolean arduinoInitialized) {
 		firePropertyChange(ARDUINO_INITIALIZED, this.arduinoInitialized, this.arduinoInitialized = arduinoInitialized);
 	}
+	
+	public boolean isExperimentInitialized() {
+		return experimentInitialized;
+	}
+
+	public void setExperimentInitialized(boolean experimentInitialized) {
+		firePropertyChange(EXPERIMENT_INITIALIZED, this.experimentInitialized, this.experimentInitialized = experimentInitialized);
+	}
 
 	public void setSelectedLedSettings(LedSettings selectedLedSettings) {
 		firePropertyChange(SELECTED_LED_SETTINGS, this.selectedLedSettings, this.selectedLedSettings = selectedLedSettings);
@@ -106,6 +125,14 @@ public class LedMatrixAppModel extends AbstractBean {
 
 	public LedSettings getSelectedLedSettings() {
 		return selectedLedSettings;
+	}
+	
+	public void setExperimentSettings(ExperimentSettings experimentSettings) {
+		firePropertyChange(EXPERIMENT_SETTINGS, this.experimentSettings, this.experimentSettings = experimentSettings);
+	}
+
+	public ExperimentSettings getExperimentSettings() {
+		return experimentSettings;
 	}
 
 }

@@ -2,15 +2,14 @@ package be.kuleuven.med.brainfuck.core;
 
 import static be.kuleuven.med.brainfuck.LedMatrixApp.SAVE_SETTINGS_ACTION;
 import static be.kuleuven.med.brainfuck.core.LedMatrixAppController.INIT_SERIAL_PORT_ACTION;
-import static be.kuleuven.med.brainfuck.core.LedMatrixAppController.UPDATE_LED_MATRIX_ACTION;
-import static be.kuleuven.med.brainfuck.core.LedMatrixAppController.TOGGLE_LED_ACTION;
 import static be.kuleuven.med.brainfuck.core.LedMatrixAppController.START_EXPERIMENT_ACTION;
+import static be.kuleuven.med.brainfuck.core.LedMatrixAppController.TOGGLE_LED_ACTION;
+import static be.kuleuven.med.brainfuck.core.LedMatrixAppController.UPDATE_LED_MATRIX_ACTION;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.ActionMap;
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -50,6 +49,8 @@ public class LedMatrixAppView extends JPanel {
 	private JSlider intensitySlider;
 
 	private JButton toggleLedButton;
+	
+	private JButton startExperimentButton;
 
 	private JTextField flickerFrequencyTextField;
 
@@ -108,8 +109,8 @@ public class LedMatrixAppView extends JPanel {
 		rightPanel.add(new JLabel("secondsToRunLabel.text"));
 		secondsToRunTextField = createFormattedTextField();
 		rightPanel.add(secondsToRunTextField, "wrap, w 40");
-		rightPanel.add(new JButton(START_EXPERIMENT_ACTION));
-		
+		startExperimentButton = new JButton(START_EXPERIMENT_ACTION);
+		rightPanel.add(startExperimentButton, "wrap");
 		// add save settings button
 		rightPanel.add(new JSeparator(SwingConstants.HORIZONTAL), "wrap");
 		rightPanel.add(new JButton(actionMap.get(SAVE_SETTINGS_ACTION)));
@@ -168,6 +169,18 @@ public class LedMatrixAppView extends JPanel {
 
 	public JButton getToggleLedButton() {
 		return toggleLedButton;
+	}
+
+	public JTextField getFlickerFrequencyTextField() {
+		return flickerFrequencyTextField;
+	}
+
+	public JTextField getSecondsToRunTextField() {
+		return secondsToRunTextField;
+	}
+
+	public JButton getStartExperimentButton() {
+		return startExperimentButton;
 	}
 	
 }

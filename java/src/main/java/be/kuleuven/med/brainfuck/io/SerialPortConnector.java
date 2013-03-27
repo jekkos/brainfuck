@@ -26,7 +26,7 @@ public abstract class SerialPortConnector implements SerialPortEventListener {
 	private SerialPort serialPort;
 
 	/** Buffered input stream from the port */
-	protected InputStream input;
+	private InputStream input;
 	/** The output stream to the port */
 	private OutputStream output;
 	
@@ -87,6 +87,10 @@ public abstract class SerialPortConnector implements SerialPortEventListener {
 	
  	protected OutputStream getOutput() {
 		return output;
+	}
+ 	
+	public InputStream getInput() {
+		return input;
 	}
 
 	/**

@@ -79,6 +79,7 @@ public class LedMatrixApp extends SingleFrameApplication {
 		LedMatrixHelper ledMatrixHelper = new LedMatrixHelper(ledMatrixSettings);
 		LedMatrixAppModel ledMatrixModel = new LedMatrixAppModel(ledMatrixSettings, experimentSettings);
 		ledMatrixController = new LedMatrixAppController(ledMatrixModel, ledMatrixHelper, serialConnector);
+		getContext().getTaskService().execute(ledMatrixController.updateSerialPortNames());
 	}
 
 	/**

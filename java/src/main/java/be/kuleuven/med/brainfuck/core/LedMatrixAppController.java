@@ -60,8 +60,6 @@ public class LedMatrixAppController {
 		this.ledMatrixAppModel = ledMatrixAppModel;
 		this.ledMatrixHelper = ledMatrixHelper;
 		this.ledMatrixConnector = ledMatrixConnector;
-		// setup bindings here
-		updateSerialPortNames();
 	}
 
 	public void initView(LedMatrixAppView ledMatrixAppView) {
@@ -93,7 +91,8 @@ public class LedMatrixAppController {
 		bindingGroup.addBinding(enabledBinding);
 		// bind serial port info
 		BeanProperty<LedMatrixAppModel, List<String>> serialPortNamesProperty = BeanProperty.create("serialPortNames");
-		SwingBindings.createJComboBoxBinding(UpdateStrategy.READ_WRITE, ledMatrixAppModel, serialPortNamesProperty, ledMatrixAppView.getSerialPortNamesBox());
+		Binding<?, ?, ?, ?> comboBoxBinding = SwingBindings.createJComboBoxBinding(UpdateStrategy.READ_WRITE, ledMatrixAppModel, serialPortNamesProperty, ledMatrixAppView.getSerialPortNamesBox());
+		bindingGroup.addBinding(comboBoxBinding);
 		BeanProperty<JComboBox<?>, String> selectedElementProperty = BeanProperty.create("selectedElement");
 		BeanProperty<LedMatrixAppModel, String> selectedSerialPortNameProperty = BeanProperty.create("selectedSerialPortName");
 		Binding<LedMatrixAppModel, String, JComboBox<?>, String> selectedElementBinding = 

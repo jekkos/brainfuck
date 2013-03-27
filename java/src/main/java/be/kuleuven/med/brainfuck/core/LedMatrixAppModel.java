@@ -29,6 +29,8 @@ public class LedMatrixAppModel extends AbstractBean {
 
 	public static final String EXPERIMENT_SETTINGS = "experimentSettings";
 	
+	public static final String SERIAL_PORT_NAMES = "serialPortNames";
+	
 	private List<String> serialPortNames = Lists.newArrayList();
 	
 	private String selectedSerialPortName;
@@ -92,7 +94,7 @@ public class LedMatrixAppModel extends AbstractBean {
 	}
 
 	public void setSerialPortNames(List<String> serialPortNames) {
-		this.serialPortNames = serialPortNames;
+		firePropertyChange(SERIAL_PORT_NAMES, this.serialPortNames, this.serialPortNames = serialPortNames);
 	}
 	
 	public String getSelectedSerialPortName() {

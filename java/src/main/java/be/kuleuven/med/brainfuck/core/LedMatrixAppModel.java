@@ -24,6 +24,8 @@ public class LedMatrixAppModel extends AbstractBean {
 	public static final String ARDUINO_INITIALIZED = "arduinoInitialized";
 	
 	public static final String EXPERIMENT_INITIALIZED = "experimentInitialized";
+	
+	public static final String EXPERIMENT_STARTED = "experimentStarted";
 
 	public static final String SELECTED_LED_SETTINGS = "selectedLedSettings";
 
@@ -38,6 +40,8 @@ public class LedMatrixAppModel extends AbstractBean {
 	private boolean arduinoInitialized;
 	
 	private boolean experimentInitialized;
+	
+	private boolean experimentStarted;
 	
 	private int rowPin;
 	
@@ -137,4 +141,12 @@ public class LedMatrixAppModel extends AbstractBean {
 		return experimentSettings;
 	}
 
+	public boolean isExperimentStarted() {
+		return experimentStarted;
+	}
+
+	public void setExperimentStarted(boolean experimentStarted) {
+		firePropertyChange(EXPERIMENT_STARTED, this.experimentStarted, this.experimentStarted = experimentStarted);
+	}
+	
 }

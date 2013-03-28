@@ -11,10 +11,14 @@ import com.google.common.collect.Lists;
 @XmlRootElement
 public class LedMatrixSettings {
 
+	public static final int MAX_PORT_NUMBER = 13;
+	
 	@XmlElement(name="ledSettings")
 	private List<LedSettings> ledSettingsList = Lists.newArrayList();
 	
 	private int width, height;
+	
+	private int maxPortNumber = MAX_PORT_NUMBER;
 	
 	LedMatrixSettings() {	}
 
@@ -44,6 +48,14 @@ public class LedMatrixSettings {
 	
 	public boolean removeLedSettings(LedSettings ledSettings) {
 		return ledSettingsList.remove(ledSettings);
+	}
+
+	public int getMaxPortNumber() {
+		return maxPortNumber;
+	}
+
+	public void setMaxPortNumber(int maxPortNumber) {
+		this.maxPortNumber = maxPortNumber;
 	}
 	
 }

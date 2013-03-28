@@ -79,7 +79,19 @@ public abstract class SerialPortConnector implements SerialPortEventListener {
 		// add event listeners
 		serialPort.addEventListener(this);
 		serialPort.notifyOnDataAvailable(true);
+		
+		initializeConnector(serialPortName);
 	}
+	
+	/**
+	 * Handle an event on the serial port. Read the data and print it.
+	 */
+	public abstract void serialEvent(SerialPortEvent oEvent);
+
+	/**
+	 * Perform some connector specific initialization.
+	 */
+	protected abstract void initializeConnector(String serialPortName);
 	
 	public String getSelectedSerialPortName() {
 		return serialPortSettings.getName();
@@ -103,11 +115,6 @@ public abstract class SerialPortConnector implements SerialPortEventListener {
 			serialPort.close();
 		}
 	}
-
-	/**
-	 * Handle an event on the serial port. Read the data and print it.
-	 */
-	public abstract void serialEvent(SerialPortEvent oEvent);
 
 }
 

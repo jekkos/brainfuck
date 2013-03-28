@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -48,9 +49,9 @@ public class LedMatrixAppView extends JPanel {
 
 	private JSlider intensitySlider;
 
-	private JButton toggleLedButton;
+	private JToggleButton toggleLedButton;
 	
-	private JButton startExperimentButton;
+	private JToggleButton startExperimentButton;
 
 	private JTextField flickerFrequencyTextField;
 
@@ -98,7 +99,7 @@ public class LedMatrixAppView extends JPanel {
 			
 		});
 		rightPanel.add(intensitySlider, "w 150, wrap");
-		toggleLedButton = new JButton(actionMap.get(TOGGLE_LED_ACTION));
+		toggleLedButton = new JToggleButton(actionMap.get(TOGGLE_LED_ACTION));
 		rightPanel.add(toggleLedButton, "wrap");
 		
 		// add experiment controls
@@ -109,7 +110,7 @@ public class LedMatrixAppView extends JPanel {
 		rightPanel.add(new JLabel(resourceMap.getString("secondsToRunLabel.text")));
 		secondsToRunTextField = createFormattedTextField();
 		rightPanel.add(secondsToRunTextField, "wrap, w 40");
-		startExperimentButton = new JButton(actionMap.get(START_EXPERIMENT_ACTION));
+		startExperimentButton = new JToggleButton(actionMap.get(START_EXPERIMENT_ACTION));
 		rightPanel.add(startExperimentButton, "wrap");
 		// add save settings button
 		rightPanel.add(new JSeparator(SwingConstants.HORIZONTAL), "wrap");
@@ -167,7 +168,7 @@ public class LedMatrixAppView extends JPanel {
 		return intensitySlider;
 	}
 
-	public JButton getToggleLedButton() {
+	public JToggleButton getToggleLedButton() {
 		return toggleLedButton;
 	}
 
@@ -179,7 +180,7 @@ public class LedMatrixAppView extends JPanel {
 		return secondsToRunTextField;
 	}
 
-	public JButton getStartExperimentButton() {
+	public JToggleButton getStartExperimentButton() {
 		return startExperimentButton;
 	}
 	

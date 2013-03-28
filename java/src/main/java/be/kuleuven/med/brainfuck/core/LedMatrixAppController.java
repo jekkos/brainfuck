@@ -9,6 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JSlider;
+import javax.swing.JToggleButton;
 import javax.swing.event.ChangeEvent;
 
 import org.jdesktop.application.Action;
@@ -26,6 +27,7 @@ import be.kuleuven.med.brainfuck.bsaf.AppComponent;
 import be.kuleuven.med.brainfuck.entity.LedPosition;
 import be.kuleuven.med.brainfuck.io.LedMatrixConnector;
 import be.kuleuven.med.brainfuck.io.SerialPortConnector;
+import be.kuleuven.med.brainfuck.settings.ExperimentSettings;
 import be.kuleuven.med.brainfuck.settings.LedSettings;
 import be.kuleuven.med.brainfuck.task.AbstractTask;
 
@@ -39,15 +41,15 @@ public class LedMatrixAppController {
 	public static final String CLOSE_SERIAL_PORT_ACTION = "closeSerialPort";
 
 	public static final String UPDATE_LED_MATRIX_ACTION = "updateLedMatrix";
-	
+
 	public static final String START_EXPERIMENT_ACTION = "startExperiment";
-	
+
 	public static final String TOGGLE_LED_ACTION = "toggleLed";
 
 	private final static BeanProperty<JComponent, Boolean> ENABLED = BeanProperty.create("enabled");
-	
+
 	private final static BeanProperty<JComponent, String> TEXT = BeanProperty.create("text");
-	
+
 	private LedMatrixAppView ledMatrixAppView;
 
 	private LedMatrixAppModel ledMatrixAppModel;
@@ -64,7 +66,7 @@ public class LedMatrixAppController {
 
 	public void initView(LedMatrixAppView ledMatrixAppView) {
 		this.ledMatrixAppView = ledMatrixAppView;
-		
+
 		BindingGroup bindingGroup = new BindingGroup();
 		Binding<LedMatrixAppModel, Boolean, ? extends JComponent, Boolean> enabledBinding = null;
 		Binding<LedMatrixAppModel, Integer, ? extends JComponent, String> valueBinding = null;
@@ -103,13 +105,13 @@ public class LedMatrixAppController {
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixAppModel, arduinoInitialized, ledMatrixAppView.getSerialPortNamesBox(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
 		// bind led controls (just the enabled state)
-		ELProperty<LedMatrixAppModel, Boolean> ledControlsEnabledProperty = ELProperty.create("${selectedLedSettings != null && arduinoInitialized}");
+		ELProperty<LedMatrixAppModel, Boolean> ledControlsEnabledProperty = ELProperty.create("${selectedLedSettings != null && arduinoInitialized && !experimentStarted}");
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixAppModel, ledControlsEnabledProperty, ledMatrixAppView.getIntensitySlider(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixAppModel, ledControlsEnabledProperty, ledMatrixAppView.getToggleLedButton(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
 		// bind experiment settings controls
-		ELProperty<LedMatrixAppModel, Boolean> experimentInitialized = ELProperty.create("${arduinoInitialized && experimentInitialized}"); 
+		ELProperty<LedMatrixAppModel, Boolean> experimentInitialized = ELProperty.create("${arduinoInitialized && experimentInitialized && !experimentStarted}"); 
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixAppModel, experimentInitialized, ledMatrixAppView.getSecondsToRunTextField(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
 		BeanProperty<LedMatrixAppModel, Integer> secondsToRunProperty = BeanProperty.create("experimentSettings.secondsToRun");
@@ -119,6 +121,7 @@ public class LedMatrixAppController {
 		bindingGroup.addBinding(enabledBinding);
 		BeanProperty<LedMatrixAppModel, Integer> flickerFrequencyProperty = BeanProperty.create("experimentSettings.flickerFrequency");
 		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixAppModel, flickerFrequencyProperty, ledMatrixAppView.getFlickerFrequencyTextField(), TEXT);
+		valueBinding.setTargetNullValue(0);
 		bindingGroup.addBinding(valueBinding);
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixAppModel, experimentInitialized, ledMatrixAppView.getStartExperimentButton(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
@@ -146,7 +149,7 @@ public class LedMatrixAppController {
 			// so all subsequent input can be bound to this led.
 		}
 	}
-	
+
 	private void toggleName(AbstractButton button, String actionName) {
 		boolean isSelected = button.isSelected();
 		StringBuilder stringBuilder = new StringBuilder(actionName + ".Action.");
@@ -204,16 +207,16 @@ public class LedMatrixAppController {
 
 		};
 	}
-	
+
 	public void adjustIntensity(ChangeEvent event) {
 		getContext().getTaskService().execute(buildToggleLedTask(event));
 	}
-	
+
 	@Action
 	public Task<?, ?> toggleLed(final ActionEvent event) {
 		return buildToggleLedTask(event);
 	}
-	
+
 	private Task<?, ?> buildToggleLedTask(final EventObject event) {
 		return new AbstractTask<Void, Void>(TOGGLE_LED_ACTION) {
 
@@ -232,14 +235,61 @@ public class LedMatrixAppController {
 				message("endMessage", selectedLedSettings.getLedPosition(), selectedLedSettings.isIlluminated());
 				return null;
 			}
-			
+
 		};
 	}
-	
+
 	@Action
-	public Task<?, ?> startExperiment() {
-		// TODO implement task
-		return null;
+	public Task<?, ?> startExperiment(ActionEvent event) {
+		JToggleButton source = (JToggleButton) event.getSource();
+		toggleName(source, START_EXPERIMENT_ACTION);
+		// set selected state to enable/disable ui controls
+		ledMatrixAppModel.setExperimentStarted(source.isSelected());
+		return new AbstractTask<Void, Void>(START_EXPERIMENT_ACTION) {
+
+			private void doPeriodicToggle(LedSettings ledSettings, 
+					int flickerFrequency, long timePerLed) {
+				try {
+					if (flickerFrequency == 0) {
+						ledMatrixConnector.toggleLed(ledSettings, true);
+						Thread.sleep(timePerLed);
+						ledMatrixConnector.toggleLed(ledSettings, false);
+					} else {
+						long endTime = System.currentTimeMillis() + timePerLed;
+						while(System.currentTimeMillis() < endTime) {
+							ledMatrixConnector.toggleLed(ledSettings, true);
+							Thread.sleep(flickerFrequency);
+							ledMatrixConnector.toggleLed(ledSettings, false);
+						}
+					}
+				} catch(InterruptedException e) {
+					getLogger().error("Led toggling for " + ledSettings.getLedPosition() + " ended unexpectedly");
+				}
+			}
+
+			protected Void doInBackground() throws Exception {
+				ledMatrixConnector.disableAllLeds();
+				ExperimentSettings experimentSettings = ledMatrixAppModel.getExperimentSettings();
+				int flickerFrequency = experimentSettings.getFlickerFrequency();
+				long secondsToRun = experimentSettings.getSecondsToRun();
+				message("startMessage", secondsToRun);
+				int ledCount = ledMatrixHelper.getHeight() + ledMatrixHelper.getWidth(); 
+				long timePerLed = secondsToRun / ledCount;
+				flickerFrequency = flickerFrequency > 0 ? 1000 / flickerFrequency : 0; 
+				for (int i = 0; i < ledMatrixHelper.getWidth(); i++) {
+					for (int j = 0; j < ledMatrixHelper.getHeight(); j++) {
+						LedPosition ledPosition = LedPosition.ledPositionFor(i, j);
+						LedSettings ledSettings = ledMatrixHelper.getLedSettings(ledPosition);
+						message("progressMessaage", ledPosition);
+						// TODO we could send out an intensity to thorlabs driver here
+						doPeriodicToggle(ledSettings, flickerFrequency, timePerLed);
+					}
+				}
+				return null;
+			}
+
+		};
 	}
 }
 
+;

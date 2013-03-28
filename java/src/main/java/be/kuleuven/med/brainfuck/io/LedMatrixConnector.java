@@ -3,14 +3,12 @@ package be.kuleuven.med.brainfuck.io;
 import gnu.io.SerialPortEvent;
 
 import java.io.IOException;
-import java.util.Set;
 
 import be.kuleuven.med.brainfuck.settings.LedSettings;
 import be.kuleuven.med.brainfuck.settings.SerialPortSettings;
 
-import com.google.common.collect.Sets;
-
 public class LedMatrixConnector extends SerialPortConnector {
+	
 	// default value for digital write
 	private static final String NO_VALUE = "00";
 	// function constants
@@ -22,32 +20,33 @@ public class LedMatrixConnector extends SerialPortConnector {
 	public static final String HIGH = "HIGH";
 	// pin mode constants
 	private static final String OUTPUT = "OUTP";
+	// address all pins
+	private static final String ALL = "al";
 	
-	private Set<Integer> initializedPins = Sets.newHashSet();
-
-	public LedMatrixConnector(SerialPortSettings serialPortSettings) {
+	private final int maxPortNumber;
+	
+	public LedMatrixConnector(SerialPortSettings serialPortSettings, int maxPortNumber) {
 		super(serialPortSettings);
+		this.maxPortNumber = maxPortNumber;
+	}
+	
+	protected void initializeConnector(String serialPortName) {
+		for (int i = 0; i < maxPortNumber; i++) {
+			sendCommand(buildInitCommand(i));
+		}
 	}
 	
 	public void toggleLed(LedSettings ledSettings, boolean illuminated) {
 		ledSettings.setIlluminated(illuminated);
 		toggleLed(ledSettings);
 	}
-
+	
 	public void toggleLed(LedSettings ledSettings) {
-		initPins(ledSettings);
 		sendCommand(buildCommand(ledSettings));
 	}
 	
-	private void initPins(LedSettings ledSettings) {
-		if (!initializedPins.contains(ledSettings.getRowPin())) {
-			sendCommand(buildInitCommand(ledSettings.getRowPin()));
-			initializedPins.add(ledSettings.getRowPin());
-		}
-		if (!initializedPins.contains(ledSettings.getColumnPin())) {
-			sendCommand(buildInitCommand(ledSettings.getColumnPin()));
-			initializedPins.add(ledSettings.getColumnPin());
-		}
+	public void disableAllLeds() {
+		sendCommand(new StringBuilder(NO_VALUE).append(ALL).append(LOW).toString());
 	}
 	
 	private boolean isMaxIntensity(LedSettings ledSettings) {
@@ -78,6 +77,7 @@ public class LedMatrixConnector extends SerialPortConnector {
 				// writeout to arduino
 				command = new StringBuilder(command).append("\r\n").toString();
 				getOutput().write(command.getBytes());
+				// TODO eventually remove logging here for timing purposes
 				LOGGER.info("Command sent: " + command);
 			} else {
 				LOGGER.info("no serial device attached..");

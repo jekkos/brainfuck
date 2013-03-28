@@ -2,6 +2,7 @@ package be.kuleuven.med.brainfuck.core;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Ellipse2D.Double;
@@ -13,7 +14,7 @@ import be.kuleuven.med.brainfuck.entity.LedPosition;
 
 import com.google.common.collect.Sets;
 
-public class LedMatrixView extends JPanel {
+public class LedMatrixGfxView extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
@@ -21,9 +22,21 @@ public class LedMatrixView extends JPanel {
 	
 	private Set<Ellipse2D.Double> selectedEllipses = Sets.newHashSet();
 
-	public LedMatrixView() {	}
+	public LedMatrixGfxView(final LedMatrixController ledMatrixController) {	
+		addMouseListener(new MouseAdapter() {
 
-	public LedMatrixView(int width, int height) {
+			@Override
+			public void mouseClicked(MouseEvent event) {
+				// TODO could implement multi select here.. but will need to review the bean's model
+				LedPosition ledPosition = selectLed(event, true);
+				repaint();
+				ledMatrixController.updateSelectedLed(ledPosition, true);
+			}
+			
+		});
+	}
+
+	public LedMatrixGfxView(int width, int height) {
 		ellipseMatrix = new Ellipse2D.Double[width][height];
 	}
 
@@ -37,7 +50,7 @@ public class LedMatrixView extends JPanel {
 			for (int j = 0; j < ellipseMatrix[0].length; j++) {
 				Double shape = ellipseMatrix[i][j];
 				if (selectedEllipses.contains(shape)) {
-					g.setColor(Color.RED);
+					g.setColor(Color.BLUE);
 					g.fillOval((int) shape.x, (int) shape.y, (int) shape.width, (int) shape.height);
 				} else {
 					g.setColor(Color.BLACK);

@@ -25,10 +25,12 @@ import org.jdesktop.application.Task.BlockingScope;
 import org.jdesktop.application.TaskService;
 import org.jdesktop.application.utils.AppHelper;
 
-import be.kuleuven.med.brainfuck.core.LedMatrixAppController;
-import be.kuleuven.med.brainfuck.core.LedMatrixAppModel;
-import be.kuleuven.med.brainfuck.core.LedMatrixAppView;
-import be.kuleuven.med.brainfuck.core.LedMatrixHelper;
+import be.kuleuven.med.brainfuck.core.LedMatrixController;
+import be.kuleuven.med.brainfuck.core.LedMatrixGfxModel;
+import be.kuleuven.med.brainfuck.core.LedMatrixGfxView;
+import be.kuleuven.med.brainfuck.core.LedMatrixGfxModelBuilder;
+import be.kuleuven.med.brainfuck.core.LedMatrixPanelModel;
+import be.kuleuven.med.brainfuck.core.LedMatrixPanelView;
 import be.kuleuven.med.brainfuck.io.LedMatrixConnector;
 import be.kuleuven.med.brainfuck.io.SerialPortConnector;
 import be.kuleuven.med.brainfuck.settings.ExperimentSettings;
@@ -54,7 +56,7 @@ public class LedMatrixApp extends SingleFrameApplication {
 
 	private SettingsManager settingsManager;
 
-	private LedMatrixAppController ledMatrixController;
+	private LedMatrixController ledMatrixController;
 
 	private List<SerialPortConnector> serialPortConnectors = Lists.newArrayList(); 
 
@@ -89,9 +91,9 @@ public class LedMatrixApp extends SingleFrameApplication {
 		serialPortConnectors.add(ledMatrixConnector);
 		LedMatrixSettings ledMatrixSettings = settingsManager.getLedMatrixSettings();
 		ExperimentSettings experimentSettings = settingsManager.getExperimentSettings();
-		LedMatrixHelper ledMatrixHelper = new LedMatrixHelper(ledMatrixSettings);
-		LedMatrixAppModel ledMatrixModel = new LedMatrixAppModel(ledMatrixSettings, experimentSettings);
-		ledMatrixController = new LedMatrixAppController(ledMatrixModel, ledMatrixHelper, ledMatrixConnector);
+		LedMatrixGfxModel ledMatrixGfxModel = new LedMatrixGfxModelBuilder(ledMatrixSettings).build();
+		LedMatrixPanelModel ledMatrixPanelModel = new LedMatrixPanelModel(ledMatrixSettings, experimentSettings);
+		ledMatrixController = new LedMatrixController(ledMatrixPanelModel, ledMatrixGfxModel, ledMatrixConnector);
 		getContext().getTaskService().execute(ledMatrixController.updateSerialPortNames());
 	}
 
@@ -101,9 +103,17 @@ public class LedMatrixApp extends SingleFrameApplication {
 	@Override
 	protected void startup() {
 		JPanel mainPanel = new JPanel(new MigLayout("fill, nogrid, flowy, insets 10"));
-		LedMatrixAppView ledMatrixView = new LedMatrixAppView(ledMatrixController);
-		ledMatrixController.initView(ledMatrixView);
-		mainPanel.add(ledMatrixView);
+		JPanel rightPanel = new JPanel(new MigLayout("nogrid", "[right]10", "10"));
+		JPanel leftPanel = new JPanel(new MigLayout());
+		LedMatrixGfxView ledMatrixGfxView = new LedMatrixGfxView(ledMatrixController);
+		LedMatrixPanelView ledMatrixControlsView = new LedMatrixPanelView(ledMatrixController);
+		// init the view
+		ledMatrixController.initViews(ledMatrixControlsView, ledMatrixGfxView);
+		// add to the panels
+		rightPanel.add(ledMatrixControlsView);
+		leftPanel.add(ledMatrixGfxView);
+		mainPanel.add(ledMatrixControlsView);
+		mainPanel.add(ledMatrixGfxView);
 		//StatusPanel statusPanel = new StatusPanel();
 		//mainPanel.add(statusPanel, "height 30!, gapleft push");
 		getMainFrame().add(mainPanel);
@@ -160,6 +170,7 @@ public class LedMatrixApp extends SingleFrameApplication {
 
 		};
 	}
+	
 
 	@Action(block=BlockingScope.APPLICATION)
 	public Task<Void, Void> saveSettings() {
@@ -199,7 +210,7 @@ public class LedMatrixApp extends SingleFrameApplication {
 
 		}, "AwaitShutdownThread").start();
 	}
-
+	
 	public String getTitle() {
 		return getResourceString(APP_TITLE);
 	}

@@ -8,18 +8,17 @@ import be.kuleuven.med.brainfuck.settings.LedSettings;
 
 import com.google.common.collect.Maps;
 
-public class LedMatrixHelper {
+public class LedMatrixGfxModelBuilder {
 	
-	private Map<LedPosition, LedSettings> leds;
+	private final LedMatrixGfxModel ledMatrixModel;
 	
-	private LedMatrixSettings ledMatrixSettings;
-	
-	public LedMatrixHelper() { }
-
-	public LedMatrixHelper(LedMatrixSettings ledMatrixSettings) {
-		this.ledMatrixSettings = ledMatrixSettings;
+	public LedMatrixGfxModelBuilder(LedMatrixSettings ledMatrixSettings) {
 		// popuplate internal data structure
-		leds = buildMatrix(ledMatrixSettings);
+		ledMatrixModel = new LedMatrixGfxModel(ledMatrixSettings, buildMatrix(ledMatrixSettings));
+	}
+	
+	public LedMatrixGfxModelBuilder(LedMatrixGfxModel ledMatrixModel) {
+		this.ledMatrixModel = ledMatrixModel;
 	}
 	
 	private Map<LedPosition, LedSettings> buildMatrix(LedMatrixSettings ledMatrixSettings) {
@@ -30,18 +29,21 @@ public class LedMatrixHelper {
 		return result;
 	}
 	
+	private LedMatrixSettings getLedMatrixSettings() {
+		return ledMatrixModel.getLedMatrixSettings();
+	}
+	
 	private void removeLedSettings(int width, int height) {
-		int oldWidth = ledMatrixSettings.getWidth();
-		int oldHeight = ledMatrixSettings.getHeight();
+		int oldWidth = getLedMatrixSettings().getWidth();
+		int oldHeight = getLedMatrixSettings().getHeight();
 		for (int i = 0; i < oldWidth; i++) {
 			boolean removeRow = i >= width;
 			for (int j = 0; j < oldHeight; j++) {
 				boolean removeColumn = j >= height;
 				LedPosition ledPosition = LedPosition.ledPositionFor(i, j);
-				LedSettings ledSettings = leds.get(ledPosition);
+				LedSettings ledSettings = ledMatrixModel.getLedSettings(ledPosition);
 				if (ledSettings != null && (removeRow || removeColumn)) {
-					leds.remove(ledPosition);
-					ledMatrixSettings.removeLedSettings(ledSettings);
+					ledMatrixModel.removeLedSettings(ledSettings);
 				}
 			}
 		}
@@ -52,37 +54,33 @@ public class LedMatrixHelper {
 		for (int i = 0; i < width; i ++) {
 			for (int j = 0; j < height; j ++) {
 				LedPosition ledPosition = LedPosition.ledPositionFor(i, j);
-				if (leds.get(ledPosition) == null) {
+				if (ledMatrixModel.getLedSettings(ledPosition) == null) {
 					LedSettings ledSettings = new LedSettings(ledPosition);
-					leds.put(ledPosition, ledSettings);
-					ledMatrixSettings.addLedSettings(ledSettings);
+					ledMatrixModel.addLedSettings(ledSettings);
 				}
 			}
 		}
 	}
 	
-	public void resizeMatrix(int width, int height) {
+	public LedMatrixGfxModelBuilder resizeMatrix(int width, int height) {
 		removeLedSettings(width, height);
 		addLedSettings(width, height);
 		// add or remove nodes..
-		ledMatrixSettings.setWidth(width);
-		ledMatrixSettings.setHeight(height);
+		getLedMatrixSettings().setWidth(width);
+		getLedMatrixSettings().setHeight(height);
+		return this;
 	}
 	
 	public int getWidth() {
-		return ledMatrixSettings.getWidth();
+		return getLedMatrixSettings().getWidth();
 	}
 
 	public int getHeight() {
-		return ledMatrixSettings.getHeight();
-	}
-
-	public void addLed(LedPosition ledPosition, LedSettings led) {
-		leds.put(ledPosition, led);
-	}
-
-	public LedSettings getLedSettings(LedPosition ledPosition) {
-		return leds.get(ledPosition);
+		return getLedMatrixSettings().getHeight();
 	}
 	
+	public LedMatrixGfxModel build() {
+		return ledMatrixModel;
+	}
+
 }

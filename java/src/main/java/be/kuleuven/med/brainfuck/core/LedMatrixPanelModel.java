@@ -11,7 +11,7 @@ import be.kuleuven.med.brainfuck.settings.LedSettings;
 
 import com.google.common.collect.Lists;
 
-public class LedMatrixAppModel extends AbstractBean {
+public class LedMatrixPanelModel extends AbstractBean {
 	
 	public static final String HEIGHT = "height";
 
@@ -55,7 +55,7 @@ public class LedMatrixAppModel extends AbstractBean {
 
 	private ExperimentSettings experimentSettings;
 	
-	public LedMatrixAppModel(LedMatrixSettings ledMatrixSettings, ExperimentSettings experimentSettings) {
+	public LedMatrixPanelModel(LedMatrixSettings ledMatrixSettings, ExperimentSettings experimentSettings) {
 		this.width = ledMatrixSettings.getWidth();
 		this.height = ledMatrixSettings.getHeight();
 		this.experimentSettings = experimentSettings;

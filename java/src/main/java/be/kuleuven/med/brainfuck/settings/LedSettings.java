@@ -20,8 +20,6 @@ public class LedSettings {
 	
 	private int columnPin;
 	
-	private boolean illuminated;
-	
 	private int intensity = MAX_INTENSITY;
 	
 	public LedSettings() { }
@@ -68,14 +66,6 @@ public class LedSettings {
 
 	public void setColumnPin(int columnPin) {
 		this.columnPin = columnPin;
-	}
-
-	public boolean isIlluminated() {
-		return illuminated;
-	}
-
-	public void setIlluminated(boolean illuminated) {
-		this.illuminated = illuminated;
 	}
 
 	public int getIntensity() {

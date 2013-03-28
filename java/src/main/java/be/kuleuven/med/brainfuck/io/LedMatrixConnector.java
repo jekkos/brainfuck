@@ -37,12 +37,7 @@ public class LedMatrixConnector extends SerialPortConnector {
 	}
 	
 	public void toggleLed(LedSettings ledSettings, boolean illuminated) {
-		ledSettings.setIlluminated(illuminated);
-		toggleLed(ledSettings);
-	}
-	
-	public void toggleLed(LedSettings ledSettings) {
-		sendCommand(buildCommand(ledSettings));
+		sendCommand(buildCommand(ledSettings, illuminated));
 	}
 	
 	public void disableAllLeds() {
@@ -59,7 +54,7 @@ public class LedMatrixConnector extends SerialPortConnector {
 		return result.toString();
 	}
 	
-	private String buildCommand(LedSettings ledSettings) {
+	private String buildCommand(LedSettings ledSettings, boolean illuminated) {
 		StringBuilder result = new StringBuilder(NO_VALUE);
 		if (isMaxIntensity(ledSettings)) {
 			result.append(NO_VALUE).append(DIGITAL_WRITE);
@@ -67,7 +62,7 @@ public class LedMatrixConnector extends SerialPortConnector {
 			result.append(ledSettings.getIntensity()).append(ANALOG_WRITE);
 		}
 		result.append(ledSettings.getRowPin());
-		result.append(ledSettings.isIlluminated() ? HIGH : LOW);
+		result.append(illuminated ? HIGH : LOW);
 		return result.toString();
 	}
 	

@@ -68,6 +68,8 @@ public class LedMatrixGfxModelBuilder {
 	public LedMatrixGfxModelBuilder resizeMatrix(int width, int height) {
 		removeLedSettings(width, height);
 		addLedSettings(width, height);
+		//FIXME build shape list.. need to associate it with a position
+		//shapeList = buildShapeMatrix(width, height);
 		// add or remove nodes..
 		getLedMatrixSettings().setWidth(width);
 		getLedMatrixSettings().setHeight(height);

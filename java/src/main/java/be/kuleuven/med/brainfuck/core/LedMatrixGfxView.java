@@ -18,9 +18,11 @@ public class LedMatrixGfxView extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	private Ellipse2D.Double[][] ellipseMatrix;
+	private Ellipse2D.Double[][] shapes;
 	
 	private Set<Ellipse2D.Double> selectedEllipses = Sets.newHashSet();
+
+	private LedMatrixGfxModel ledMatrixGfxModel;
 
 	public LedMatrixGfxView(final LedMatrixController ledMatrixController) {	
 		addMouseListener(new MouseAdapter() {
@@ -36,8 +38,8 @@ public class LedMatrixGfxView extends JPanel {
 		});
 	}
 
-	public LedMatrixGfxView(int width, int height) {
-		ellipseMatrix = new Ellipse2D.Double[width][height];
+	public LedMatrixGfxView(LedMatrixGfxModel ledMatrixGfxModel) {
+		this.ledMatrixGfxModel = ledMatrixGfxModel;
 	}
 
 	@Override
@@ -46,9 +48,9 @@ public class LedMatrixGfxView extends JPanel {
 		Graphics g = graphics.create();
 		g.setColor(Color.WHITE);
 		g.fillRect(0,  0, getWidth(), getHeight());
-		for (int i = 0; ellipseMatrix != null && i < ellipseMatrix.length; i++) {
-			for (int j = 0; j < ellipseMatrix[0].length; j++) {
-				Double shape = ellipseMatrix[i][j];
+		for (int i = 0; shapes != null && i < shapes.length; i++) {
+			for (int j = 0; j < shapes[0].length; j++) {
+				Double shape = shapes[i][j];
 				if (selectedEllipses.contains(shape)) {
 					g.setColor(Color.BLUE);
 					g.fillOval((int) shape.x, (int) shape.y, (int) shape.width, (int) shape.height);
@@ -64,15 +66,9 @@ public class LedMatrixGfxView extends JPanel {
 	public LedPosition selectLed(MouseEvent event, boolean clear) {
 		int x = event.getX();
 		int y = event.getY();
-		if (clear) {
-			selectedEllipses.clear();
-			// shift was pressed?? multi select enabled
-		} else {
-			
-		}
-		for (int i = 0; i < ellipseMatrix.length; i++) {
-			for (int j = 0; j < ellipseMatrix[0].length; j++) {
-				Double shape = ellipseMatrix[i][j];
+		for (int i = 0; i < shapes.length; i++) {
+			for (int j = 0; j < shapes[0].length; j++) {
+				Double shape = shapes[i][j];
 				if (shape.contains(x, y)) {
 					selectedEllipses.add(shape);
 					return LedPosition.ledPositionFor(i, j);
@@ -80,37 +76,6 @@ public class LedMatrixGfxView extends JPanel {
 			}
 		}
 		return null;
-	}
-
-	public void setMatrixSize(int width, int height) {
-		ellipseMatrix = buildShapeMatrix(width, height);
-	}
-	
-	private int getLedDiameterX(int nbRows) {
-		return getWidth() / nbRows - nbRows*10;
-	}
-	
-	private int getLedDiameterY(int nbColumns) {
-		return getHeight() / nbColumns - nbColumns*10;
-	}
-	
-	private int getPosX(int x, int nbRows) {
-		return getLedDiameterX(nbRows)*x + (x+1)*20;
-	}
-	
-	private int getPosY(int y, int nbColumns) {
-		return getLedDiameterY(nbColumns)*y + (y+1)*20;
-	}
-	
-	private Ellipse2D.Double[][] buildShapeMatrix(int width, int height) {
-		Ellipse2D.Double[][] result = new Ellipse2D.Double[width][height];
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				int size = Math.min(getLedDiameterX(width), getLedDiameterY(height));
-				result[i][j] = new Ellipse2D.Double(getPosX(i, width), getPosY(j, height), size, size);
-			}
-		}
-		return result;
 	}
 
 }

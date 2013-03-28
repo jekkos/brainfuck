@@ -1,17 +1,24 @@
 package be.kuleuven.med.brainfuck.core;
 
-import java.util.Collection;
+import java.awt.Shape;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import be.kuleuven.med.brainfuck.entity.LedPosition;
 import be.kuleuven.med.brainfuck.settings.LedMatrixSettings;
 import be.kuleuven.med.brainfuck.settings.LedSettings;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+
 public class LedMatrixGfxModel {
 
-	private Collection<LedSettings> selectedLeds;
+	private Set<LedSettings> selectedLeds = Sets.newHashSet();
 	
-	private Collection<LedSettings> illuminatedLeds;
+	private Set<LedSettings> illuminatedLeds = Sets.newHashSet();
+	
+	private List<Shape> shapes = Lists.newArrayList();
 	
 	private Map<LedPosition, LedSettings> leds;
 	
@@ -50,6 +57,14 @@ public class LedMatrixGfxModel {
 		}
 	}
 	
+	public List<Shape> getShapes() {
+		return shapes;
+	}
+
+	public void setShapes(List<Shape> shapes) {
+		this.shapes = shapes;
+	}
+
 	public void clearSelected() {
 		selectedLeds.clear();
 	}

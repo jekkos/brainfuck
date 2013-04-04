@@ -1,14 +1,13 @@
 package be.kuleuven.med.brainfuck.core;
 
+import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
-import java.util.List;
 import java.util.Map;
 
 import be.kuleuven.med.brainfuck.entity.LedPosition;
 import be.kuleuven.med.brainfuck.settings.LedMatrixSettings;
 import be.kuleuven.med.brainfuck.settings.LedSettings;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 public class LedMatrixGfxModelBuilder {
@@ -68,39 +67,10 @@ public class LedMatrixGfxModelBuilder {
 	public LedMatrixGfxModelBuilder resizeMatrix(int width, int height) {
 		removeLedSettings(width, height);
 		addLedSettings(width, height);
-		//FIXME build shape list.. need to associate it with a position
-		//shapeList = buildShapeMatrix(width, height);
 		// add or remove nodes..
 		getLedMatrixSettings().setWidth(width);
 		getLedMatrixSettings().setHeight(height);
 		return this;
-	}
-	
-	private int getLedDiameterX(int nbRows) {
-		return getWidth() / nbRows - nbRows*10;
-	}
-	
-	private int getLedDiameterY(int nbColumns) {
-		return getHeight() / nbColumns - nbColumns*10;
-	}
-	
-	private int getPosX(int x, int nbRows) {
-		return getLedDiameterX(nbRows)*x + (x+1)*20;
-	}
-	
-	private int getPosY(int y, int nbColumns) {
-		return getLedDiameterY(nbColumns)*y + (y+1)*20;
-	}
-	
-	private List<Ellipse2D.Double> buildShapeList(int width, int height) {
-		List<Ellipse2D.Double> result = Lists.newArrayList();
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				int size = Math.min(getLedDiameterX(width), getLedDiameterY(height));
-				result.add(new Ellipse2D.Double(getPosX(i, width), getPosY(j, height), size, size));
-			}
-		}
-		return result;
 	}
 	
 	public int getWidth() {

@@ -1,7 +1,5 @@
 package be.kuleuven.med.brainfuck.core;
 
-import java.awt.Shape;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -9,7 +7,6 @@ import be.kuleuven.med.brainfuck.entity.LedPosition;
 import be.kuleuven.med.brainfuck.settings.LedMatrixSettings;
 import be.kuleuven.med.brainfuck.settings.LedSettings;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 public class LedMatrixGfxModel {
@@ -18,25 +15,23 @@ public class LedMatrixGfxModel {
 	
 	private Set<LedSettings> illuminatedLeds = Sets.newHashSet();
 	
-	private List<Shape> shapes = Lists.newArrayList();
-	
-	private Map<LedPosition, LedSettings> leds;
+	private Map<LedPosition, LedSettings> ledSettingsMap;
 	
 	private LedMatrixSettings ledMatrixSettings;
 	
-	LedMatrixGfxModel(LedMatrixSettings ledMatrixSettings, Map<LedPosition, LedSettings> leds) {
+	LedMatrixGfxModel(LedMatrixSettings ledMatrixSettings, Map<LedPosition, LedSettings> ledSettingsMap) {
 		this.ledMatrixSettings = ledMatrixSettings;
-		this.leds = leds;
+		this.ledSettingsMap = ledSettingsMap;
 	}
 	
 	public boolean removeLedSettings(LedSettings ledSettings) {
-		LedSettings removedLedSettings = leds.remove(ledSettings.getLedPosition());
+		LedSettings removedLedSettings = ledSettingsMap.remove(ledSettings.getLedPosition());
 		boolean result = removedLedSettings != null;
 		return result && ledMatrixSettings.removeLedSettings(ledSettings);
 	}
 	
 	public boolean addLedSettings(LedSettings ledSettings) {
-		LedSettings addedLedSettings = leds.put(ledSettings.getLedPosition(), ledSettings); 
+		LedSettings addedLedSettings = ledSettingsMap.put(ledSettings.getLedPosition(), ledSettings); 
 		boolean result = addedLedSettings != null;
 		return result && ledMatrixSettings.addLedSettings(ledSettings);
 	}
@@ -55,14 +50,6 @@ public class LedMatrixGfxModel {
 		} else {
 			selectedLeds.remove(ledSettings);
 		}
-	}
-	
-	public List<Shape> getShapes() {
-		return shapes;
-	}
-
-	public void setShapes(List<Shape> shapes) {
-		this.shapes = shapes;
 	}
 
 	public void clearSelected() {
@@ -90,8 +77,16 @@ public class LedMatrixGfxModel {
 		this.ledMatrixSettings = ledMatrixSettings;
 	}
 	
+	public Map<LedPosition, LedSettings> getLedSettingsMap() {
+		return ledSettingsMap;
+	}
+
+	public void setLedSettingsMap(Map<LedPosition, LedSettings> ledSettingsMap) {
+		this.ledSettingsMap = ledSettingsMap;
+	}
+
 	public LedSettings getLedSettings(LedPosition ledPosition) {
-		return leds.get(ledPosition);
+		return ledSettingsMap.get(ledPosition);
 	}
 
 	public int getWidth() {

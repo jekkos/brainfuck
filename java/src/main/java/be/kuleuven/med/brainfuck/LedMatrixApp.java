@@ -57,6 +57,8 @@ public class LedMatrixApp extends SingleFrameApplication {
 	private SettingsManager settingsManager;
 
 	private LedMatrixController ledMatrixController;
+	
+	private LedMatrixGfxModel ledMatrixGfxModel;
 
 	private List<SerialPortConnector> serialPortConnectors = Lists.newArrayList(); 
 
@@ -91,7 +93,7 @@ public class LedMatrixApp extends SingleFrameApplication {
 		serialPortConnectors.add(ledMatrixConnector);
 		LedMatrixSettings ledMatrixSettings = settingsManager.getLedMatrixSettings();
 		ExperimentSettings experimentSettings = settingsManager.getExperimentSettings();
-		LedMatrixGfxModel ledMatrixGfxModel = new LedMatrixGfxModelBuilder(ledMatrixSettings).build();
+		ledMatrixGfxModel = new LedMatrixGfxModelBuilder(ledMatrixSettings).build();
 		LedMatrixPanelModel ledMatrixPanelModel = new LedMatrixPanelModel(ledMatrixSettings, experimentSettings);
 		ledMatrixController = new LedMatrixController(ledMatrixPanelModel, ledMatrixGfxModel, ledMatrixConnector);
 		getContext().getTaskService().execute(ledMatrixController.updateSerialPortNames());
@@ -101,19 +103,19 @@ public class LedMatrixApp extends SingleFrameApplication {
 	 * Initialize and show the application GUI.
 	 */
 	@Override
-	protected void startup() {
-		JPanel mainPanel = new JPanel(new MigLayout("fill, nogrid, flowy, insets 10"));
-		JPanel rightPanel = new JPanel(new MigLayout("nogrid", "[right]10", "10"));
-		JPanel leftPanel = new JPanel(new MigLayout());
-		LedMatrixGfxView ledMatrixGfxView = new LedMatrixGfxView(ledMatrixController);
+	protected void startup() {//
+		JPanel mainPanel = new JPanel(new MigLayout("fill, nogrid, flowx, insets 10"));
+		JPanel leftPanel = new JPanel(new MigLayout("nogrid", "[right]10", "10"));
+		JPanel rightPanel = new JPanel(new MigLayout("fill, nogrid, flowx"));
+		LedMatrixGfxView ledMatrixGfxView = new LedMatrixGfxView(ledMatrixController, ledMatrixGfxModel);
 		LedMatrixPanelView ledMatrixControlsView = new LedMatrixPanelView(ledMatrixController);
 		// init the view
 		ledMatrixController.initViews(ledMatrixControlsView, ledMatrixGfxView);
 		// add to the panels
-		rightPanel.add(ledMatrixControlsView);
 		leftPanel.add(ledMatrixGfxView);
-		mainPanel.add(ledMatrixControlsView);
-		mainPanel.add(ledMatrixGfxView);
+		rightPanel.add(ledMatrixControlsView);
+		mainPanel.add(leftPanel);
+		mainPanel.add(rightPanel);
 		//StatusPanel statusPanel = new StatusPanel();
 		//mainPanel.add(statusPanel, "height 30!, gapleft push");
 		getMainFrame().add(mainPanel);

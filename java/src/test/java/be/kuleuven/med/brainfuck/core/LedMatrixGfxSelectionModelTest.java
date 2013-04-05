@@ -13,7 +13,9 @@ public class LedMatrixGfxSelectionModelTest extends TestCase {
 	public void testIncreaseSelection() throws Exception {
 		LedMatrixSettings ledMatrixSettings = new LedMatrixSettingsBuilder().withSize(3, 2).build();
 		LedMatrixGfxModel ledMatrixModel = new LedMatrixGfxModelBuilder(ledMatrixSettings).build();
-		LedSettings ledSettings0 = ledMatrixModel.getLedSettings(LedPosition.ledPositionFor(0, 0));
+		LedSettings ledSettings0 = ledMatrixModel.getLedSettings(LedPosition.ledPositionFor(1, 0));
+		ledSettings0.setRowPin(10);
+		ledSettings0.setColumnPin(5);
 		LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel = 
 				LedMatrixGfxSelectionModelBuilder.of(ledSettings0);
 		// just one selected, should be equal
@@ -21,19 +23,22 @@ public class LedMatrixGfxSelectionModelTest extends TestCase {
 		assertTrue(ledMatrixGfxSelectionModel.isColumnSelected());
 		assertTrue(ledMatrixGfxSelectionModel.isRowSelected());
 		// add two to the selection
-		LedPosition ledPosition1 = LedPosition.ledPositionFor(1, 0);
-		LedPosition ledPosition2 = LedPosition.ledPositionFor(1, 1);
+		LedPosition ledPosition1 = LedPosition.ledPositionFor(1, 1);
 		LedSettings ledSettings1 = ledMatrixModel.getLedSettings(ledPosition1);
-		LedSettings ledSettings2 = ledMatrixModel.getLedSettings(ledPosition2);
+		ledSettings1.setRowPin(2);
+		ledSettings1.setColumnPin(5);
 		ledMatrixGfxSelectionModel = new LedMatrixGfxSelectionModelBuilder(ledMatrixGfxSelectionModel)
-			.addRemoveLedSettings(ledSettings1, ledSettings2).build();
-		assertEquals(3, ledMatrixGfxSelectionModel.getSelectedLedSettings().size());
-		assertFalse(ledMatrixGfxSelectionModel.isColumnSelected());
+			.addRemoveLedSettings(ledSettings1).build();
+		assertEquals(2, ledMatrixGfxSelectionModel.getSelectedLedSettings().size());
+		assertTrue(ledMatrixGfxSelectionModel.isColumnSelected());
 		assertFalse(ledMatrixGfxSelectionModel.isRowSelected());
+		
+		assertEquals(5, ledMatrixGfxSelectionModel.getColumnPin());
+		// no common row pin.. will show 0
+		assertEquals(0, ledMatrixGfxSelectionModel.getRowPin());
 		
 		assertTrue(ledMatrixGfxSelectionModel.getSelectedLedSettings().contains(ledSettings0));
 		assertTrue(ledMatrixGfxSelectionModel.getSelectedLedSettings().contains(ledSettings1));
-		assertTrue(ledMatrixGfxSelectionModel.getSelectedLedSettings().contains(ledSettings2));
 	}
 	
 	public void testDecreaseSelection() throws Exception {
@@ -63,6 +68,9 @@ public class LedMatrixGfxSelectionModelTest extends TestCase {
 		// more than one row and column selected.. should be both false
 		assertFalse(ledMatrixGfxSelectionModel.isRowSelected());
 		assertFalse(ledMatrixGfxSelectionModel.isColumnSelected());
+		// no common pins in this case
+		assertEquals(0, ledMatrixGfxSelectionModel.getRowPin());
+		assertEquals(0, ledMatrixGfxSelectionModel.getColumnPin());
 	}
 	
 }

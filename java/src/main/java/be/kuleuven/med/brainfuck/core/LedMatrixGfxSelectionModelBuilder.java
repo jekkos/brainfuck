@@ -33,20 +33,12 @@ public class LedMatrixGfxSelectionModelBuilder {
 	
 	public LedMatrixGfxSelectionModel build() {
 		ledMatrixGfxSelectionModel.setSelectedLedSettings(selectedLedSettings);
-		if (isRowSelected(selectedLedSettings)) {
-			ledMatrixGfxSelectionModel.setRowSelected(true);
-			// find common row pin (if there is one)
-			ledMatrixGfxSelectionModel.setRowPin(findCommonRowPin(selectedLedSettings));
-		} else {
-			ledMatrixGfxSelectionModel.setRowSelected(false);
-		}
-		if (isColumnSelected(selectedLedSettings)) {
-			ledMatrixGfxSelectionModel.setColumnSelected(true);
-			// find common column pin (if there is one)
-			ledMatrixGfxSelectionModel.setColumnPin(findCommonColumnPin(selectedLedSettings));
-		} else {
-			ledMatrixGfxSelectionModel.setColumnSelected(false);
-		}
+		// set row properties
+		ledMatrixGfxSelectionModel.setRowSelected(isRowSelected(selectedLedSettings));
+		ledMatrixGfxSelectionModel.setRowPin(findCommonRowPin(selectedLedSettings));
+		// set column properties
+		ledMatrixGfxSelectionModel.setColumnSelected(isColumnSelected(selectedLedSettings));
+		ledMatrixGfxSelectionModel.setColumnPin(findCommonColumnPin(selectedLedSettings));
 		return ledMatrixGfxSelectionModel;
 	}
 	
@@ -71,7 +63,7 @@ public class LedMatrixGfxSelectionModelBuilder {
 		for(LedSettings ledSettings : selectedLedSettings) {
 			if (result == -1) {
 				result = ledSettings.getRowPin();
-			} else {
+			} else if (ledSettings.getRowPin() != result) {
 				return 0;
 			}
 		}
@@ -83,7 +75,7 @@ public class LedMatrixGfxSelectionModelBuilder {
 		for(LedSettings ledSettings : selectedLedSettings) {
 			if (result == -1) {
 				result = ledSettings.getColumnPin();
-			} else {
+			} else if (ledSettings.getColumnPin() != result) {
 				return 0;
 			}
 		}

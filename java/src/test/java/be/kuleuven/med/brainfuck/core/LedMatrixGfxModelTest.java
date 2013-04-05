@@ -6,7 +6,7 @@ import be.kuleuven.med.brainfuck.settings.LedMatrixSettings;
 import be.kuleuven.med.brainfuck.settings.LedMatrixSettingsBuilder;
 import be.kuleuven.med.brainfuck.settings.LedSettings;
 
-public class LedMatrixTest extends TestCase {
+public class LedMatrixGfxModelTest extends TestCase {
 	
 	public void testDecreaseLedMatrixResize() throws Exception {
 		LedMatrixSettings ledMatrixSettings = new LedMatrixSettingsBuilder().withSize(3, 2).build();
@@ -30,27 +30,27 @@ public class LedMatrixTest extends TestCase {
 	
 	public void testIncreaseLedMatrixSize() throws Exception {
 		LedMatrixSettings ledMatrixSettings = new LedMatrixSettingsBuilder().withSize(3, 2).build();
-		LedMatrixGfxModel ledMatrixModel = new LedMatrixGfxModelBuilder(ledMatrixSettings).build();
-		LedSettings ledSettings = ledMatrixModel.getLedSettings(LedPosition.ledPositionFor(0, 1));
+		LedMatrixGfxModel ledMatrixGfxModel = new LedMatrixGfxModelBuilder(ledMatrixSettings).build();
+		LedSettings ledSettings = ledMatrixGfxModel.getLedSettings(LedPosition.ledPositionFor(0, 1));
 		ledSettings.setColumnPin(3);
 		ledSettings.setRowPin(15);
 		
-		assertEquals(ledMatrixSettings.getWidth(), ledMatrixModel.getWidth());
-		assertEquals(ledMatrixSettings.getHeight(), ledMatrixModel.getHeight());
+		assertEquals(ledMatrixSettings.getWidth(), ledMatrixGfxModel.getWidth());
+		assertEquals(ledMatrixSettings.getHeight(), ledMatrixGfxModel.getHeight());
 		
-		ledMatrixModel = new LedMatrixGfxModelBuilder(ledMatrixModel).resizeMatrix(2,  5).build();
+		ledMatrixGfxModel = new LedMatrixGfxModelBuilder(ledMatrixGfxModel).resizeMatrix(2,  5).build();
 		assertEquals(ledMatrixSettings.getWidth(), 2);
 		assertEquals(ledMatrixSettings.getHeight(), 5);
 		assertEquals(10, ledMatrixSettings.getLedSettingsList().size());
 		// fetch some led settings
-		ledSettings = ledMatrixModel.getLedSettings(LedPosition.ledPositionFor(1,4));
+		ledSettings = ledMatrixGfxModel.getLedSettings(LedPosition.ledPositionFor(1,4));
 		assertNotNull(ledSettings);
 		assertEquals(1, ledSettings.getX());
 		assertEquals(4, ledSettings.getY());
 		assertEquals(0, ledSettings.getRowPin());
 		assertEquals(0, ledSettings.getColumnPin());
 	
-		ledSettings = ledMatrixModel.getLedSettings(LedPosition.ledPositionFor(0, 1));
+		ledSettings = ledMatrixGfxModel.getLedSettings(LedPosition.ledPositionFor(0, 1));
 		assertEquals(15, ledSettings.getRowPin());
 		assertEquals(3, ledSettings.getColumnPin());
 	}

@@ -154,7 +154,6 @@ public class LedMatrixController {
 			if (isShiftDown) {
 				// TODO implement shift down
 			} else if (isControlDown) {
-				// TODO add or remove led settings
 				LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel = ledMatrixGfxModel.getLedMatrixGfxSelectionModel();
 				LedMatrixGfxSelectionModel ledMatrixGfxSectionModel = 
 						new LedMatrixGfxSelectionModelBuilder(ledMatrixGfxSelectionModel)

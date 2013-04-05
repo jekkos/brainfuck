@@ -26,7 +26,7 @@ public class LedMatrixGfxSelectionModelBuilder {
 		this.selectedLedSettings = Sets.newHashSet(selectedLedSettings);
 	}
 
-	private LedMatrixGfxSelectionModelBuilder() { 
+	public LedMatrixGfxSelectionModelBuilder() { 
 		ledMatrixGfxSelectionModel = new LedMatrixGfxSelectionModel();
 		selectedLedSettings = Sets.newHashSet();
 	}
@@ -37,20 +37,26 @@ public class LedMatrixGfxSelectionModelBuilder {
 			ledMatrixGfxSelectionModel.setRowSelected(true);
 			// find common row pin (if there is one)
 			ledMatrixGfxSelectionModel.setRowPin(findCommonRowPin(selectedLedSettings));
+		} else {
+			ledMatrixGfxSelectionModel.setRowSelected(false);
 		}
 		if (isColumnSelected(selectedLedSettings)) {
 			ledMatrixGfxSelectionModel.setColumnSelected(true);
 			// find common column pin (if there is one)
 			ledMatrixGfxSelectionModel.setColumnPin(findCommonColumnPin(selectedLedSettings));
+		} else {
+			ledMatrixGfxSelectionModel.setColumnSelected(false);
 		}
 		return ledMatrixGfxSelectionModel;
 	}
 	
-	public LedMatrixGfxSelectionModelBuilder addRemoveLedSettings(LedSettings ledSettings) {
-		if (ledMatrixGfxSelectionModel != null && ledMatrixGfxSelectionModel.isSelected(ledSettings)) {
-			selectedLedSettings.remove(ledSettings);
-		} else {
-			selectedLedSettings.add(ledSettings);
+	public LedMatrixGfxSelectionModelBuilder addRemoveLedSettings(LedSettings... selectedLedSettingsList) {
+		for (LedSettings ledSettings : selectedLedSettingsList) {
+			if (ledMatrixGfxSelectionModel != null && ledMatrixGfxSelectionModel.isSelected(ledSettings)) {
+				selectedLedSettings.remove(ledSettings);
+			} else {
+				selectedLedSettings.add(ledSettings);
+			}
 		}
 		return this;
 	}

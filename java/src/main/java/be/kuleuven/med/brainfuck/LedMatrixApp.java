@@ -105,17 +105,13 @@ public class LedMatrixApp extends SingleFrameApplication {
 	@Override
 	protected void startup() {//
 		JPanel mainPanel = new JPanel(new MigLayout("fill, nogrid, flowx, insets 10"));
-		JPanel leftPanel = new JPanel(new MigLayout("nogrid", "[right]10", "10"));
-		JPanel rightPanel = new JPanel(new MigLayout("fill, nogrid, flowx"));
 		LedMatrixGfxView ledMatrixGfxView = new LedMatrixGfxView(ledMatrixController, ledMatrixGfxModel);
 		LedMatrixPanelView ledMatrixControlsView = new LedMatrixPanelView(ledMatrixController);
 		// init the view
 		ledMatrixController.initViews(ledMatrixControlsView, ledMatrixGfxView);
 		// add to the panels
-		leftPanel.add(ledMatrixGfxView);
-		rightPanel.add(ledMatrixControlsView);
-		mainPanel.add(leftPanel);
-		mainPanel.add(rightPanel);
+		mainPanel.add(ledMatrixGfxView);
+		mainPanel.add(ledMatrixControlsView);
 		//StatusPanel statusPanel = new StatusPanel();
 		//mainPanel.add(statusPanel, "height 30!, gapleft push");
 		getMainFrame().add(mainPanel);

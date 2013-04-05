@@ -12,6 +12,8 @@ import java.util.Map.Entry;
 
 import javax.swing.JPanel;
 
+import net.miginfocom.swing.MigLayout;
+
 import be.kuleuven.med.brainfuck.entity.LedPosition;
 import be.kuleuven.med.brainfuck.settings.LedSettings;
 
@@ -26,14 +28,14 @@ public class LedMatrixGfxView extends JPanel {
 	private List<Shape> shapeList;
 
 	public LedMatrixGfxView(final LedMatrixController ledMatrixController, LedMatrixGfxModel ledMatrixGfxModel) {	
+		super(new MigLayout("nogrid", "[right]10", "10"));
 		this.ledMatrixGfxModel = ledMatrixGfxModel;
 		addMouseListener(new MouseAdapter() {
 
 			@Override
 			public void mouseClicked(MouseEvent event) {
-				// TODO could implement multi select here.. but will need to review the bean's model
 				LedPosition ledPosition = findLedPosition(event.getX(), event.getY());
-				ledMatrixController.updateSelectedLed(ledPosition, true);
+				ledMatrixController.updateSelection(ledPosition, event.isShiftDown(), event.isControlDown());
 			}
 			
 		});

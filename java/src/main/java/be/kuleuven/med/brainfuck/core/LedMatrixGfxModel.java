@@ -3,21 +3,25 @@ package be.kuleuven.med.brainfuck.core;
 import java.util.Map;
 import java.util.Set;
 
+import org.jdesktop.application.AbstractBean;
+
 import be.kuleuven.med.brainfuck.entity.LedPosition;
 import be.kuleuven.med.brainfuck.settings.LedMatrixSettings;
 import be.kuleuven.med.brainfuck.settings.LedSettings;
 
 import com.google.common.collect.Sets;
 
-public class LedMatrixGfxModel {
-
-	private Set<LedSettings> selectedLeds = Sets.newHashSet();
+public class LedMatrixGfxModel extends AbstractBean {
 	
-	private Set<LedSettings> illuminatedLeds = Sets.newHashSet();
+	public static final String LED_MATRIX_GFX_SELECTION_MODEL = "ledMatrixGfxSelectionModel";
+
+	private Set<LedSettings> illuminatedLedSettings = Sets.newHashSet();
 	
 	private Map<LedPosition, LedSettings> ledSettingsMap;
 	
 	private LedMatrixSettings ledMatrixSettings;
+	
+	private LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel;
 	
 	LedMatrixGfxModel(LedMatrixSettings ledMatrixSettings, Map<LedPosition, LedSettings> ledSettingsMap) {
 		this.ledMatrixSettings = ledMatrixSettings;
@@ -32,41 +36,38 @@ public class LedMatrixGfxModel {
 	
 	public boolean addLedSettings(LedSettings ledSettings) {
 		LedSettings addedLedSettings = ledSettingsMap.put(ledSettings.getLedPosition(), ledSettings); 
-		boolean result = addedLedSettings != null;
+		boolean result = addedLedSettings == null;
 		return result && ledMatrixSettings.addLedSettings(ledSettings);
 	}
 	
 	public void setIlluminated(LedSettings ledSettings, boolean illuminated) {
 		if (illuminated) {
-			illuminatedLeds.add(ledSettings);
+			illuminatedLedSettings.add(ledSettings);
 		} else {
-			illuminatedLeds.remove(ledSettings);
+			illuminatedLedSettings.remove(ledSettings);
 		}
-	}
-	
-	public void setSelected(LedSettings ledSettings, boolean selected) {
-		if (selected) {
-			selectedLeds.add(ledSettings);
-		} else {
-			selectedLeds.remove(ledSettings);
-		}
-	}
-
-	public void clearSelected() {
-		selectedLeds.clear();
 	}
 	
 	public void clear() {
-		selectedLeds.clear();
-		illuminatedLeds.clear();
+		illuminatedLedSettings.clear();
+	}
+	
+	public LedMatrixGfxSelectionModel getLedMatrixGfxSelectionModel() {
+		return ledMatrixGfxSelectionModel;
+	}
+
+	public void setLedMatrixGfxSelectionModel(
+			LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel) {
+		firePropertyChange(LED_MATRIX_GFX_SELECTION_MODEL, 
+				this.ledMatrixGfxSelectionModel = ledMatrixGfxSelectionModel, ledMatrixGfxSelectionModel);
 	}
 
 	public boolean isIlluminated(LedSettings ledSettings) {
-		return illuminatedLeds.contains(ledSettings);
+		return illuminatedLedSettings.contains(ledSettings);
 	}
 	
 	public boolean isSelected(LedSettings ledSettings) {
-		return selectedLeds.contains(ledSettings);
+		return ledMatrixGfxSelectionModel.isSelected(ledSettings);
 	}
 	
 	public LedMatrixSettings getLedMatrixSettings() {
@@ -88,7 +89,7 @@ public class LedMatrixGfxModel {
 	public LedSettings getLedSettings(LedPosition ledPosition) {
 		return ledSettingsMap.get(ledPosition);
 	}
-
+	
 	public int getWidth() {
 		return getLedMatrixSettings().getWidth();
 	}

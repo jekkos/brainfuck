@@ -19,6 +19,8 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.jdesktop.application.ResourceMap;
 
 import be.kuleuven.med.brainfuck.settings.LedSettings;
@@ -50,6 +52,7 @@ public class LedMatrixPanelView extends JPanel {
 	private JTextField secondsToRunTextField;
 
 	public LedMatrixPanelView(final LedMatrixController ledMatrixController) {
+		super(new MigLayout("fill, nogrid, flowx, insets 10"));
 		final ActionMap actionMap = ledMatrixController.getApplicationActionMap();
 		final ResourceMap resourceMap = ledMatrixController.getResourceMap();
 		

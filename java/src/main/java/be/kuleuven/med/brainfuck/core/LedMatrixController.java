@@ -82,20 +82,19 @@ public class LedMatrixController {
 		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixPanelModel, heightProperty, ledMatrixPanelView.getColumnTextField(), TEXT);
 		bindingGroup.addBinding(valueBinding);
 		// bind row and column pin numbers
-		LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel = ledMatrixGfxModel.getLedMatrixGfxSelectionModel();
-		BeanProperty<LedMatrixGfxSelectionModel, Integer> pinRowProperty = BeanProperty.create("ledMatrixGfxSelectionModel.rowPin");
-		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixGfxSelectionModel, pinRowProperty, ledMatrixPanelView.getRowPinTextField(), TEXT);
+		BeanProperty<LedMatrixGfxModel, Integer> pinRowProperty = BeanProperty.create("ledMatrixGfxSelectionModel.rowPin");
+		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixGfxModel, pinRowProperty, ledMatrixPanelView.getRowPinTextField(), TEXT);
 		valueBinding.setTargetNullValue(0);
 		bindingGroup.addBinding(valueBinding);
-		BeanProperty<LedMatrixGfxSelectionModel, Boolean> rowSelectedProperty = BeanProperty.create("ledMatrixGfxSelectionModel.rowSelected");
-		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixGfxSelectionModel, rowSelectedProperty, ledMatrixPanelView.getRowPinTextField(), ENABLED);
+		BeanProperty<LedMatrixGfxModel, Boolean> rowSelectedProperty = BeanProperty.create("ledMatrixGfxSelectionModel.rowSelected");
+		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixGfxModel, rowSelectedProperty, ledMatrixPanelView.getRowPinTextField(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
-		BeanProperty<LedMatrixGfxSelectionModel, Integer> pinColumnProperty = BeanProperty.create("ledMatrixGfxSelectionModel.columnPin");
-		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixGfxSelectionModel, pinColumnProperty, ledMatrixPanelView.getColumnPinTextField(), TEXT);
+		BeanProperty<LedMatrixGfxModel, Integer> pinColumnProperty = BeanProperty.create("ledMatrixGfxSelectionModel.columnPin");
+		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixGfxModel, pinColumnProperty, ledMatrixPanelView.getColumnPinTextField(), TEXT);
 		valueBinding.setTargetNullValue(0);
 		bindingGroup.addBinding(valueBinding);
-		BeanProperty<LedMatrixGfxSelectionModel, Boolean> columnSelectedProperty = BeanProperty.create("ledMatrixGfxSelectionModel.columnSelected");
-		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixGfxSelectionModel, columnSelectedProperty, ledMatrixPanelView.getColumnPinTextField(), ENABLED);
+		BeanProperty<LedMatrixGfxModel, Boolean> columnSelectedProperty = BeanProperty.create("ledMatrixGfxSelectionModel.columnSelected");
+		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixGfxModel, columnSelectedProperty, ledMatrixPanelView.getColumnPinTextField(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
 		// bind serial port info
 		BeanProperty<LedMatrixPanelModel, List<String>> serialPortNamesProperty = BeanProperty.create("serialPortNames");
@@ -143,6 +142,7 @@ public class LedMatrixController {
 			ledMatrixPanelModel.setExperimentInitialized(true);
 			ledMatrixGfxModel = new LedMatrixGfxModelBuilder(ledMatrixGfxModel).
 					resizeMatrix(width, height).build();
+			ledMatrixGfxView.resizeMatrix(ledMatrixGfxModel.getLedSettingsMap().keySet(), width, height);
 			// should send data to arduino as well??
 			ledMatrixGfxView.repaint();
 		}
@@ -246,9 +246,10 @@ public class LedMatrixController {
 				Object source = event.getSource();
 				for (LedSettings ledSettings : ledMatrixGfxModel.getLedMatrixGfxSelectionModel().getSelectedLedSettings()) {
 					boolean illuminated = ledMatrixPanelView.getToggleLedButton().isSelected();
-					if (source instanceof JButton) {
-						JButton button = (JButton) event.getSource();
+					if (source instanceof JToggleButton) {
+						JToggleButton button = (JToggleButton) event.getSource();
 						toggleName(button, TOGGLE_LED_ACTION);
+						ledMatrixGfxModel.setIlluminated(ledSettings, illuminated);
 					} else {
 						JSlider slider = (JSlider) event.getSource();
 						ledSettings.setIntensity(slider.getValue());

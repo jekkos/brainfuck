@@ -7,17 +7,17 @@ import java.awt.Shape;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
-import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
-
 import be.kuleuven.med.brainfuck.entity.LedPosition;
 import be.kuleuven.med.brainfuck.settings.LedSettings;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 public class LedMatrixGfxView extends JPanel {
 
@@ -25,10 +25,10 @@ public class LedMatrixGfxView extends JPanel {
 
 	private LedMatrixGfxModel ledMatrixGfxModel;
 	
-	private List<Shape> shapeList;
+	private Map<LedPosition, Shape> shapeMap;
 
 	public LedMatrixGfxView(final LedMatrixController ledMatrixController, LedMatrixGfxModel ledMatrixGfxModel) {	
-		super(new MigLayout("nogrid", "[right]10", "10"));
+		super(new MigLayout("nogrid", ":300:", ":300:"));
 		this.ledMatrixGfxModel = ledMatrixGfxModel;
 		addMouseListener(new MouseAdapter() {
 
@@ -42,9 +42,10 @@ public class LedMatrixGfxView extends JPanel {
 	}
 
 	private LedPosition findLedPosition(int x, int y) {
-		for (Shape shape : shapeList) {
+		for (Entry<LedPosition, Shape> shapeEntry : shapeMap.entrySet()) {
+			Shape shape = shapeEntry.getValue();
 			if (shape.contains(x, y)) {
-				return LedPosition.ledPositionFor(x, y);
+				return shapeEntry.getKey();
 			}
 		}
 		return null;
@@ -52,30 +53,34 @@ public class LedMatrixGfxView extends JPanel {
 
 	@Override
 	protected void paintComponent(Graphics graphics) {
-		List<Shape> shapes = Lists.newArrayList();
 		super.paintComponent(graphics);
 		Graphics g = graphics.create();
 		g.setColor(Color.WHITE);
 		g.fillRect(0,  0, getWidth(), getHeight());
-		int width = ledMatrixGfxModel.getWidth();
-		int height = ledMatrixGfxModel.getHeight();
-		int size = getLedDiameter(width, height);
-		for (Entry<LedPosition, LedSettings> ledSettingsEntry : ledMatrixGfxModel.getLedSettingsMap().entrySet()) {
-			LedSettings ledSettings = ledSettingsEntry.getValue();
-			LedPosition ledPosition = ledSettingsEntry.getKey();
+		for (Entry<LedPosition, Shape> shapeEntry : shapeMap.entrySet()) {
+			LedPosition ledPosition = shapeEntry.getKey();
+			Shape shape = shapeEntry.getValue();
+			LedSettings ledSettings = ledMatrixGfxModel.getLedSettings(ledPosition);
 			boolean selected = ledMatrixGfxModel.isSelected(ledSettings);
 			boolean illuminated = ledMatrixGfxModel.isIlluminated(ledSettings);
 			// set a nice color..
 			int red = selected ? 255 : 0;
 			int blue = illuminated ? ledSettings.getIntensity() : 0;
-			g.setColor(new Color(0, red, blue));
-			Ellipse2D.Double shape = new Ellipse2D.Double(getPosX(ledPosition.getX(), width), getPosY(ledPosition.getY(), height), size, size);
-			shapes.add(shape);
+			g.setColor(new Color(red, 0, blue));
+			
 			Rectangle rectangle = shape.getBounds();
-			g.fillOval(rectangle.x, rectangle.y, size, size);
+			g.fillOval(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
 		}
 		g.dispose();
-		this.shapeList = shapes;
+	}
+	
+	public void resizeMatrix(Set<LedPosition> ledPositions, int width, int height) {
+		shapeMap = Maps.newHashMap();
+		int size = getLedDiameter(width, height);
+		for(LedPosition ledPosition : ledPositions) {
+			Ellipse2D.Double shape = new Ellipse2D.Double(getPosX(ledPosition.getX(), width), getPosY(ledPosition.getY(), height), size, size);
+			shapeMap.put(ledPosition, shape);
+		}
 	}
 	
 	private int getLedDiameter(int width, int height) {
@@ -83,19 +88,19 @@ public class LedMatrixGfxView extends JPanel {
 	}
 	
 	private int getLedDiameterX(int nbRows) {
-		return getWidth() / nbRows - nbRows*10;
+		return getWidth() / nbRows - 10;
 	}
 	
 	private int getLedDiameterY(int nbColumns) {
-		return getHeight() / nbColumns - nbColumns*10;
+		return getHeight() / nbColumns - 10;
 	}
 	
 	private int getPosX(int x, int nbRows) {
-		return getLedDiameterX(nbRows)*x + (x+1)*20;
+		return ((x + 1) * getWidth()) / nbRows - getLedDiameterX(nbRows);
 	}
 	
 	private int getPosY(int y, int nbColumns) {
-		return getLedDiameterY(nbColumns)*y + (y+1)*20;
+		return ((y + 1) * getHeight()) / nbColumns - getLedDiameterY(nbColumns);
 	}
 	
 }

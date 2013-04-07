@@ -52,7 +52,7 @@ public class LedMatrixPanelView extends JPanel {
 	private JTextField secondsToRunTextField;
 
 	public LedMatrixPanelView(final LedMatrixController ledMatrixController) {
-		super(new MigLayout("fill, nogrid, flowx, insets 10"));
+		super(new MigLayout("nogrid, align right, insets 10"));
 		final ActionMap actionMap = ledMatrixController.getApplicationActionMap();
 		final ResourceMap resourceMap = ledMatrixController.getResourceMap();
 		

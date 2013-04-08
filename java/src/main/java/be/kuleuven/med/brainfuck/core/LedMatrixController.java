@@ -86,14 +86,14 @@ public class LedMatrixController {
 		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixGfxModel, pinRowProperty, ledMatrixPanelView.getRowPinTextField(), TEXT);
 		valueBinding.setTargetNullValue(0);
 		bindingGroup.addBinding(valueBinding);
-		BeanProperty<LedMatrixGfxModel, Boolean> rowSelectedProperty = BeanProperty.create("ledMatrixGfxSelectionModel.rowSelected");
+		BeanProperty<LedMatrixGfxModel, Boolean> rowSelectedProperty = BeanProperty.create("ledMatrixGfxSelectionModel.rowSelected && !illuminated");
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixGfxModel, rowSelectedProperty, ledMatrixPanelView.getRowPinTextField(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
 		BeanProperty<LedMatrixGfxModel, Integer> pinColumnProperty = BeanProperty.create("ledMatrixGfxSelectionModel.columnPin");
 		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixGfxModel, pinColumnProperty, ledMatrixPanelView.getColumnPinTextField(), TEXT);
 		valueBinding.setTargetNullValue(0);
 		bindingGroup.addBinding(valueBinding);
-		BeanProperty<LedMatrixGfxModel, Boolean> columnSelectedProperty = BeanProperty.create("ledMatrixGfxSelectionModel.columnSelected");
+		BeanProperty<LedMatrixGfxModel, Boolean> columnSelectedProperty = BeanProperty.create("ledMatrixGfxSelectionModel.columnSelected && !illuminated");
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixGfxModel, columnSelectedProperty, ledMatrixPanelView.getColumnPinTextField(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
 		// bind serial port info
@@ -277,10 +277,13 @@ public class LedMatrixController {
 			@Override
 			protected Void doInBackground() throws Exception {
 				boolean illuminated = ledMatrixPanelView.getToggleLedButton().isSelected();
+				int intensity = ledMatrixPanelView.getIntensitySlider().getValue();
 				LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel = ledMatrixGfxModel.getLedMatrixGfxSelectionModel();
 				for (LedSettings ledSettings : ledMatrixGfxSelectionModel.getSelectedLedSettings()) {
-					boolean selected = ledMatrixGfxModel.isSelected(ledSettings);
-					ledMatrixConnector.toggleLed(ledSettings, selected && illuminated);
+					if (ledMatrixGfxModel.isSelected(ledSettings)) {
+						ledSettings.setIntensity(intensity);
+						ledMatrixConnector.toggleLed(ledSettings, illuminated);
+					}
 				}
 				message("endMessage");
 				return null;

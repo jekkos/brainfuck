@@ -12,10 +12,11 @@ import be.kuleuven.med.brainfuck.settings.SerialPortSettings;
 
 public class LedMatrixConnectorTest extends TestCase {
 
-	private static final String AW_11_LOW = "00aw011000";
 	private static final String AW_10_LOW = "00aw010000";
 	private static final String AW_10_HIGH = "00aw010030";
-	private static final String AW_11_HIGH = "00aw011030";
+
+	private static final String DW_11_LOW = "00dw011 LOW";
+	private static final String DW_11_HIGH = "00dw011HIGH";
 	private static final String DW_9_LOW = "00dw009 LOW";
 	private static final String DW_10_LOW = "00dw010 LOW";
 	private static final String DW_9_HIGH = "00dw009HIGH";
@@ -57,12 +58,13 @@ public class LedMatrixConnectorTest extends TestCase {
 		ledSettings.setIntensity(30);
 		ledMatrixConnector.toggleLed(ledSettings, true);
 		StringBuilder result = new StringBuilder(AW_10_HIGH).append(RETURN);
-		result.append(AW_11_HIGH).append(RETURN);
+		// columns will use digital switching (p-channel)
+		result.append(DW_11_HIGH).append(RETURN);
 		assertEquals(result.toString(), byteArrayOutputStream.toString());
 		// turn led off
 		ledMatrixConnector.toggleLed(ledSettings, false);
 		result.append(AW_10_LOW).append(RETURN);
-		result.append(AW_11_LOW).append(RETURN);
+		result.append(DW_11_LOW).append(RETURN);
 		assertEquals(result.toString(), byteArrayOutputStream.toString());
 	}
 	

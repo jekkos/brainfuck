@@ -39,8 +39,14 @@ public class LedMatrixConnector extends SerialPortConnector {
 	}
 	
 	public void toggleLed(LedSettings ledSettings, boolean illuminated) {
-		sendCommand(buildCommand(ledSettings, ledSettings.getRowPin(), illuminated));
-		sendCommand(buildCommand(ledSettings, ledSettings.getColumnPin(), illuminated));
+		if (isMaxIntensity(ledSettings)) {
+			sendCommand(buildDigitalWrite(illuminated, ledSettings.getRowPin()));
+			sendCommand(buildDigitalWrite(illuminated, ledSettings.getColumnPin()));
+		} else {
+			// only modulate rows when using analog write
+			sendCommand(buildAnalogWrite(illuminated, ledSettings.getRowPin(), ledSettings.getIntensity()));
+			sendCommand(buildDigitalWrite(illuminated, ledSettings.getColumnPin()));
+		}
 	}
 	
 	public void disableAllLeds() {
@@ -57,18 +63,17 @@ public class LedMatrixConnector extends SerialPortConnector {
 		return result.toString();
 	}
 	
-	private String buildCommand(LedSettings ledSettings, int pin, boolean illuminated) {
-		StringBuilder result = new StringBuilder(NO_VALUE);
-		if (isMaxIntensity(ledSettings)) {
-			result.append(DIGITAL_WRITE);
-			result.append(String.format("%03d", pin));
-			result.append(illuminated ? HIGH : LOW);
-		} else {
-			int intensity = ledSettings.getIntensity();
-			result.append(ANALOG_WRITE);
-			result.append(String.format("%03d", pin));
-			result.append(String.format("%03d", illuminated ? intensity : 0));
-		}
+	private String buildAnalogWrite(boolean illuminated, int pin, int intensity) {
+		StringBuilder result = new StringBuilder(NO_VALUE).append(ANALOG_WRITE);
+		result.append(String.format("%03d", pin));
+		result.append(String.format("%03d", illuminated ? intensity : 0));
+		return result.toString();
+	}
+	
+	private String buildDigitalWrite(boolean illuminated, int pin) {
+		StringBuilder result = new StringBuilder(NO_VALUE).append(DIGITAL_WRITE);
+		result.append(String.format("%03d", pin));
+		result.append(illuminated ? HIGH : LOW);
 		return result.toString();
 	}
 	

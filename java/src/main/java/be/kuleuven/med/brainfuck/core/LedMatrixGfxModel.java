@@ -1,7 +1,6 @@
 package be.kuleuven.med.brainfuck.core;
 
 import java.util.Map;
-import java.util.Set;
 
 import org.jdesktop.application.AbstractBean;
 
@@ -9,19 +8,19 @@ import be.kuleuven.med.brainfuck.entity.LedPosition;
 import be.kuleuven.med.brainfuck.settings.LedMatrixSettings;
 import be.kuleuven.med.brainfuck.settings.LedSettings;
 
-import com.google.common.collect.Sets;
-
 public class LedMatrixGfxModel extends AbstractBean {
+	
+	public static final String ILLUMINATED= "illuminated";
 	
 	public static final String LED_MATRIX_GFX_SELECTION_MODEL = "ledMatrixGfxSelectionModel";
 
-	private Set<LedSettings> illuminatedLedSettings = Sets.newHashSet();
-	
 	private Map<LedPosition, LedSettings> ledSettingsMap;
 	
 	private LedMatrixSettings ledMatrixSettings;
 	
 	private LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel;
+	
+	private boolean illuminated = false;
 	
 	LedMatrixGfxModel(LedMatrixSettings ledMatrixSettings, Map<LedPosition, LedSettings> ledSettingsMap) {
 		this.ledMatrixSettings = ledMatrixSettings;
@@ -40,16 +39,12 @@ public class LedMatrixGfxModel extends AbstractBean {
 		return result && ledMatrixSettings.addLedSettings(ledSettings);
 	}
 	
-	public void setIlluminated(LedSettings ledSettings, boolean illuminated) {
-		if (illuminated) {
-			illuminatedLedSettings.add(ledSettings);
-		} else {
-			illuminatedLedSettings.remove(ledSettings);
-		}
+	public void setIlluminated(boolean illuminated) {
+		firePropertyChange(ILLUMINATED, this.illuminated, this.illuminated = illuminated);
 	}
 	
-	public void clear() {
-		illuminatedLedSettings.clear();
+	public boolean isIlluminated() {
+		return illuminated;
 	}
 	
 	public LedMatrixGfxSelectionModel getLedMatrixGfxSelectionModel() {
@@ -60,10 +55,6 @@ public class LedMatrixGfxModel extends AbstractBean {
 			LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel) {
 		firePropertyChange(LED_MATRIX_GFX_SELECTION_MODEL, 
 				this.ledMatrixGfxSelectionModel = ledMatrixGfxSelectionModel, ledMatrixGfxSelectionModel);
-	}
-
-	public boolean isIlluminated(LedSettings ledSettings) {
-		return illuminatedLedSettings.contains(ledSettings);
 	}
 	
 	public boolean isSelected(LedSettings ledSettings) {

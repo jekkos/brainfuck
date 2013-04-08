@@ -155,19 +155,21 @@ public class LedMatrixController {
 				// TODO implement shift down
 			} else if (isControlDown) {
 				LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel = ledMatrixGfxModel.getLedMatrixGfxSelectionModel();
-				LedMatrixGfxSelectionModel ledMatrixGfxSectionModel = 
-						new LedMatrixGfxSelectionModelBuilder(ledMatrixGfxSelectionModel)
+				ledMatrixGfxSelectionModel = new LedMatrixGfxSelectionModelBuilder(ledMatrixGfxSelectionModel)
 							.addRemoveLedSettings(ledSettings).build();
-				ledMatrixGfxModel.setLedMatrixGfxSelectionModel(ledMatrixGfxSectionModel);
+				ledMatrixGfxModel.setLedMatrixGfxSelectionModel(ledMatrixGfxSelectionModel);
 			} else {
 				// single element selection in this case
-				LedMatrixGfxSelectionModel ledMatrixGfxSectionModel = 
+				LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel = 
 						LedMatrixGfxSelectionModelBuilder.of(ledSettings);
-				ledMatrixGfxModel.setLedMatrixGfxSelectionModel(ledMatrixGfxSectionModel);
+				ledMatrixGfxModel.setLedMatrixGfxSelectionModel(ledMatrixGfxSelectionModel);
 			}
 		} else {
 			LedMatrixGfxSelectionModel emptySelection = LedMatrixGfxSelectionModelBuilder.EMPTY_SELECTION;
 			ledMatrixGfxModel.setLedMatrixGfxSelectionModel(emptySelection);
+		}
+		if (ledMatrixGfxModel.isIlluminated()) {
+			getContext().getTaskService().execute(updateIlluminatedLeds());
 		}
 		ledMatrixGfxView.repaint();
 	}
@@ -244,17 +246,20 @@ public class LedMatrixController {
 
 			protected Void doInBackground() throws Exception {
 				Object source = event.getSource();
-				for (LedSettings ledSettings : ledMatrixGfxModel.getLedMatrixGfxSelectionModel().getSelectedLedSettings()) {
-					boolean illuminated = ledMatrixPanelView.getToggleLedButton().isSelected();
-					if (source instanceof JToggleButton) {
-						JToggleButton button = (JToggleButton) event.getSource();
-						toggleName(button, TOGGLE_LED_ACTION);
-						ledMatrixGfxModel.setIlluminated(ledSettings, illuminated);
-					} else {
+				boolean illuminated = ledMatrixPanelView.getToggleLedButton().isSelected();
+				if (source instanceof JToggleButton) {
+					JToggleButton button = (JToggleButton) event.getSource();
+					toggleName(button, TOGGLE_LED_ACTION);
+					ledMatrixGfxModel.setIlluminated(illuminated);
+				} 
+				LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel = ledMatrixGfxModel.getLedMatrixGfxSelectionModel();
+				for (LedSettings ledSettings : ledMatrixGfxSelectionModel.getSelectedLedSettings()) {
+					if (source instanceof JSlider) {
 						JSlider slider = (JSlider) event.getSource();
 						ledSettings.setIntensity(slider.getValue());
 					}
-					ledMatrixConnector.toggleLed(ledSettings, illuminated);
+					boolean selected = ledMatrixGfxModel.isSelected(ledSettings);
+					ledMatrixConnector.toggleLed(ledSettings, selected && illuminated);
 				}
 				// update gfx illumination state
 				ledMatrixGfxView.repaint();
@@ -262,6 +267,25 @@ public class LedMatrixController {
 				return null;
 			}
 
+		};
+	}
+	
+	
+	public Task<?, ?> updateIlluminatedLeds() {
+		return new AbstractTask<Void, Void>(TOGGLE_LED_ACTION) {
+
+			@Override
+			protected Void doInBackground() throws Exception {
+				boolean illuminated = ledMatrixPanelView.getToggleLedButton().isSelected();
+				LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel = ledMatrixGfxModel.getLedMatrixGfxSelectionModel();
+				for (LedSettings ledSettings : ledMatrixGfxSelectionModel.getSelectedLedSettings()) {
+					boolean selected = ledMatrixGfxModel.isSelected(ledSettings);
+					ledMatrixConnector.toggleLed(ledSettings, selected && illuminated);
+				}
+				message("endMessage");
+				return null;
+			}
+			
 		};
 	}
 
@@ -277,21 +301,21 @@ public class LedMatrixController {
 					int flickerFrequency, long timePerLed) {
 				try {
 					if (flickerFrequency == 0) {
-						ledMatrixGfxModel.setIlluminated(ledSettings, true);
+						ledMatrixGfxModel.setIlluminated(true);
 						ledMatrixGfxView.repaint();
 						ledMatrixConnector.toggleLed(ledSettings, true);
 						Thread.sleep(timePerLed);
 						ledMatrixConnector.toggleLed(ledSettings, false);
-						ledMatrixGfxModel.setIlluminated(ledSettings, false);
+						ledMatrixGfxModel.setIlluminated(false);
 					} else {
 						long endTime = System.currentTimeMillis() + timePerLed;
 						while(System.currentTimeMillis() < endTime) {
-							ledMatrixGfxModel.setIlluminated(ledSettings, true);
+							ledMatrixGfxModel.setIlluminated(true);
 							ledMatrixGfxView.repaint();
 							ledMatrixConnector.toggleLed(ledSettings, true);
 							Thread.sleep(flickerFrequency);
 							ledMatrixConnector.toggleLed(ledSettings, false);
-							ledMatrixGfxModel.setIlluminated(ledSettings, false);
+							ledMatrixGfxModel.setIlluminated(false);
 						}
 					}
 					ledMatrixPanelView.repaint();
@@ -302,7 +326,7 @@ public class LedMatrixController {
 
 			protected Void doInBackground() throws Exception {
 				ledMatrixConnector.disableAllLeds();
-				ledMatrixGfxModel.clear();
+				ledMatrixGfxModel.setIlluminated(false);
 				ledMatrixGfxView.repaint();
 				ExperimentSettings experimentSettings = ledMatrixPanelModel.getExperimentSettings();
 				int flickerFrequency = experimentSettings.getFlickerFrequency();

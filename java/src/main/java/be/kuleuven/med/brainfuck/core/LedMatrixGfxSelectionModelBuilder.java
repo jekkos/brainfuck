@@ -59,9 +59,9 @@ public class LedMatrixGfxSelectionModelBuilder {
 	}
 	
 	private int findCommonRowPin(Set<LedSettings> selectedLedSettings) {
-		int result = -1;
+		int result = 0;
 		for(LedSettings ledSettings : selectedLedSettings) {
-			if (result == -1) {
+			if (result == 0) {
 				result = ledSettings.getRowPin();
 			} else if (ledSettings.getRowPin() != result) {
 				return 0;
@@ -71,9 +71,9 @@ public class LedMatrixGfxSelectionModelBuilder {
 	}
 	
 	private int findCommonColumnPin(Set<LedSettings> selectedLedSettings) {
-		int result = -1;
+		int result = 0;
 		for(LedSettings ledSettings : selectedLedSettings) {
-			if (result == -1) {
+			if (result == 0) {
 				result = ledSettings.getColumnPin();
 			} else if (ledSettings.getColumnPin() != result) {
 				return 0;

@@ -62,14 +62,19 @@ public class LedMatrixGfxView extends JPanel {
 			Shape shape = shapeEntry.getValue();
 			LedSettings ledSettings = ledMatrixGfxModel.getLedSettings(ledPosition);
 			boolean selected = ledMatrixGfxModel.isSelected(ledSettings);
-			boolean illuminated = ledMatrixGfxModel.isIlluminated(ledSettings);
+			boolean illuminated = ledMatrixGfxModel.isIlluminated();
 			// set a nice color..
-			int red = selected ? 255 : 0;
-			int blue = illuminated ? ledSettings.getIntensity() : 0;
-			g.setColor(new Color(red, 0, blue));
-			
 			Rectangle rectangle = shape.getBounds();
-			g.fillOval(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+			if (selected) {
+				Color fillColor = Color.RED;
+				if (illuminated) {
+					fillColor = new Color(0, 0, ledSettings.getIntensity());
+				}
+				g.setColor(fillColor);
+				g.fillOval(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+			} else {
+				g.drawOval(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+			}
 		}
 		g.dispose();
 	}

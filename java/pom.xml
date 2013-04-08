@@ -274,7 +274,7 @@
 
 		<!-- Keystore generation properties -->
 		<keystore.dnameCn>www.kuleuven.be</keystore.dnameCn>
-		<keystore.dnameO>KULeuvens</keystore.dnameO>
+		<keystore.dnameO>KULeuven</keystore.dnameO>
 		<keystore.dnameL>Leuven</keystore.dnameL>
 		<keystore.dnameSt>Vlaams Brabant</keystore.dnameSt>
 		<keystore.dnameC>Belgium</keystore.dnameC>

@@ -14,12 +14,12 @@ public class LedMatrixConnector extends SerialPortConnector {
 	// default value for digital write
 	private static final String NO_VALUE = "00";
 	// function constants
-	public static final String ANALOG_WRITE = "aw";
-	public static final String DIGITAL_WRITE = "dw";
-	public static final String PIN_MODE = "pm";
+	private static final String ANALOG_WRITE = "aw";
+	private static final String DIGITAL_WRITE = "dw";
+	private static final String PIN_MODE = "pm";
 	// level constants
-	public static final String LOW = " LOW";
-	public static final String HIGH = "HIGH";
+	private static final String LOW = " LOW";
+	private static final String HIGH = "HIGH";
 	// pin mode constants
 	private static final String OUTPUT = "OUTP";
 	// address all pins
@@ -58,14 +58,17 @@ public class LedMatrixConnector extends SerialPortConnector {
 	}
 	
 	private String buildCommand(LedSettings ledSettings, int pin, boolean illuminated) {
-		StringBuilder result = new StringBuilder();
+		StringBuilder result = new StringBuilder(NO_VALUE);
 		if (isMaxIntensity(ledSettings)) {
-			result.append(NO_VALUE).append(DIGITAL_WRITE);
+			result.append(DIGITAL_WRITE);
+			result.append(String.format("%03d", pin));
+			result.append(illuminated ? HIGH : LOW);
 		} else {
-			result.append(ledSettings.getIntensity()).append(ANALOG_WRITE);
+			int intensity = ledSettings.getIntensity();
+			result.append(ANALOG_WRITE);
+			result.append(String.format("%03d", pin));
+			result.append(String.format("%03d", illuminated ? intensity : 0));
 		}
-		result.append(String.format("%03d", ledSettings.getIntensity()));
-		result.append(illuminated ? HIGH : LOW);
 		return result.toString();
 	}
 	

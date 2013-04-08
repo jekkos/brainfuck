@@ -97,12 +97,20 @@ public abstract class SerialPortConnector implements SerialPortEventListener {
 		return serialPortSettings.getName();
 	}
 	
- 	protected OutputStream getOutput() {
+ 	public OutputStream getOutput() {
 		return output;
 	}
  	
+	public void setOutput(OutputStream output) {
+		this.output = output;
+	}
+
 	public InputStream getInput() {
 		return input;
+	}
+	
+	public void setInput(InputStream input) {
+		this.input = input;
 	}
 
 	/**

@@ -9,6 +9,8 @@ import be.kuleuven.med.brainfuck.settings.SerialPortSettings;
 
 public class LedMatrixConnector extends SerialPortConnector {
 	
+	public static final String RETURN = "\r\n";
+	
 	// default value for digital write
 	private static final String NO_VALUE = "00";
 	// function constants
@@ -16,13 +18,13 @@ public class LedMatrixConnector extends SerialPortConnector {
 	public static final String DIGITAL_WRITE = "dw";
 	public static final String PIN_MODE = "pm";
 	// level constants
-	public static final String LOW = "LOW";
+	public static final String LOW = " LOW";
 	public static final String HIGH = "HIGH";
 	// pin mode constants
 	private static final String OUTPUT = "OUTP";
 	// address all pins
 	private static final String ALL = "al";
-	
+
 	private final int maxPortNumber;
 	
 	public LedMatrixConnector(SerialPortSettings serialPortSettings, int maxPortNumber) {
@@ -37,7 +39,8 @@ public class LedMatrixConnector extends SerialPortConnector {
 	}
 	
 	public void toggleLed(LedSettings ledSettings, boolean illuminated) {
-		sendCommand(buildCommand(ledSettings, illuminated));
+		sendCommand(buildCommand(ledSettings, ledSettings.getRowPin(), illuminated));
+		sendCommand(buildCommand(ledSettings, ledSettings.getColumnPin(), illuminated));
 	}
 	
 	public void disableAllLeds() {
@@ -54,14 +57,14 @@ public class LedMatrixConnector extends SerialPortConnector {
 		return result.toString();
 	}
 	
-	private String buildCommand(LedSettings ledSettings, boolean illuminated) {
-		StringBuilder result = new StringBuilder(NO_VALUE);
+	private String buildCommand(LedSettings ledSettings, int pin, boolean illuminated) {
+		StringBuilder result = new StringBuilder();
 		if (isMaxIntensity(ledSettings)) {
 			result.append(NO_VALUE).append(DIGITAL_WRITE);
 		} else {
 			result.append(ledSettings.getIntensity()).append(ANALOG_WRITE);
 		}
-		result.append(ledSettings.getRowPin());
+		result.append(String.format("%03d", ledSettings.getIntensity()));
 		result.append(illuminated ? HIGH : LOW);
 		return result.toString();
 	}
@@ -70,7 +73,7 @@ public class LedMatrixConnector extends SerialPortConnector {
 		try {
 			if (getOutput() != null) {
 				// writeout to arduino
-				command = new StringBuilder(command).append("\r\n").toString();
+				command = new StringBuilder(command).append(RETURN).toString();
 				getOutput().write(command.getBytes());
 				// TODO eventually remove logging here for timing purposes
 				LOGGER.info("Command sent: " + command);

@@ -5,7 +5,6 @@ import java.util.EventObject;
 import java.util.List;
 
 import javax.swing.AbstractButton;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JSlider;
@@ -100,10 +99,10 @@ public class LedMatrixController {
 		BeanProperty<LedMatrixPanelModel, List<String>> serialPortNamesProperty = BeanProperty.create("serialPortNames");
 		Binding<?, ?, ?, ?> comboBoxBinding = SwingBindings.createJComboBoxBinding(UpdateStrategy.READ_WRITE, ledMatrixPanelModel, serialPortNamesProperty, ledMatrixPanelView.getSerialPortNamesBox());
 		bindingGroup.addBinding(comboBoxBinding);
-		BeanProperty<JComboBox<?>, String> selectedElementProperty = BeanProperty.create("selectedElement");
+		BeanProperty<JComboBox<?>, String> selectedItemProperty = BeanProperty.create("selectedItem");
 		BeanProperty<LedMatrixPanelModel, String> selectedSerialPortNameProperty = BeanProperty.create("selectedSerialPortName");
-		Binding<LedMatrixPanelModel, String, JComboBox<?>, String> selectedElementBinding = 
-				Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixPanelModel, selectedSerialPortNameProperty, ledMatrixPanelView.getSerialPortNamesBox(), selectedElementProperty);
+		Binding<JComboBox<?>, String, LedMatrixPanelModel, String> selectedElementBinding = 
+				Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixPanelView.getSerialPortNamesBox(), selectedItemProperty, ledMatrixPanelModel, selectedSerialPortNameProperty);
 		bindingGroup.addBinding(selectedElementBinding);
 		// bind serial port select box enabled state
 		ELProperty<LedMatrixPanelModel, Boolean> arduinoInitialized = ELProperty.create("${!arduinoInitialized}");
@@ -177,13 +176,13 @@ public class LedMatrixController {
 	private void toggleName(AbstractButton button, String actionName) {
 		boolean isSelected = button.isSelected();
 		StringBuilder stringBuilder = new StringBuilder(actionName + ".Action.");
-		stringBuilder.append(isSelected ? "text" : "selectedText");
+		stringBuilder.append(isSelected ? "selectedText" : "text");
 		button.setText(getResourceMap().getString(stringBuilder.toString()));
 	}
 
 	@Action(block=BlockingScope.APPLICATION)
 	public Task<?, ?> initializeSerialPort(ActionEvent event) {
-		toggleName((JButton) event.getSource(), INIT_SERIAL_PORT_ACTION);
+		toggleName((AbstractButton) event.getSource(), INIT_SERIAL_PORT_ACTION);
 		final String selectedSerialPortName  = ledMatrixPanelModel.getSelectedSerialPortName();
 		if (selectedSerialPortName != null && !"".equals(selectedSerialPortName) && !ledMatrixPanelModel.isArduinoInitialized()) {
 			return new AbstractTask<Void, Void>(INIT_SERIAL_PORT_ACTION) {

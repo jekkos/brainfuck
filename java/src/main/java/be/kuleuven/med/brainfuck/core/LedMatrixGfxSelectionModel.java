@@ -38,6 +38,9 @@ public class LedMatrixGfxSelectionModel extends AbstractBean {
 	}
 
 	public void setRowPin(int rowPin) {
+		for(LedSettings ledSettings : selectedLedSettings) {
+			ledSettings.setRowPin(rowPin);
+		}
 		firePropertyChange(ROW_PIN, this.rowPin , this.rowPin = rowPin);
 	}
 
@@ -46,7 +49,11 @@ public class LedMatrixGfxSelectionModel extends AbstractBean {
 	}
 
 	public void setColumnPin(int columnPin) {
+		for(LedSettings ledSettings : selectedLedSettings) {
+			ledSettings.setColumnPin(columnPin);
+		}
 		firePropertyChange(COLUMN_PIN, this.columnPin , this.columnPin = columnPin);
+		
 	}
 
 	public boolean isRowSelected() {

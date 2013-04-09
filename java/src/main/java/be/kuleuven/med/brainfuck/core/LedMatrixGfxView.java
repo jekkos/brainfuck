@@ -73,6 +73,7 @@ public class LedMatrixGfxView extends JPanel {
 				g.setColor(fillColor);
 				g.fillOval(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
 			} else {
+				g.setColor(Color.BLACK);
 				g.drawOval(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
 			}
 		}

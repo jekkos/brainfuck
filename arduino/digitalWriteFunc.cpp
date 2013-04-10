@@ -17,6 +17,8 @@
 
 *******************************************************************************/
 
+#include "serialControl.h"
+
 void digitalWriteFunc() {
   int pin = parseArgument(AR1);
   if(getArgument(AR2).equals("HIGH")){

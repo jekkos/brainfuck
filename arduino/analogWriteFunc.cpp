@@ -17,6 +17,8 @@
 
 *******************************************************************************/
 
+#include "serialControl.h"
+
 void analogWriteFunc(){
   int pin = parseArgument(AR1);
   int value = parseArgument(AR2);

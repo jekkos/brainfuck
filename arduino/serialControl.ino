@@ -17,28 +17,19 @@
 
 *******************************************************************************/
 
-#include <WString.h>
+#include "serialControl.h"
 
-template<class T> inline Print &operator <<(Print &obj, T arg) { obj.print(arg); return obj; }
+void getIncomingChars();
+void processCommand();
+boolean isNumeric(char character);
+boolean commandCorrect();
 
-#define maxLength 16
-
-/* Command structure:
-pos:  01 23 4567 8901 23456
-      id cm arg1 arg2
-*/
-
-// Corresponding offests:
-#define ID  0
-#define CMD 2
-#define AR1 4
-#define AR2 8
-
-int ownID = 0; // Adjust according to module ID
-boolean answer = true;
+int ownID = 0;
+boolean answer = false;
 
 String command = String(maxLength);
-boolean commandComplete = false;
+boolean commandComplete = false; 
+
 int recID;
 
 void setup() {
@@ -67,7 +58,7 @@ void getIncomingChars() {
   if(inChar == 59 || inChar == 10 || inChar == 13){
     commandComplete = true;
   } else {
-    command.append(inChar);
+    command.concat(inChar);
   }
 }
 

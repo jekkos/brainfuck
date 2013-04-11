@@ -28,6 +28,10 @@ public class LedMatrixGfxSelectionModel extends AbstractBean {
 	private int rowPin;
 
 	private int columnPin;
+	
+	public boolean isEmpty() {
+		return selectedLedSettings.isEmpty();
+	}
 
 	public boolean isSelected(LedSettings ledSettings) {
 		return selectedLedSettings.contains(ledSettings);

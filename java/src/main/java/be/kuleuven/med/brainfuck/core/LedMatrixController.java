@@ -71,7 +71,7 @@ public class LedMatrixController {
 		this.ledMatrixGfxView = ledMatrixGfxView;
 
 		BindingGroup bindingGroup = new BindingGroup();
-		Binding<? extends AbstractBean, Boolean, ? extends JComponent, Boolean> enabledBinding = null;
+		Binding<?, Boolean, ? extends JComponent, Boolean> enabledBinding = null;
 		Binding<? extends AbstractBean, Integer, ? extends JComponent, String> valueBinding = null;
 		// bind width and height matrix properties
 		BeanProperty<LedMatrixPanelModel, Integer> widthProperty = BeanProperty.create("width");
@@ -109,10 +109,10 @@ public class LedMatrixController {
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixPanelModel, arduinoInitialized, ledMatrixPanelView.getSerialPortNamesBox(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
 		// bind led controls (just the enabled state)
-		ELProperty<LedMatrixPanelModel, Boolean> ledControlsEnabledProperty = ELProperty.create("${selectedLedSettings != null && arduinoInitialized && !experimentStarted}");
-		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixPanelModel, ledControlsEnabledProperty, ledMatrixPanelView.getIntensitySlider(), ENABLED);
+		ELProperty<LedMatrixController, Boolean> ledControlsEnabledProperty = ELProperty.create("${!ledMatrixGfxModel.ledMatrixGfxSelectionModel.empty && ledMatrixPanelModel.arduinoInitialized && !ledMatrixPanelModel.experimentStarted}");
+		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, this, ledControlsEnabledProperty, ledMatrixPanelView.getIntensitySlider(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
-		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixPanelModel, ledControlsEnabledProperty, ledMatrixPanelView.getToggleLedButton(), ENABLED);
+		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, this, ledControlsEnabledProperty, ledMatrixPanelView.getToggleLedButton(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
 		// bind experiment settings controls
 		ELProperty<LedMatrixPanelModel, Boolean> experimentInitialized = ELProperty.create("${arduinoInitialized && experimentInitialized && !experimentStarted}"); 
@@ -132,7 +132,6 @@ public class LedMatrixController {
 		bindingGroup.bind();
 	}
 
-	@Action
 	public void updateLedMatrix() {
 		// should regenerate led matrix??
 		int width = ledMatrixPanelModel.getWidth();
@@ -351,6 +350,13 @@ public class LedMatrixController {
 
 		};
 	}
-}
+	
+	public LedMatrixPanelModel getLedMatrixPanelModel() {
+		return ledMatrixPanelModel;
+	}
 
-;
+	public LedMatrixGfxModel getLedMatrixGfxModel() {
+		return ledMatrixGfxModel;
+	}
+
+}

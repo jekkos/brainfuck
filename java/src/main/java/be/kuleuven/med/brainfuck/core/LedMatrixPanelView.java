@@ -52,14 +52,14 @@ public class LedMatrixPanelView extends JPanel {
 	private JTextField secondsToRunTextField;
 
 	public LedMatrixPanelView(final LedMatrixController ledMatrixController) {
-		super(new MigLayout("nogrid, al right, insets 10"));
+		super(new MigLayout("nogrid, insets 10", "align right"));
 		final ActionMap actionMap = ledMatrixController.getApplicationActionMap();
 		final ResourceMap resourceMap = ledMatrixController.getResourceMap();
 		
 		// add serial port controls
 		serialPortNamesBox = new JComboBox<String>();
-		add(serialPortNamesBox);
-		JToggleButton initSerialPortNamesButton = new JToggleButton(actionMap.get(INIT_SERIAL_PORT_ACTION));
+		add(serialPortNamesBox,"wrap");
+		JButton initSerialPortNamesButton = new JButton(actionMap.get(INIT_SERIAL_PORT_ACTION));
 		add(initSerialPortNamesButton, "wrap");
 		
 		// add led matrix controls

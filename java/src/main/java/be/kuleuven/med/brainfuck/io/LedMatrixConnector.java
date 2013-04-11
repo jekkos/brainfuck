@@ -65,14 +65,14 @@ public class LedMatrixConnector extends SerialPortConnector {
 	
 	private String buildAnalogWrite(boolean illuminated, int pin, int intensity) {
 		StringBuilder result = new StringBuilder(NO_VALUE).append(ANALOG_WRITE);
-		result.append(String.format("%03d", pin));
-		result.append(String.format("%03d", illuminated ? intensity : 0));
+		result.append(String.format("%04d", pin));
+		result.append(String.format("%04d", illuminated ? intensity : 0));
 		return result.toString();
 	}
 	
 	private String buildDigitalWrite(boolean illuminated, int pin) {
 		StringBuilder result = new StringBuilder(NO_VALUE).append(DIGITAL_WRITE);
-		result.append(String.format("%03d", pin));
+		result.append(String.format("%04d", pin));
 		result.append(illuminated ? HIGH : LOW);
 		return result.toString();
 	}

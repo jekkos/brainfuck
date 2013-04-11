@@ -11,7 +11,6 @@ import javax.swing.JSlider;
 import javax.swing.JToggleButton;
 import javax.swing.event.ChangeEvent;
 
-import org.jdesktop.application.AbstractBean;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Task;
 import org.jdesktop.application.Task.BlockingScope;
@@ -72,7 +71,7 @@ public class LedMatrixController {
 
 		BindingGroup bindingGroup = new BindingGroup();
 		Binding<?, Boolean, ? extends JComponent, Boolean> enabledBinding = null;
-		Binding<? extends AbstractBean, Integer, ? extends JComponent, String> valueBinding = null;
+		Binding<?, Integer, ? extends JComponent, String> valueBinding = null;
 		// bind width and height matrix properties
 		BeanProperty<LedMatrixPanelModel, Integer> widthProperty = BeanProperty.create("width");
 		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixPanelModel, widthProperty, ledMatrixPanelView.getRowTextField(), TEXT);
@@ -85,15 +84,17 @@ public class LedMatrixController {
 		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixGfxModel, pinRowProperty, ledMatrixPanelView.getRowPinTextField(), TEXT);
 		valueBinding.setTargetNullValue(0);
 		bindingGroup.addBinding(valueBinding);
-		BeanProperty<LedMatrixGfxModel, Boolean> rowSelectedProperty = BeanProperty.create("ledMatrixGfxSelectionModel.rowSelected && !illuminated");
+		ELProperty<LedMatrixGfxModel, Boolean> rowSelectedProperty = ELProperty.create("${ledMatrixGfxSelectionModel.rowSelected && !illuminated}");
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixGfxModel, rowSelectedProperty, ledMatrixPanelView.getRowPinTextField(), ENABLED);
+		enabledBinding.setTargetNullValue(false);
 		bindingGroup.addBinding(enabledBinding);
 		BeanProperty<LedMatrixGfxModel, Integer> pinColumnProperty = BeanProperty.create("ledMatrixGfxSelectionModel.columnPin");
 		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixGfxModel, pinColumnProperty, ledMatrixPanelView.getColumnPinTextField(), TEXT);
 		valueBinding.setTargetNullValue(0);
 		bindingGroup.addBinding(valueBinding);
-		BeanProperty<LedMatrixGfxModel, Boolean> columnSelectedProperty = BeanProperty.create("ledMatrixGfxSelectionModel.columnSelected && !illuminated");
+		ELProperty<LedMatrixGfxModel, Boolean> columnSelectedProperty = ELProperty.create("${ledMatrixGfxSelectionModel.columnSelected && !illuminated}");
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixGfxModel, columnSelectedProperty, ledMatrixPanelView.getColumnPinTextField(), ENABLED);
+		enabledBinding.setTargetNullValue(false);
 		bindingGroup.addBinding(enabledBinding);
 		// bind serial port info
 		BeanProperty<LedMatrixPanelModel, List<String>> serialPortNamesProperty = BeanProperty.create("serialPortNames");
@@ -109,29 +110,31 @@ public class LedMatrixController {
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixPanelModel, arduinoInitialized, ledMatrixPanelView.getSerialPortNamesBox(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
 		// bind led controls (just the enabled state)
-		ELProperty<LedMatrixController, Boolean> ledControlsEnabledProperty = ELProperty.create("${!ledMatrixGfxModel.ledMatrixGfxSelectionModel.empty && ledMatrixPanelModel.arduinoInitialized && !ledMatrixPanelModel.experimentStarted}");
+		ELProperty<LedMatrixController, Boolean> ledControlsEnabledProperty = ELProperty.create("${!ledMatrixGfxModel.ledMatrixGfxSelectionModel.cleared && ledMatrixPanelModel.arduinoInitialized && !ledMatrixPanelModel.experimentStarted}");
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, this, ledControlsEnabledProperty, ledMatrixPanelView.getIntensitySlider(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, this, ledControlsEnabledProperty, ledMatrixPanelView.getToggleLedButton(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
 		// bind experiment settings controls
-		ELProperty<LedMatrixPanelModel, Boolean> experimentInitialized = ELProperty.create("${arduinoInitialized && experimentInitialized && !experimentStarted}"); 
-		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixPanelModel, experimentInitialized, ledMatrixPanelView.getSecondsToRunTextField(), ENABLED);
+		ELProperty<LedMatrixPanelModel, Boolean> experimentInitializedNotStarted = ELProperty.create("${arduinoInitialized && experimentInitialized && !experimentStarted}"); 
+		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixPanelModel, experimentInitializedNotStarted, ledMatrixPanelView.getSecondsToRunTextField(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
 		BeanProperty<LedMatrixPanelModel, Integer> secondsToRunProperty = BeanProperty.create("experimentSettings.secondsToRun");
 		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixPanelModel, secondsToRunProperty, ledMatrixPanelView.getSecondsToRunTextField(), TEXT);
 		bindingGroup.addBinding(valueBinding);
-		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixPanelModel, experimentInitialized, ledMatrixPanelView.getFlickerFrequencyTextField(), ENABLED);
+		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixPanelModel, experimentInitializedNotStarted, ledMatrixPanelView.getFlickerFrequencyTextField(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
 		BeanProperty<LedMatrixPanelModel, Integer> flickerFrequencyProperty = BeanProperty.create("experimentSettings.flickerFrequency");
 		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixPanelModel, flickerFrequencyProperty, ledMatrixPanelView.getFlickerFrequencyTextField(), TEXT);
 		valueBinding.setTargetNullValue(0);
 		bindingGroup.addBinding(valueBinding);
+		ELProperty<LedMatrixPanelModel, Boolean> experimentInitialized = ELProperty.create("${arduinoInitialized && experimentInitialized}"); 
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixPanelModel, experimentInitialized, ledMatrixPanelView.getStartExperimentButton(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
 		bindingGroup.bind();
 	}
-
+	
+	@Action
 	public void updateLedMatrix() {
 		// should regenerate led matrix??
 		int width = ledMatrixPanelModel.getWidth();
@@ -157,33 +160,41 @@ public class LedMatrixController {
 							.addRemoveLedSettings(ledSettings).build();
 				ledMatrixGfxModel.setLedMatrixGfxSelectionModel(ledMatrixGfxSelectionModel);
 			} else {
-				// single element selection in this case
+				// single element selectièon in this case
 				LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel = 
 						LedMatrixGfxSelectionModelBuilder.of(ledSettings);
 				ledMatrixGfxModel.setLedMatrixGfxSelectionModel(ledMatrixGfxSelectionModel);
 			}
 		} else {
-			LedMatrixGfxSelectionModel emptySelection = LedMatrixGfxSelectionModelBuilder.EMPTY_SELECTION;
-			ledMatrixGfxModel.setLedMatrixGfxSelectionModel(emptySelection);
+			clearSelection();
 		}
 		if (ledMatrixGfxModel.isIlluminated()) {
 			getContext().getTaskService().execute(updateIlluminatedLeds());
 		}
 		ledMatrixGfxView.repaint();
 	}
-
-	private void toggleName(AbstractButton button, String actionName) {
-		boolean isSelected = button.isSelected();
+	
+	private void clearSelection() {
+		LedMatrixGfxSelectionModel emptySelection = LedMatrixGfxSelectionModelBuilder.EMPTY_SELECTION;
+		ledMatrixGfxModel.setLedMatrixGfxSelectionModel(emptySelection);
+	}
+	
+	private void toggleName(AbstractButton button, String actionName, boolean selected) {
 		StringBuilder stringBuilder = new StringBuilder(actionName + ".Action.");
-		stringBuilder.append(isSelected ? "selectedText" : "text");
+		stringBuilder.append(selected ? "selectedText" : "text");
 		button.setText(getResourceMap().getString(stringBuilder.toString()));
 	}
 
+	private void toggleName(AbstractButton button, String actionName) {
+		toggleName(button, actionName, button.isSelected());
+	}
+
 	@Action(block=BlockingScope.APPLICATION)
-	public Task<?, ?> initializeSerialPort(ActionEvent event) {
-		toggleName((AbstractButton) event.getSource(), INIT_SERIAL_PORT_ACTION);
+	public Task<?, ?> initializeSerialPort(final ActionEvent event) {
+		
 		final String selectedSerialPortName  = ledMatrixPanelModel.getSelectedSerialPortName();
-		if (selectedSerialPortName != null && !"".equals(selectedSerialPortName) && !ledMatrixPanelModel.isArduinoInitialized()) {
+		if (selectedSerialPortName != null && !"".equals(selectedSerialPortName) && 
+				!ledMatrixPanelModel.isArduinoInitialized()) {
 			return new AbstractTask<Void, Void>(INIT_SERIAL_PORT_ACTION) {
 
 				protected Void doInBackground() throws Exception {
@@ -196,6 +207,13 @@ public class LedMatrixController {
 					return null;
 				}
 
+				@Override
+				protected void succeeded(Void result) {
+					toggleName((AbstractButton) event.getSource(), INIT_SERIAL_PORT_ACTION, 
+							ledMatrixPanelModel.isArduinoInitialized());
+					super.succeeded(result);
+				}
+
 			};
 		} else {
 			return new AbstractTask<Void, Void>(CLOSE_SERIAL_PORT_ACTION) {
@@ -206,6 +224,13 @@ public class LedMatrixController {
 					ledMatrixPanelModel.setArduinoInitialized(false);
 					message("endMessage");
 					return null;
+				}
+				
+				@Override
+				protected void succeeded(Void result) {
+					toggleName((AbstractButton) event.getSource(), INIT_SERIAL_PORT_ACTION, 
+							ledMatrixPanelModel.isArduinoInitialized());
+					super.succeeded(result);
 				}
 
 			};
@@ -303,8 +328,8 @@ public class LedMatrixController {
 				try {
 					if (flickerFrequency == 0) {
 						ledMatrixGfxModel.setIlluminated(true);
-						ledMatrixGfxView.repaint();
 						ledMatrixConnector.toggleLed(ledSettings, true);
+						ledMatrixGfxView.repaint();
 						Thread.sleep(timePerLed);
 						ledMatrixConnector.toggleLed(ledSettings, false);
 						ledMatrixGfxModel.setIlluminated(false);
@@ -326,6 +351,7 @@ public class LedMatrixController {
 			}
 
 			protected Void doInBackground() throws Exception {
+				clearSelection();
 				ledMatrixConnector.disableAllLeds();
 				ledMatrixGfxModel.setIlluminated(false);
 				ledMatrixGfxView.repaint();

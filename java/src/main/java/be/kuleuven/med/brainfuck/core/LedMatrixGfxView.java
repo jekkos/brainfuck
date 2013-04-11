@@ -28,7 +28,7 @@ public class LedMatrixGfxView extends JPanel {
 	private Map<LedPosition, Shape> shapeMap;
 
 	public LedMatrixGfxView(final LedMatrixController ledMatrixController, LedMatrixGfxModel ledMatrixGfxModel) {	
-		super(new MigLayout("nogrid", ":300:", ":300:"));
+		super(new MigLayout("nogrid", ":300:", ":400:"));
 		this.ledMatrixGfxModel = ledMatrixGfxModel;
 		addMouseListener(new MouseAdapter() {
 

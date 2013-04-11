@@ -54,7 +54,7 @@ public class LedMatrixGfxModel extends AbstractBean {
 	public void setLedMatrixGfxSelectionModel(
 			LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel) {
 		firePropertyChange(LED_MATRIX_GFX_SELECTION_MODEL, 
-				this.ledMatrixGfxSelectionModel = ledMatrixGfxSelectionModel, ledMatrixGfxSelectionModel);
+				this.ledMatrixGfxSelectionModel, this.ledMatrixGfxSelectionModel = ledMatrixGfxSelectionModel);
 	}
 	
 	public boolean isSelected(LedSettings ledSettings) {

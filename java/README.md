@@ -5,8 +5,8 @@ CONFIGURATION
 
 The app will save an XML configuration file in the home directory of the current user.
 
-under linux this will be ~/.LedMatrixApp/settings.xml
-under windows this will be %APPDATA%/KULeuven/settings.xml
+under linux this will be `~/.LedMatrixApp/settings.xml`
+under windows this will be i`%APPDATA%/KULeuven/settings.xml`
 
 The config file is hand editable, and will be used to create the domain models at startup time.
 

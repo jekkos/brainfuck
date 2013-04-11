@@ -29,7 +29,7 @@ public class LedMatrixGfxSelectionModel extends AbstractBean {
 
 	private int columnPin;
 	
-	public boolean isEmpty() {
+	public boolean isCleared() {
 		return selectedLedSettings.isEmpty();
 	}
 
@@ -57,7 +57,6 @@ public class LedMatrixGfxSelectionModel extends AbstractBean {
 			ledSettings.setColumnPin(columnPin);
 		}
 		firePropertyChange(COLUMN_PIN, this.columnPin , this.columnPin = columnPin);
-		
 	}
 
 	public boolean isRowSelected() {

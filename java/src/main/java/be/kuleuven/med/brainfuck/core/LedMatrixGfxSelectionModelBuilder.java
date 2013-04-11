@@ -91,7 +91,7 @@ public class LedMatrixGfxSelectionModelBuilder {
 				return false;
 			}
 		}
-		return true;
+		return selectedRow > -1 ? true : false;
 	}
 	
 	private boolean isColumnSelected(Set<LedSettings> selectedLedSettings) {
@@ -103,7 +103,7 @@ public class LedMatrixGfxSelectionModelBuilder {
 				return false;
 			}
 		}
-		return true;
+		return selectedColumn > -1 ? true : false;
 	}
 	
 }

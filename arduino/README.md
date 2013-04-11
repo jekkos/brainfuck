@@ -26,9 +26,8 @@ On Fedora:
     yum install perl-YAML
 On OSX: 
 
-    port install p5-serial
+    port install p5-device-serialport 
     port install p5-yaml
-
 On other systems:
 
     cpanm Device::SerialPort

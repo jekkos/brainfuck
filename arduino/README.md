@@ -4,7 +4,7 @@ BUILDING
 --------
 To build this project, just fire up a terminal, head for the root directory and enter the followig command
 
-> make
+    make
 
 Deploying 
 ---------

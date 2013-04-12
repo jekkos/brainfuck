@@ -20,7 +20,7 @@ public class LedMatrixPanelModel extends AbstractBean {
 	
 	public static final String EXPERIMENT_INITIALIZED = "experimentInitialized";
 	
-	public static final String EXPERIMENT_STARTED = "experimentStarted";
+	public static final String EXPERIMENT_RUNNING = "experimentRunning";
 
 	public static final String EXPERIMENT_SETTINGS = "experimentSettings";
 	
@@ -34,7 +34,7 @@ public class LedMatrixPanelModel extends AbstractBean {
 	
 	private boolean experimentInitialized;
 	
-	private boolean experimentStarted;
+	private boolean experimentRunning;
 	
 	private int width;
 	
@@ -104,12 +104,12 @@ public class LedMatrixPanelModel extends AbstractBean {
 		return experimentSettings;
 	}
 
-	public boolean isExperimentStarted() {
-		return experimentStarted;
+	public boolean isExperimentRunning() {
+		return experimentRunning;
 	}
 
-	public void setExperimentStarted(boolean experimentStarted) {
-		firePropertyChange(EXPERIMENT_STARTED, this.experimentStarted, this.experimentStarted = experimentStarted);
+	public void setExperimentRunning(boolean experimentRunning) {
+		firePropertyChange(EXPERIMENT_RUNNING, this.experimentRunning, this.experimentRunning = experimentRunning);
 	}
 	
 }

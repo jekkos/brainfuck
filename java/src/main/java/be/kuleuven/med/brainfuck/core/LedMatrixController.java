@@ -110,13 +110,13 @@ public class LedMatrixController {
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixPanelModel, arduinoInitialized, ledMatrixPanelView.getSerialPortNamesBox(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
 		// bind led controls (just the enabled state)
-		ELProperty<LedMatrixController, Boolean> ledControlsEnabledProperty = ELProperty.create("${!ledMatrixGfxModel.ledMatrixGfxSelectionModel.cleared && ledMatrixPanelModel.arduinoInitialized && !ledMatrixPanelModel.experimentStarted}");
+		ELProperty<LedMatrixController, Boolean> ledControlsEnabledProperty = ELProperty.create("${!ledMatrixGfxModel.ledMatrixGfxSelectionModel.cleared && ledMatrixPanelModel.arduinoInitialized && !ledMatrixPanelModel.experimentRunning}");
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, this, ledControlsEnabledProperty, ledMatrixPanelView.getIntensitySlider(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, this, ledControlsEnabledProperty, ledMatrixPanelView.getToggleLedButton(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
 		// bind experiment settings controls
-		ELProperty<LedMatrixPanelModel, Boolean> experimentInitializedNotStarted = ELProperty.create("${arduinoInitialized && experimentInitialized && !experimentStarted}"); 
+		ELProperty<LedMatrixPanelModel, Boolean> experimentInitializedNotStarted = ELProperty.create("${arduinoInitialized && experimentInitialized && !experimentRunning}"); 
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixPanelModel, experimentInitializedNotStarted, ledMatrixPanelView.getSecondsToRunTextField(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
 		BeanProperty<LedMatrixPanelModel, Integer> secondsToRunProperty = BeanProperty.create("experimentSettings.secondsToRun");
@@ -148,30 +148,37 @@ public class LedMatrixController {
 			ledMatrixGfxView.repaint();
 		}
 	}
+	
+	/**
+	 * Just set ledSettings as the only selected item
+	 * @param ledSettings The setttings
+	 */
+	public void updateSingleSelection(LedSettings ledSettings) {
+		// single element selectièon in this case
+		LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel = 
+				LedMatrixGfxSelectionModelBuilder.of(ledSettings);
+		ledMatrixGfxModel.setLedMatrixGfxSelectionModel(ledMatrixGfxSelectionModel);
+	}
 
 	public void updateSelection(LedPosition ledPosition, boolean isShiftDown, boolean isControlDown) {
-		if (ledPosition != null) {
-			LedSettings ledSettings = ledMatrixGfxModel.getLedSettings(ledPosition);
-			if (isShiftDown) {
-				// TODO implement shift down
-			} else if (isControlDown) {
-				LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel = ledMatrixGfxModel.getLedMatrixGfxSelectionModel();
-				ledMatrixGfxSelectionModel = new LedMatrixGfxSelectionModelBuilder(ledMatrixGfxSelectionModel)
-							.addRemoveLedSettings(ledSettings).build();
-				ledMatrixGfxModel.setLedMatrixGfxSelectionModel(ledMatrixGfxSelectionModel);
+		if (!ledMatrixGfxModel.isIlluminated()) {
+			if (ledPosition != null) {
+				LedSettings ledSettings = ledMatrixGfxModel.getLedSettings(ledPosition);
+				if (isShiftDown) {
+					// TODO implement shift down
+				} else if (isControlDown) {
+					LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel = ledMatrixGfxModel.getLedMatrixGfxSelectionModel();
+					ledMatrixGfxSelectionModel = new LedMatrixGfxSelectionModelBuilder(ledMatrixGfxSelectionModel)
+					.addRemoveLedSettings(ledSettings).build();
+					ledMatrixGfxModel.setLedMatrixGfxSelectionModel(ledMatrixGfxSelectionModel);
+				} else {
+					updateSingleSelection(ledSettings);
+				}
 			} else {
-				// single element selectièon in this case
-				LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel = 
-						LedMatrixGfxSelectionModelBuilder.of(ledSettings);
-				ledMatrixGfxModel.setLedMatrixGfxSelectionModel(ledMatrixGfxSelectionModel);
+				clearSelection();
 			}
-		} else {
-			clearSelection();
+			ledMatrixGfxView.repaint();
 		}
-		if (ledMatrixGfxModel.isIlluminated()) {
-			getContext().getTaskService().execute(updateIlluminatedLeds());
-		}
-		ledMatrixGfxView.repaint();
 	}
 	
 	private void clearSelection() {
@@ -314,13 +321,20 @@ public class LedMatrixController {
 			
 		};
 	}
+	
+	public void stopExperiment() {
+		clearSelection();
+		ledMatrixConnector.disableAllLeds();
+		ledMatrixGfxModel.setIlluminated(false);
+		ledMatrixGfxView.repaint();
+	}
 
 	@Action
-	public Task<?, ?> startExperiment(ActionEvent event) {
-		JToggleButton source = (JToggleButton) event.getSource();
+	public Task<?, ?> startExperiment(final ActionEvent event) {
+		final JToggleButton source = (JToggleButton) event.getSource();
 		toggleName(source, START_EXPERIMENT_ACTION);
 		// set selected state to enable/disable ui controls
-		ledMatrixPanelModel.setExperimentStarted(source.isSelected());
+		ledMatrixPanelModel.setExperimentRunning(source.isSelected());
 		return new AbstractTask<Void, Void>(START_EXPERIMENT_ACTION) {
 
 			private void doPeriodicToggle(LedSettings ledSettings, 
@@ -328,22 +342,27 @@ public class LedMatrixController {
 				try {
 					if (flickerFrequency == 0) {
 						ledMatrixGfxModel.setIlluminated(true);
-						ledMatrixConnector.toggleLed(ledSettings, true);
+						updateSingleSelection(ledSettings);
 						ledMatrixGfxView.repaint();
-						Thread.sleep(timePerLed);
+						message("progressMessage", ledSettings.getLedPosition());
+						ledMatrixConnector.toggleLed(ledSettings, true);
+						Thread.sleep(timePerLed * 1000);
 						ledMatrixConnector.toggleLed(ledSettings, false);
 						ledMatrixGfxModel.setIlluminated(false);
 					} else {
-						long endTime = System.currentTimeMillis() + timePerLed;
+						long endTime = System.currentTimeMillis() + timePerLed * 1000;
 						while(System.currentTimeMillis() < endTime) {
 							ledMatrixGfxModel.setIlluminated(true);
+							updateSingleSelection(ledSettings);
 							ledMatrixGfxView.repaint();
+							message("progressMessage", ledSettings.getLedPosition());
 							ledMatrixConnector.toggleLed(ledSettings, true);
 							Thread.sleep(flickerFrequency);
 							ledMatrixConnector.toggleLed(ledSettings, false);
 							ledMatrixGfxModel.setIlluminated(false);
 						}
 					}
+					clearSelection();
 					ledMatrixPanelView.repaint();
 				} catch(InterruptedException e) {
 					getLogger().error("Led toggling for " + ledSettings.getLedPosition() + " ended unexpectedly");
@@ -351,27 +370,35 @@ public class LedMatrixController {
 			}
 
 			protected Void doInBackground() throws Exception {
-				clearSelection();
-				ledMatrixConnector.disableAllLeds();
-				ledMatrixGfxModel.setIlluminated(false);
-				ledMatrixGfxView.repaint();
-				ExperimentSettings experimentSettings = ledMatrixPanelModel.getExperimentSettings();
-				int flickerFrequency = experimentSettings.getFlickerFrequency();
-				long secondsToRun = experimentSettings.getSecondsToRun();
-				message("startMessage", secondsToRun);
-				int ledCount = ledMatrixGfxModel.getHeight() + ledMatrixGfxModel.getWidth(); 
-				long timePerLed = secondsToRun / ledCount;
-				flickerFrequency = flickerFrequency > 0 ? 1000 / flickerFrequency : 0; 
-				for (int i = 0; i < ledMatrixGfxModel.getWidth(); i++) {
-					for (int j = 0; j < ledMatrixGfxModel.getHeight(); j++) {
-						LedPosition ledPosition = LedPosition.ledPositionFor(i, j);
-						LedSettings ledSettings = ledMatrixGfxModel.getLedSettings(ledPosition);
-						message("progressMessage", ledPosition);
-						// TODO we could send out an intensity to thorlabs driver here
-						doPeriodicToggle(ledSettings, flickerFrequency, timePerLed);
+				stopExperiment();
+				if (ledMatrixPanelModel.isExperimentRunning()) {
+					ExperimentSettings experimentSettings = ledMatrixPanelModel.getExperimentSettings();
+					int flickerFrequency = experimentSettings.getFlickerFrequency();
+					long secondsToRun = experimentSettings.getSecondsToRun();
+					message("startMessage", secondsToRun);
+					int ledCount = ledMatrixGfxModel.getHeight() + ledMatrixGfxModel.getWidth(); 
+					long timePerLed = secondsToRun / ledCount;
+					flickerFrequency = flickerFrequency > 0 ? 1000 / flickerFrequency : 0; 
+					for (int i = 0; i < ledMatrixGfxModel.getWidth(); i++) {
+						for (int j = 0; j < ledMatrixGfxModel.getHeight() && ledMatrixPanelModel.isExperimentRunning(); j++) {
+							LedPosition ledPosition = LedPosition.ledPositionFor(i, j);
+							LedSettings ledSettings = ledMatrixGfxModel.getLedSettings(ledPosition);
+							message("progressMessage", ledPosition);
+							// TODO we could send out an intensity to thorlabs driver here
+							doPeriodicToggle(ledSettings, flickerFrequency, timePerLed);
+						}
 					}
+					message("endMessage");
 				}
 				return null;
+			}
+
+			@Override
+			protected void finished() {
+				stopExperiment();
+				ledMatrixPanelModel.setExperimentRunning(false);
+				source.setSelected(false);
+				toggleName(source, START_EXPERIMENT_ACTION, false);
 			}
 
 		};

@@ -17,7 +17,7 @@ public class LedMatrixGfxSelectionModelBuilder {
 	private Set<LedSettings> selectedLedSettings;
 
 	public static LedMatrixGfxSelectionModel of(LedSettings ledSettings) {
-		return new LedMatrixGfxSelectionModelBuilder().addLedSettings(ledSettings).build();
+		return new LedMatrixGfxSelectionModelBuilder(ledSettings).build();
 	}
 
 	public LedMatrixGfxSelectionModelBuilder(LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel) {
@@ -28,7 +28,12 @@ public class LedMatrixGfxSelectionModelBuilder {
 
 	public LedMatrixGfxSelectionModelBuilder() { 
 		ledMatrixGfxSelectionModel = new LedMatrixGfxSelectionModel();
-		selectedLedSettings = Sets.newHashSet();
+		selectedLedSettings = Collections.emptySet();
+	}
+
+	private LedMatrixGfxSelectionModelBuilder(LedSettings ledSettings) {
+		ledMatrixGfxSelectionModel = new LedMatrixGfxSelectionModel();
+		selectedLedSettings = Collections.singleton(ledSettings);
 	}
 	
 	public LedMatrixGfxSelectionModel build() {
@@ -91,7 +96,7 @@ public class LedMatrixGfxSelectionModelBuilder {
 				return false;
 			}
 		}
-		return true;
+		return selectedRow > -1 ? true : false;
 	}
 	
 	private boolean isColumnSelected(Set<LedSettings> selectedLedSettings) {
@@ -103,7 +108,7 @@ public class LedMatrixGfxSelectionModelBuilder {
 				return false;
 			}
 		}
-		return true;
+		return selectedColumn > -1 ? true : false;
 	}
 	
 }

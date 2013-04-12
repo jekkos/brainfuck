@@ -57,19 +57,19 @@ public class LedMatrixGfxView extends JPanel {
 		Graphics g = graphics.create();
 		g.setColor(Color.WHITE);
 		g.fillRect(0,  0, getWidth(), getHeight());
+		boolean illuminated = ledMatrixGfxModel.isIlluminated();
 		for (Entry<LedPosition, Shape> shapeEntry : shapeMap.entrySet()) {
 			LedPosition ledPosition = shapeEntry.getKey();
 			Shape shape = shapeEntry.getValue();
 			LedSettings ledSettings = ledMatrixGfxModel.getLedSettings(ledPosition);
 			boolean selected = ledMatrixGfxModel.isSelected(ledSettings);
-			boolean illuminated = ledMatrixGfxModel.isIlluminated();
 			// set a nice color..
 			Rectangle rectangle = shape.getBounds();
 			if (selected) {
 				Color fillColor = Color.RED;
 				if (illuminated) {
 					fillColor = new Color(255-ledSettings.getIntensity(), 
-							255-ledSettings.getIntensity(), ledSettings.getIntensity());
+							255-ledSettings.getIntensity(), 255);
 				}
 				g.setColor(fillColor);
 				g.fillOval(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
@@ -95,19 +95,19 @@ public class LedMatrixGfxView extends JPanel {
 	}
 	
 	private int getLedDiameterX(int nbRows) {
-		return getWidth() / nbRows - 10;
+		return (getWidth() - 20) / nbRows;
 	}
 	
 	private int getLedDiameterY(int nbColumns) {
-		return getHeight() / nbColumns - 10;
+		return (getHeight() - 20) / nbColumns;
 	}
 	
 	private int getPosX(int x, int nbRows) {
-		return ((x + 1) * getWidth()) / nbRows - getLedDiameterX(nbRows);
+		return ((x + 1) * getWidth() - 10) / nbRows - getLedDiameterX(nbRows);
 	}
 	
 	private int getPosY(int y, int nbColumns) {
-		return ((y + 1) * getHeight()) / nbColumns - getLedDiameterY(nbColumns);
+		return ((y + 1) * getHeight() - 10) / nbColumns - getLedDiameterY(nbColumns);
 	}
 	
 }

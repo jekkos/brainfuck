@@ -28,7 +28,7 @@ public class LedMatrixGfxSelectionModelBuilder {
 
 	public LedMatrixGfxSelectionModelBuilder() { 
 		ledMatrixGfxSelectionModel = new LedMatrixGfxSelectionModel();
-		selectedLedSettings = Collections.emptySet();
+		selectedLedSettings = Sets.newHashSet();
 	}
 
 	private LedMatrixGfxSelectionModelBuilder(LedSettings ledSettings) {
@@ -63,28 +63,28 @@ public class LedMatrixGfxSelectionModelBuilder {
 		return this;
 	}
 	
-	private int findCommonRowPin(Set<LedSettings> selectedLedSettings) {
-		int result = 0;
+	private Integer findCommonRowPin(Set<LedSettings> selectedLedSettings) {
+		Integer result = null;
 		for(LedSettings ledSettings : selectedLedSettings) {
-			if (result == 0) {
+			if (result == null) {
 				result = ledSettings.getRowPin();
 			} else if (ledSettings.getRowPin() != result) {
-				return 0;
+				return null;
 			}
 		}
-		return result;
+		return result == 0 ? null : result;
 	}
 	
-	private int findCommonColumnPin(Set<LedSettings> selectedLedSettings) {
-		int result = 0;
+	private Integer findCommonColumnPin(Set<LedSettings> selectedLedSettings) {
+		Integer result = null;
 		for(LedSettings ledSettings : selectedLedSettings) {
-			if (result == 0) {
+			if (result == null) {
 				result = ledSettings.getColumnPin();
 			} else if (ledSettings.getColumnPin() != result) {
-				return 0;
+				return null;
 			}
 		}
-		return result;
+		return result == 0 ? null : result;
 	}
 	
 	private boolean isRowSelected(Set<LedSettings> selectedLedSettings) {

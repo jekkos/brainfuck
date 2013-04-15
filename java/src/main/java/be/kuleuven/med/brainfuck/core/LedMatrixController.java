@@ -14,9 +14,11 @@ import javax.swing.event.ChangeEvent;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Task;
 import org.jdesktop.application.Task.BlockingScope;
+import org.jdesktop.beansbinding.AbstractBindingListener;
 import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Binding;
+import org.jdesktop.beansbinding.Binding.ValueResult;
 import org.jdesktop.beansbinding.BindingGroup;
 import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.beansbinding.ELProperty;
@@ -82,7 +84,19 @@ public class LedMatrixController {
 		// bind row and column pin numbers
 		BeanProperty<LedMatrixGfxModel, Integer> pinRowProperty = BeanProperty.create("ledMatrixGfxSelectionModel.rowPin");
 		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixGfxModel, pinRowProperty, ledMatrixPanelView.getRowPinTextField(), TEXT);
-		valueBinding.setTargetNullValue(0);
+		valueBinding.addBindingListener(new AbstractBindingListener() {
+
+			@Override
+			public void synced(@SuppressWarnings("rawtypes") Binding binding) {
+				@SuppressWarnings("rawtypes")
+				ValueResult targetValueForSource = binding.getTargetValueForSource();
+				LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel = ledMatrixGfxModel.getLedMatrixGfxSelectionModel();
+				for(LedSettings ledSettings : ledMatrixGfxSelectionModel.getSelectedLedSettings()) {
+					ledSettings.setRowPin((Integer) targetValueForSource.getValue());
+				}
+			}
+			
+		});
 		bindingGroup.addBinding(valueBinding);
 		ELProperty<LedMatrixGfxModel, Boolean> rowSelectedProperty = ELProperty.create("${ledMatrixGfxSelectionModel.rowSelected && !illuminated}");
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixGfxModel, rowSelectedProperty, ledMatrixPanelView.getRowPinTextField(), ENABLED);
@@ -90,7 +104,19 @@ public class LedMatrixController {
 		bindingGroup.addBinding(enabledBinding);
 		BeanProperty<LedMatrixGfxModel, Integer> pinColumnProperty = BeanProperty.create("ledMatrixGfxSelectionModel.columnPin");
 		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixGfxModel, pinColumnProperty, ledMatrixPanelView.getColumnPinTextField(), TEXT);
-		valueBinding.setTargetNullValue(0);
+		valueBinding.addBindingListener(new AbstractBindingListener() {
+
+			@Override
+			public void synced(@SuppressWarnings("rawtypes") Binding binding) {
+				@SuppressWarnings("rawtypes")
+				ValueResult targetValueForSource = binding.getTargetValueForSource();
+				LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel = ledMatrixGfxModel.getLedMatrixGfxSelectionModel();
+				for(LedSettings ledSettings : ledMatrixGfxSelectionModel.getSelectedLedSettings()) {
+					ledSettings.setColumnPin((Integer) targetValueForSource.getValue());
+				}
+			}
+			
+		});
 		bindingGroup.addBinding(valueBinding);
 		ELProperty<LedMatrixGfxModel, Boolean> columnSelectedProperty = ELProperty.create("${ledMatrixGfxSelectionModel.columnSelected && !illuminated}");
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixGfxModel, columnSelectedProperty, ledMatrixPanelView.getColumnPinTextField(), ENABLED);

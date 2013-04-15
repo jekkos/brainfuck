@@ -33,9 +33,9 @@ public class LedMatrixGfxSelectionModelTest extends TestCase {
 		assertTrue(ledMatrixGfxSelectionModel.isColumnSelected());
 		assertFalse(ledMatrixGfxSelectionModel.isRowSelected());
 		
-		assertEquals(5, ledMatrixGfxSelectionModel.getColumnPin());
+		assertEquals(Integer.valueOf(5), ledMatrixGfxSelectionModel.getColumnPin());
 		// no common row pin.. will show 0
-		assertEquals(0, ledMatrixGfxSelectionModel.getRowPin());
+		assertNull(ledMatrixGfxSelectionModel.getRowPin());
 		
 		assertTrue(ledMatrixGfxSelectionModel.getSelectedLedSettings().contains(ledSettings0));
 		assertTrue(ledMatrixGfxSelectionModel.getSelectedLedSettings().contains(ledSettings1));
@@ -69,8 +69,8 @@ public class LedMatrixGfxSelectionModelTest extends TestCase {
 		assertFalse(ledMatrixGfxSelectionModel.isRowSelected());
 		assertFalse(ledMatrixGfxSelectionModel.isColumnSelected());
 		// no common pins in this case
-		assertEquals(0, ledMatrixGfxSelectionModel.getRowPin());
-		assertEquals(0, ledMatrixGfxSelectionModel.getColumnPin());
+		assertNull(ledMatrixGfxSelectionModel.getRowPin());
+		assertNull(ledMatrixGfxSelectionModel.getColumnPin());
 	}
 	
 }

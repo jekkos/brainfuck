@@ -208,6 +208,10 @@ public class SettingsManager {
 		return getSettings().ledMatrixPortSettings;
 	}
 	
+	public SerialPortSettings getThorLabsConnectorSettings() {
+		return getSettings().thorlabsConnectorSettings;
+	}
+	
 	public ExperimentSettings getExperimentSettings() {
 		return getSettings().experimentSettings;
 	}
@@ -219,6 +223,8 @@ public class SettingsManager {
 		LedMatrixSettings ledMatrixSettings = new LedMatrixSettingsBuilder().withSize(2, 3).build();
 		
 		SerialPortSettings ledMatrixPortSettings = new SerialPortSettings();
+		
+		SerialPortSettings thorlabsConnectorSettings = new SerialPortSettings(SerialPortSettings.DATA_RATE_115200_BAUD);
 		
 		ExperimentSettings experimentSettings = new ExperimentSettings();
 	}

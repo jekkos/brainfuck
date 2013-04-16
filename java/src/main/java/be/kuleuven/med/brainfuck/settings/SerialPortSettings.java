@@ -5,7 +5,9 @@ import gnu.io.SerialPort;
 public class SerialPortSettings {
 	
 	/** Default bits per second for COM port. */
-	private static final int DEFAULT_DATA_RATE = 9600;
+	public static final int DATA_RATE_9600_BAUD = 9600;
+	
+	public static final int DATA_RATE_115200_BAUD = 115200;
 	
 	private static final int DEFAULT_DATA_BITS = SerialPort.DATABITS_8;
 	
@@ -15,13 +17,19 @@ public class SerialPortSettings {
 
 	private String name;
 	
-	private int dataRate = DEFAULT_DATA_RATE;
+	private int dataRate = DATA_RATE_9600_BAUD;
 	
 	private int dataBits = DEFAULT_DATA_BITS;
 	
 	private int stopBits = DEFAULT_STOP_BITS;
 	
 	private int parityBits = DEFAULT_PARITY_BITS;
+	
+	public SerialPortSettings() { 	}
+
+	public SerialPortSettings(int dataRate) {
+		this.dataRate = dataRate;
+	}
 
 	public String getName() {
 		return name;

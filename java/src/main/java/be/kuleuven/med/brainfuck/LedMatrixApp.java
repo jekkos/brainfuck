@@ -33,6 +33,7 @@ import be.kuleuven.med.brainfuck.core.LedMatrixPanelModel;
 import be.kuleuven.med.brainfuck.core.LedMatrixPanelView;
 import be.kuleuven.med.brainfuck.io.LedMatrixConnector;
 import be.kuleuven.med.brainfuck.io.SerialPortConnector;
+import be.kuleuven.med.brainfuck.io.ThorlabsConnector;
 import be.kuleuven.med.brainfuck.settings.ExperimentSettings;
 import be.kuleuven.med.brainfuck.settings.LedMatrixSettings;
 import be.kuleuven.med.brainfuck.settings.SettingsManager;
@@ -91,11 +92,13 @@ public class LedMatrixApp extends SingleFrameApplication {
 		int maxPortNumber = settingsManager.getLedMatrixSettings().getMaxPortNumber();
 		LedMatrixConnector ledMatrixConnector = new LedMatrixConnector(settingsManager.getLedMatrixPortSettings(), maxPortNumber);
 		serialPortConnectors.add(ledMatrixConnector);
+		ThorlabsConnector thorlabsConnector = new ThorlabsConnector(settingsManager.getThorLabsConnectorSettings());
+		serialPortConnectors.add(thorlabsConnector);
 		LedMatrixSettings ledMatrixSettings = settingsManager.getLedMatrixSettings();
 		ExperimentSettings experimentSettings = settingsManager.getExperimentSettings();
 		ledMatrixGfxModel = new LedMatrixGfxModelBuilder(ledMatrixSettings).build();
 		LedMatrixPanelModel ledMatrixPanelModel = new LedMatrixPanelModel(ledMatrixSettings, experimentSettings);
-		ledMatrixController = new LedMatrixController(ledMatrixPanelModel, ledMatrixGfxModel, ledMatrixConnector);
+		ledMatrixController = new LedMatrixController(ledMatrixPanelModel, ledMatrixGfxModel, ledMatrixConnector, thorlabsConnector);
 		getContext().getTaskService().execute(ledMatrixController.updateSerialPortNames());
 	}
 

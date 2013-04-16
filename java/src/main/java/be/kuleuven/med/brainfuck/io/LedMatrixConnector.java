@@ -1,15 +1,11 @@
 package be.kuleuven.med.brainfuck.io;
 
-import gnu.io.SerialPortEvent;
 
-import java.io.IOException;
 
 import be.kuleuven.med.brainfuck.settings.LedSettings;
 import be.kuleuven.med.brainfuck.settings.SerialPortSettings;
 
 public class LedMatrixConnector extends SerialPortConnector {
-	
-	public static final String RETURN = "\r\n";
 	
 	// default value for digital write
 	private static final String NO_VALUE = "00";
@@ -75,39 +71,6 @@ public class LedMatrixConnector extends SerialPortConnector {
 		result.append(String.format("%04d", pin));
 		result.append(illuminated ? HIGH : LOW);
 		return result.toString();
-	}
-	
-	private void sendCommand(String command) {
-		try {
-			if (getOutput() != null) {
-				// writeout to arduino
-				command = new StringBuilder(command).append(RETURN).toString();
-				getOutput().write(command.getBytes());
-				// TODO eventually remove logging here for timing purposes
-				LOGGER.info("Command sent: " + command);
-			} else {
-				LOGGER.info("no serial device attached..");
-			}
-		} catch (IOException e1) {
-			LOGGER.error(e1);
-		}
-	}
-
-	public synchronized void serialEvent(SerialPortEvent oEvent) {
-		if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
-			try {
-				int available = getInput().available();
-				byte chunk[] = new byte[available];
-				getInput().read(chunk, 0, available);
-				// Displayed results are codepage dependent
-				String result = new String(chunk);
-				// result coming back from arduino
-				LOGGER.info("Data received: " + result);
-			} catch (Exception e) {
-				LOGGER.error(e);
-			}
-		}
-		// Ignore all the other eventTypes, but you should consider the other ones.
 	}
 	
 }

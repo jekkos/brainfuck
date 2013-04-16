@@ -72,7 +72,10 @@ public class LedMatrixGfxSelectionModelBuilder {
 				return null;
 			}
 		}
-		return result != null && result == 0 ? null : result;
+		if (result != null && result == 0) {
+			return null;
+		}
+		return result;
 	}
 	
 	private Integer findCommonColumnPin(Set<LedSettings> selectedLedSettings) {
@@ -84,7 +87,10 @@ public class LedMatrixGfxSelectionModelBuilder {
 				return null;
 			}
 		}
-		return result != null && result == 0 ? null : result;
+		if (result != null && result == 0) {
+			return null;
+		}
+		return result;
 	}
 	
 	private boolean isRowSelected(Set<LedSettings> selectedLedSettings) {

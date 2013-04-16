@@ -11,6 +11,7 @@ import javax.swing.JSlider;
 import javax.swing.JToggleButton;
 import javax.swing.event.ChangeEvent;
 
+import org.apache.log4j.Logger;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Task;
 import org.jdesktop.application.Task.BlockingScope;
@@ -29,6 +30,7 @@ import be.kuleuven.med.brainfuck.bsaf.AppComponent;
 import be.kuleuven.med.brainfuck.entity.LedPosition;
 import be.kuleuven.med.brainfuck.io.LedMatrixConnector;
 import be.kuleuven.med.brainfuck.io.SerialPortConnector;
+import be.kuleuven.med.brainfuck.io.ThorlabsConnector;
 import be.kuleuven.med.brainfuck.settings.ExperimentSettings;
 import be.kuleuven.med.brainfuck.settings.LedSettings;
 import be.kuleuven.med.brainfuck.task.AbstractTask;
@@ -38,9 +40,11 @@ public class LedMatrixController {
 
 	public static final String UPDATE_SERIAL_PORTS_ACTION = "updateSerialPorts";
 
-	public static final String INIT_SERIAL_PORT_ACTION = "initializeSerialPort";
-
-	public static final String CLOSE_SERIAL_PORT_ACTION = "closeSerialPort";
+	public static final String INIT_LED_MATRIX_CONNECTOR_ACTION = "initLedMatrixConnector";
+	
+	public static final String INIT_THORLABS_CONNECTOR_ACTION = "initThorlabsConnector";
+	
+	public static final String CLOSE_SERIAL_PORT_CONNECTOR_ACTION = "closeSerialPortConnector";
 
 	public static final String UPDATE_LED_MATRIX_ACTION = "updateLedMatrix";
 
@@ -48,9 +52,9 @@ public class LedMatrixController {
 
 	public static final String TOGGLE_LED_ACTION = "toggleLed";
 
-	private final static BeanProperty<JComponent, Boolean> ENABLED = BeanProperty.create("enabled");
+	public final static BeanProperty<JComponent, String> TEXT = BeanProperty.create("text");
 
-	private final static BeanProperty<JComponent, String> TEXT = BeanProperty.create("text");
+	public final static BeanProperty<JComponent, Boolean> ENABLED = BeanProperty.create("enabled");
 
 	private LedMatrixPanelView ledMatrixPanelView;
 	
@@ -62,10 +66,13 @@ public class LedMatrixController {
 
 	private LedMatrixConnector ledMatrixConnector;
 
-	public LedMatrixController(LedMatrixPanelModel ledMatrixPanelModel, LedMatrixGfxModel ledMatrixGfxModel, LedMatrixConnector ledMatrixConnector) {
+	private ThorlabsConnector thorlabsConnector;
+
+	public LedMatrixController(LedMatrixPanelModel ledMatrixPanelModel, LedMatrixGfxModel ledMatrixGfxModel, LedMatrixConnector ledMatrixConnector, ThorlabsConnector thorlabsConnector) {
 		this.ledMatrixPanelModel = ledMatrixPanelModel;
 		this.ledMatrixGfxModel = ledMatrixGfxModel;
 		this.ledMatrixConnector = ledMatrixConnector;
+		this.thorlabsConnector = thorlabsConnector;
 	}
 
 	public void initViews(LedMatrixPanelView ledMatrixPanelView, LedMatrixGfxView ledMatrixGfxView) {
@@ -123,27 +130,33 @@ public class LedMatrixController {
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixGfxModel, columnSelectedProperty, ledMatrixPanelView.getColumnPinTextField(), ENABLED);
 		enabledBinding.setTargetNullValue(false);
 		bindingGroup.addBinding(enabledBinding);
-		// bind serial port info
+		// bind led matrix connector info
 		BeanProperty<LedMatrixPanelModel, List<String>> serialPortNamesProperty = BeanProperty.create("serialPortNames");
-		Binding<?, ?, ?, ?> comboBoxBinding = SwingBindings.createJComboBoxBinding(UpdateStrategy.READ_WRITE, ledMatrixPanelModel, serialPortNamesProperty, ledMatrixPanelView.getSerialPortNamesBox());
+		Binding<?, ?, ?, ?> comboBoxBinding = SwingBindings.createJComboBoxBinding(UpdateStrategy.READ_WRITE, ledMatrixPanelModel, serialPortNamesProperty, ledMatrixPanelView.getLedMatrixConnectorBox());
 		bindingGroup.addBinding(comboBoxBinding);
 		BeanProperty<JComboBox<?>, String> selectedItemProperty = BeanProperty.create("selectedItem");
-		BeanProperty<LedMatrixPanelModel, String> selectedSerialPortNameProperty = BeanProperty.create("selectedSerialPortName");
+		BeanProperty<LedMatrixPanelModel, String> selectedLedMatrixPortNameProperty = BeanProperty.create("selectedLedMatrixPortName");
 		Binding<JComboBox<?>, String, LedMatrixPanelModel, String> selectedElementBinding = 
-				Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixPanelView.getSerialPortNamesBox(), selectedItemProperty, ledMatrixPanelModel, selectedSerialPortNameProperty);
+				Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixPanelView.getLedMatrixConnectorBox(), selectedItemProperty, ledMatrixPanelModel, selectedLedMatrixPortNameProperty);
 		bindingGroup.addBinding(selectedElementBinding);
 		// bind serial port select box enabled state
-		ELProperty<LedMatrixPanelModel, Boolean> arduinoInitialized = ELProperty.create("${!arduinoInitialized}");
-		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixPanelModel, arduinoInitialized, ledMatrixPanelView.getSerialPortNamesBox(), ENABLED);
+		ELProperty<LedMatrixPanelModel, Boolean> arduinoInitialized = ELProperty.create("${!ledMatrixConnectorInitialized}");
+		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixPanelModel, arduinoInitialized, ledMatrixPanelView.getLedMatrixConnectorBox(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
 		// bind led controls (just the enabled state)
-		ELProperty<LedMatrixController, Boolean> ledControlsEnabledProperty = ELProperty.create("${!ledMatrixGfxModel.ledMatrixGfxSelectionModel.cleared && ledMatrixPanelModel.arduinoInitialized && !ledMatrixPanelModel.experimentRunning}");
+		ELProperty<LedMatrixController, Boolean> ledControlsEnabledProperty = ELProperty.create("${!ledMatrixGfxModel.ledMatrixGfxSelectionModel.cleared && ledMatrixPanelModel.ledMatrixConnectorInitialized && !ledMatrixPanelModel.experimentRunning}");
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, this, ledControlsEnabledProperty, ledMatrixPanelView.getIntensitySlider(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, this, ledControlsEnabledProperty, ledMatrixPanelView.getToggleLedButton(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
+		// bind thorlabs connector info 
+		comboBoxBinding = SwingBindings.createJComboBoxBinding(UpdateStrategy.READ_WRITE, ledMatrixPanelModel, serialPortNamesProperty, ledMatrixPanelView.getThorlabsConnectorBox());
+		bindingGroup.addBinding(comboBoxBinding);
+		BeanProperty<LedMatrixPanelModel, String> selectedThorlabsPortNameProperty = BeanProperty.create("selectedThorlabsPortName");
+		selectedElementBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixPanelView.getThorlabsConnectorBox(), selectedItemProperty, ledMatrixPanelModel, selectedThorlabsPortNameProperty);
+		bindingGroup.addBinding(selectedElementBinding);
 		// bind experiment settings controls
-		ELProperty<LedMatrixPanelModel, Boolean> experimentInitializedNotStarted = ELProperty.create("${arduinoInitialized && experimentInitialized && !experimentRunning}"); 
+		ELProperty<LedMatrixPanelModel, Boolean> experimentInitializedNotStarted = ELProperty.create("${ledMatrixConnectorInitialized && experimentInitialized && !experimentRunning}"); 
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixPanelModel, experimentInitializedNotStarted, ledMatrixPanelView.getSecondsToRunTextField(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
 		BeanProperty<LedMatrixPanelModel, Integer> secondsToRunProperty = BeanProperty.create("experimentSettings.secondsToRun");
@@ -155,7 +168,7 @@ public class LedMatrixController {
 		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixPanelModel, flickerFrequencyProperty, ledMatrixPanelView.getFlickerFrequencyTextField(), TEXT);
 		valueBinding.setTargetNullValue(0);
 		bindingGroup.addBinding(valueBinding);
-		ELProperty<LedMatrixPanelModel, Boolean> experimentInitialized = ELProperty.create("${arduinoInitialized && experimentInitialized}"); 
+		ELProperty<LedMatrixPanelModel, Boolean> experimentInitialized = ELProperty.create("${ledMatrixConnectorInitialized && experimentInitialized}"); 
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixPanelModel, experimentInitialized, ledMatrixPanelView.getStartExperimentButton(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
 		bindingGroup.bind();
@@ -224,46 +237,95 @@ public class LedMatrixController {
 	}
 
 	@Action(block=BlockingScope.APPLICATION)
-	public Task<?, ?> initializeSerialPort(final ActionEvent event) {
+	public Task<?, ?> initLedMatrixConnector(final ActionEvent event) {
 		
-		final String selectedSerialPortName  = ledMatrixPanelModel.getSelectedSerialPortName();
-		if (selectedSerialPortName != null && !"".equals(selectedSerialPortName) && 
-				!ledMatrixPanelModel.isArduinoInitialized()) {
-			return new AbstractTask<Void, Void>(INIT_SERIAL_PORT_ACTION) {
+		final String selectedLedMatrixPortName  = ledMatrixPanelModel.getSelectedLedMatrixPortName();
+		if (selectedLedMatrixPortName != null && !"".equals(selectedLedMatrixPortName) && 
+				!ledMatrixPanelModel.isLedMatrixConnectorInitialized()) {
+			return new AbstractTask<Void, Void>(INIT_LED_MATRIX_CONNECTOR_ACTION) {
 
 				protected Void doInBackground() throws Exception {
-					message("startMessage", selectedSerialPortName);
-					ledMatrixConnector.initialize(selectedSerialPortName);
+					message("startMessage", selectedLedMatrixPortName);
+					ledMatrixConnector.initialize(selectedLedMatrixPortName);
 					// will disable enabled state of in the gui..
-					ledMatrixPanelModel.setArduinoInitialized(true);
+					ledMatrixPanelModel.setLedMatrixConnectorInitialized(true);
 					// should be updating the view on EDT
-					message("endMessage");
+					message("endMessage", selectedLedMatrixPortName);
 					return null;
 				}
 
 				@Override
 				protected void succeeded(Void result) {
-					toggleName((AbstractButton) event.getSource(), INIT_SERIAL_PORT_ACTION, 
-							ledMatrixPanelModel.isArduinoInitialized());
+					toggleName((AbstractButton) event.getSource(), INIT_LED_MATRIX_CONNECTOR_ACTION, 
+							ledMatrixPanelModel.isLedMatrixConnectorInitialized());
 					super.succeeded(result);
 				}
 
 			};
 		} else {
-			return new AbstractTask<Void, Void>(CLOSE_SERIAL_PORT_ACTION) {
+			return new AbstractTask<Void, Void>(CLOSE_SERIAL_PORT_CONNECTOR_ACTION) {
 
 				protected Void doInBackground() throws Exception {
-					message("startMessage", selectedSerialPortName);
+					message("startMessage", selectedLedMatrixPortName);
 					ledMatrixConnector.close();
-					ledMatrixPanelModel.setArduinoInitialized(false);
-					message("endMessage");
+					ledMatrixPanelModel.setLedMatrixConnectorInitialized(false);
+					message("endMessage", selectedLedMatrixPortName);
 					return null;
 				}
 				
 				@Override
 				protected void succeeded(Void result) {
-					toggleName((AbstractButton) event.getSource(), INIT_SERIAL_PORT_ACTION, 
-							ledMatrixPanelModel.isArduinoInitialized());
+					toggleName((AbstractButton) event.getSource(), INIT_LED_MATRIX_CONNECTOR_ACTION, 
+							ledMatrixPanelModel.isLedMatrixConnectorInitialized());
+					super.succeeded(result);
+				}
+
+			};
+		}
+	}
+	
+
+	@Action(block=BlockingScope.APPLICATION)
+	public Task<?, ?> initThorlabsConnector(final ActionEvent event) {
+		
+		final String selectedThorlabsPortName  = ledMatrixPanelModel.getSelectedThorlabsPortName();
+		if (selectedThorlabsPortName != null && !"".equals(selectedThorlabsPortName) && 
+				!ledMatrixPanelModel.isThorlabsConnectorInitialized()) {
+			return new AbstractTask<Void, Void>(INIT_THORLABS_CONNECTOR_ACTION) {
+
+				protected Void doInBackground() throws Exception {
+					message("startMessage", selectedThorlabsPortName);
+					thorlabsConnector.initialize(selectedThorlabsPortName);
+					// will disable enabled state of in the gui..
+					ledMatrixPanelModel.setThorlabsConnectorInitialized(true);
+					// should be updating the view on EDT
+					message("endMessage", selectedThorlabsPortName);
+					return null;
+				}
+
+				@Override
+				protected void succeeded(Void result) {
+					toggleName((AbstractButton) event.getSource(), INIT_THORLABS_CONNECTOR_ACTION, 
+							ledMatrixPanelModel.isThorlabsConnectorInitialized());
+					super.succeeded(result);
+				}
+
+			};
+		} else {
+			return new AbstractTask<Void, Void>(CLOSE_SERIAL_PORT_CONNECTOR_ACTION) {
+
+				protected Void doInBackground() throws Exception {
+					message("startMessage", selectedThorlabsPortName);
+					thorlabsConnector.close();
+					ledMatrixPanelModel.setThorlabsConnectorInitialized(false);
+					message("endMessage", selectedThorlabsPortName);
+					return null;
+				}
+				
+				@Override
+				protected void succeeded(Void result) {
+					toggleName((AbstractButton) event.getSource(), INIT_THORLABS_CONNECTOR_ACTION, 
+							ledMatrixPanelModel.isThorlabsConnectorInitialized());
 					super.succeeded(result);
 				}
 
@@ -278,10 +340,12 @@ public class LedMatrixController {
 			protected Void doInBackground() throws Exception {
 				message("startMessage");
 				List<String> serialPortNames = SerialPortConnector.getSerialPortNames();
-				String selectedSerialPortName = ledMatrixConnector.getSelectedSerialPortName();
+				String selectedLedMatrixPortName = ledMatrixConnector.getSelectedSerialPortName();
+				String selectedThorlabsPortName = thorlabsConnector.getSelectedSerialPortName();
 				// should be updating the view on EDT
 				ledMatrixPanelModel.setSerialPortNames(serialPortNames);
-				ledMatrixPanelModel.setSelectedSerialPortName(selectedSerialPortName);
+				ledMatrixPanelModel.setSelectedLedMatrixPortName(selectedLedMatrixPortName);
+				ledMatrixPanelModel.setSelectedThorlabsPortName(selectedThorlabsPortName);
 				message("endMessage");
 				return null;
 			}
@@ -316,6 +380,7 @@ public class LedMatrixController {
 						ledSettings.setIntensity(slider.getValue());
 					}
 					boolean selected = ledMatrixGfxModel.isSelected(ledSettings);
+					thorlabsConnector.setLedOn(selected && illuminated);
 					ledMatrixConnector.toggleLed(ledSettings, selected && illuminated);
 				}
 				// update gfx illumination state
@@ -327,30 +392,13 @@ public class LedMatrixController {
 		};
 	}
 	
-	
-	public Task<?, ?> updateIlluminatedLeds() {
-		return new AbstractTask<Void, Void>(TOGGLE_LED_ACTION) {
-
-			@Override
-			protected Void doInBackground() throws Exception {
-				boolean illuminated = ledMatrixPanelView.getToggleLedButton().isSelected();
-				int intensity = ledMatrixPanelView.getIntensitySlider().getValue();
-				LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel = ledMatrixGfxModel.getLedMatrixGfxSelectionModel();
-				for (LedSettings ledSettings : ledMatrixGfxSelectionModel.getSelectedLedSettings()) {
-					if (ledMatrixGfxModel.isSelected(ledSettings)) {
-						ledSettings.setIntensity(intensity);
-						ledMatrixConnector.toggleLed(ledSettings, illuminated);
-					}
-				}
-				message("endMessage");
-				return null;
-			}
-			
-		};
-	}
-	
 	public void stopExperiment() {
 		clearSelection();
+		try {
+			thorlabsConnector.setLedOn(false);
+		} catch(InterruptedException exc) {
+			Logger.getLogger(getClass()).error(exc);
+		}
 		ledMatrixConnector.disableAllLeds();
 		ledMatrixGfxModel.setIlluminated(false);
 		ledMatrixGfxView.repaint();
@@ -367,7 +415,7 @@ public class LedMatrixController {
 			private void doPeriodicToggle(LedSettings ledSettings, 
 					int flickerFrequency, long timePerLed) {
 				try {
-					if (flickerFrequency == 0) {
+					if (flickerFrequency == 0 || thorlabsConnector.isInitialized()) {
 						ledMatrixGfxModel.setIlluminated(true);
 						updateSingleSelection(ledSettings);
 						ledMatrixGfxView.repaint();
@@ -401,6 +449,7 @@ public class LedMatrixController {
 				if (ledMatrixPanelModel.isExperimentRunning()) {
 					ExperimentSettings experimentSettings = ledMatrixPanelModel.getExperimentSettings();
 					int flickerFrequency = experimentSettings.getFlickerFrequency();
+					thorlabsConnector.setPwmFrequency(flickerFrequency);
 					long secondsToRun = experimentSettings.getSecondsToRun();
 					message("startMessage", secondsToRun);
 					int ledCount = ledMatrixGfxModel.getHeight() + ledMatrixGfxModel.getWidth(); 
@@ -411,7 +460,8 @@ public class LedMatrixController {
 							LedPosition ledPosition = LedPosition.ledPositionFor(i, j);
 							LedSettings ledSettings = ledMatrixGfxModel.getLedSettings(ledPosition);
 							message("progressMessage", ledPosition);
-							// TODO we could send out an intensity to thorlabs driver here
+							// will set intensity for thorlabs driver in case it's connected??
+							thorlabsConnector.setPwmCurrent(ledSettings.getIntensity());
 							doPeriodicToggle(ledSettings, flickerFrequency, timePerLed);
 						}
 					}

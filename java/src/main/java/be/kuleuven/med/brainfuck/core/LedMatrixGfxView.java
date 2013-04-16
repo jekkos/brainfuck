@@ -28,7 +28,7 @@ public class LedMatrixGfxView extends JPanel {
 	private Map<LedPosition, Shape> shapeMap;
 
 	public LedMatrixGfxView(final LedMatrixController ledMatrixController, LedMatrixGfxModel ledMatrixGfxModel) {	
-		super(new MigLayout("nogrid", ":300:", ":400:"));
+		super(new MigLayout("nogrid", ":300:", ":450:"));
 		this.ledMatrixGfxModel = ledMatrixGfxModel;
 		addMouseListener(new MouseAdapter() {
 
@@ -77,6 +77,9 @@ public class LedMatrixGfxView extends JPanel {
 				g.setColor(Color.BLACK);
 				g.drawOval(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
 			}
+			g.setColor(Color.GRAY);
+			g.drawString(Integer.toString(ledSettings.getIntensity()), 
+					rectangle.x + rectangle.width / 2 - 10, rectangle.y + rectangle.height / 2);
 		}
 		g.dispose();
 	}

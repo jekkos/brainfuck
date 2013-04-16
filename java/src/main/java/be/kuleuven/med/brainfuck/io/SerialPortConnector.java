@@ -5,10 +5,13 @@ import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.SynchronousQueue;
 
 import org.apache.log4j.Logger;
 
@@ -23,6 +26,8 @@ public abstract class SerialPortConnector implements SerialPortEventListener {
 	/** Milliseconds to block while waiting for port open */
 	private final static int TIME_OUT = 2000;
 
+	public static final String RETURN = "\r\n";
+
 	private SerialPort serialPort;
 
 	/** Buffered input stream from the port */
@@ -31,6 +36,8 @@ public abstract class SerialPortConnector implements SerialPortEventListener {
 	private OutputStream output;
 	
 	private SerialPortSettings serialPortSettings;
+	
+	private BlockingQueue<String> queue = new SynchronousQueue<String>();
 	
 	public static List<String> getSerialPortNames() {
 		List<String> result = Lists.newArrayList();
@@ -47,6 +54,11 @@ public abstract class SerialPortConnector implements SerialPortEventListener {
 	public SerialPortConnector(SerialPortSettings serialPortSettings) {
 		this.serialPortSettings = serialPortSettings;
 	}
+	
+	/**
+	 * Perform some connector specific initialization.
+	 */
+	protected abstract void initializeConnector(String serialPortName) throws Exception;
 
 	public void initialize(String serialPortName) throws Exception {
 		CommPortIdentifier portId = null;
@@ -83,16 +95,6 @@ public abstract class SerialPortConnector implements SerialPortEventListener {
 		initializeConnector(serialPortName);
 	}
 	
-	/**
-	 * Handle an event on the serial port. Read the data and print it.
-	 */
-	public abstract void serialEvent(SerialPortEvent oEvent);
-
-	/**
-	 * Perform some connector specific initialization.
-	 */
-	protected abstract void initializeConnector(String serialPortName);
-	
 	public String getSelectedSerialPortName() {
 		return serialPortSettings.getName();
 	}
@@ -118,10 +120,53 @@ public abstract class SerialPortConnector implements SerialPortEventListener {
 	 * This will prevent port locking on platforms like Linux.
 	 */
 	public synchronized void close() {
-		if (serialPort != null) {
+		if (isInitialized()) {
 			serialPort.removeEventListener();
 			serialPort.close();
 		}
+	}
+	
+	public boolean isInitialized() {
+		return serialPort != null;
+	}
+
+	protected void sendCommand(String command) {
+		try {
+			if (getOutput() != null) {
+				command = new StringBuilder(command).append(RETURN).toString();
+				getOutput().write(command.getBytes());
+				LOGGER.info("Command sent: " + command);
+			} else {
+				LOGGER.info("no serial device attached..");
+			}
+		} catch (IOException e1) {
+			LOGGER.error(e1);
+		}
+	}
+	
+	protected synchronized String waitForResponse() throws InterruptedException {
+		return queue.take();
+	}
+
+	/**
+	 * Handle an event on the serial port. Read the data and print it.
+	 */
+	public synchronized void serialEvent(SerialPortEvent oEvent) {
+		if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
+			try {
+				int available = getInput().available();
+				byte chunk[] = new byte[available];
+				getInput().read(chunk, 0, available);
+				// Displayed results are codepage dependent
+				String result = new String(chunk);
+				// result coming back from arduino
+				LOGGER.info("Data received: " + result);
+				queue.put(result);
+			} catch (Exception e) {
+				LOGGER.error(e);
+			}
+		}
+		// Ignore all the other eventTypes, but you should consider the other ones.
 	}
 
 }

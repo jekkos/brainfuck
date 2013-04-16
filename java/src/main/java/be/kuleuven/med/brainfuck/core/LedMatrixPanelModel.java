@@ -16,7 +16,9 @@ public class LedMatrixPanelModel extends AbstractBean {
 
 	public static final String WIDTH = "width";
 	
-	public static final String ARDUINO_INITIALIZED = "arduinoInitialized";
+	public static final String LED_MATRIX_CONNECTOR_INITIALIZED = "ledMatrixConnectorInitialized";
+	
+	public static final String THORLABS_CONNECTOR_INITIALIZED = "thorlabsConnectorInitialized";
 	
 	public static final String EXPERIMENT_INITIALIZED = "experimentInitialized";
 	
@@ -28,9 +30,13 @@ public class LedMatrixPanelModel extends AbstractBean {
 	
 	private List<String> serialPortNames = Lists.newArrayList();
 	
-	private String selectedSerialPortName;
+	private String selectedLedMatrixPortName;
 	
-	private boolean arduinoInitialized;
+	private String selectedThorlabsPortName;
+	
+	private boolean ledMatrixConnectorInitialized;
+	
+	private boolean thorlabsConnectorInitialized;
 	
 	private boolean experimentInitialized;
 	
@@ -72,22 +78,38 @@ public class LedMatrixPanelModel extends AbstractBean {
 		firePropertyChange(SERIAL_PORT_NAMES, this.serialPortNames, this.serialPortNames = serialPortNames);
 	}
 	
-	public String getSelectedSerialPortName() {
-		return selectedSerialPortName;
+	public String getSelectedLedMatrixPortName() {
+		return selectedLedMatrixPortName;
 	}
 
-	public void setSelectedSerialPortName(String selectedSerialPortName) {
-		this.selectedSerialPortName = selectedSerialPortName;
-	}
-
-	public boolean isArduinoInitialized() {
-		return arduinoInitialized;
-	}
-
-	public void setArduinoInitialized(boolean arduinoInitialized) {
-		firePropertyChange(ARDUINO_INITIALIZED, this.arduinoInitialized, this.arduinoInitialized = arduinoInitialized);
+	public void setSelectedLedMatrixPortName(String selectedLedMatrixPortName) {
+		this.selectedLedMatrixPortName = selectedLedMatrixPortName;
 	}
 	
+	public String getSelectedThorlabsPortName() {
+		return selectedThorlabsPortName;
+	}
+
+	public void setSelectedThorlabsPortName(String selectedThorlabsPortName) {
+		this.selectedThorlabsPortName = selectedThorlabsPortName;
+	}
+
+	public boolean isLedMatrixConnectorInitialized() {
+		return ledMatrixConnectorInitialized;
+	}
+
+	public void setLedMatrixConnectorInitialized(boolean ledMatrixConnectorInitialized) {
+		firePropertyChange(LED_MATRIX_CONNECTOR_INITIALIZED, this.ledMatrixConnectorInitialized, this.ledMatrixConnectorInitialized = ledMatrixConnectorInitialized);
+	}
+	
+	public boolean isThorlabsConnectorInitialized() {
+		return thorlabsConnectorInitialized;
+	}
+
+	public void setThorlabsConnectorInitialized(boolean thorlabsConnectorInitialized) {
+		firePropertyChange(THORLABS_CONNECTOR_INITIALIZED, this.thorlabsConnectorInitialized, this.thorlabsConnectorInitialized = thorlabsConnectorInitialized);
+	}
+
 	public boolean isExperimentInitialized() {
 		return experimentInitialized;
 	}
@@ -111,5 +133,5 @@ public class LedMatrixPanelModel extends AbstractBean {
 	public void setExperimentRunning(boolean experimentRunning) {
 		firePropertyChange(EXPERIMENT_RUNNING, this.experimentRunning, this.experimentRunning = experimentRunning);
 	}
-	
+
 }

@@ -18,7 +18,6 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.JSeparator;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
@@ -133,10 +132,11 @@ public class LedMatrixPanelView extends JPanel {
 		add(new JSeparator(SwingConstants.HORIZONTAL), "growx, wrap");
 		add(new JLabel(resourceMap.getString("secondsToRunLabel.text")));
 		secondsToRunTextField = createFormattedTextField();
-		add(secondsToRunTextField, "wrap, w 40");
+		add(secondsToRunTextField, "w 40");
 		startExperimentButton = new JToggleButton(actionMap.get(START_EXPERIMENT_ACTION));
 		add(startExperimentButton, "wrap");
 		// add save settings button
+		add(new JLabel(resourceMap.getString("applicationStatusLabel.text")));
 		add(new JSeparator(SwingConstants.HORIZONTAL), "growx, wrap");
 
 		final JLabel statusMessageLabel = new JLabel();
@@ -150,7 +150,7 @@ public class LedMatrixPanelView extends JPanel {
 		final int messageTimeout = resourceMap.getInteger("StatusBar.messageTimeout");
 		final Timer messageTimer = new Timer(messageTimeout, new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				statusMessageLabel.setText("");
+				statusMessageLabel.setText(resourceMap.getString("StatusBar.idleMessage"));
 			}
 		});
 		messageTimer.setRepeats(false);

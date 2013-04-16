@@ -140,8 +140,8 @@ public class LedMatrixController {
 				Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixPanelView.getLedMatrixConnectorBox(), selectedItemProperty, ledMatrixPanelModel, selectedLedMatrixPortNameProperty);
 		bindingGroup.addBinding(selectedElementBinding);
 		// bind serial port select box enabled state
-		ELProperty<LedMatrixPanelModel, Boolean> arduinoInitialized = ELProperty.create("${!ledMatrixConnectorInitialized}");
-		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixPanelModel, arduinoInitialized, ledMatrixPanelView.getLedMatrixConnectorBox(), ENABLED);
+		ELProperty<LedMatrixPanelModel, Boolean> ledMatrixConnectorInitializedProperty = ELProperty.create("${!ledMatrixConnectorInitialized}");
+		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixPanelModel, ledMatrixConnectorInitializedProperty, ledMatrixPanelView.getLedMatrixConnectorBox(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
 		// bind led controls (just the enabled state)
 		ELProperty<LedMatrixController, Boolean> ledControlsEnabledProperty = ELProperty.create("${!ledMatrixGfxModel.ledMatrixGfxSelectionModel.cleared && ledMatrixPanelModel.ledMatrixConnectorInitialized && !ledMatrixPanelModel.experimentRunning}");
@@ -155,6 +155,10 @@ public class LedMatrixController {
 		BeanProperty<LedMatrixPanelModel, String> selectedThorlabsPortNameProperty = BeanProperty.create("selectedThorlabsPortName");
 		selectedElementBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixPanelView.getThorlabsConnectorBox(), selectedItemProperty, ledMatrixPanelModel, selectedThorlabsPortNameProperty);
 		bindingGroup.addBinding(selectedElementBinding);
+		// bind thorlabs select box enabled state
+		ELProperty<LedMatrixPanelModel, Boolean> thorlabsConnectorInitializedProperty = ELProperty.create("${!thorlabsConnectorInitialized}");
+		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixPanelModel, thorlabsConnectorInitializedProperty, ledMatrixPanelView.getThorlabsConnectorBox(), ENABLED);
+		bindingGroup.addBinding(enabledBinding);
 		// bind experiment settings controls
 		ELProperty<LedMatrixPanelModel, Boolean> experimentInitializedNotStarted = ELProperty.create("${ledMatrixConnectorInitialized && experimentInitialized && !experimentRunning}"); 
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixPanelModel, experimentInitializedNotStarted, ledMatrixPanelView.getSecondsToRunTextField(), ENABLED);
@@ -421,7 +425,9 @@ public class LedMatrixController {
 						ledMatrixGfxView.repaint();
 						message("progressMessage", ledSettings.getLedPosition());
 						ledMatrixConnector.toggleLed(ledSettings, true);
+						thorlabsConnector.setLedOn(true);
 						Thread.sleep(timePerLed * 1000);
+						thorlabsConnector.setLedOn(false);
 						ledMatrixConnector.toggleLed(ledSettings, false);
 						ledMatrixGfxModel.setIlluminated(false);
 					} else {

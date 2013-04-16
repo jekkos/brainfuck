@@ -66,20 +66,22 @@ public class LedMatrixGfxView extends JPanel {
 			// set a nice color..
 			Rectangle rectangle = shape.getBounds();
 			if (selected) {
-				Color fillColor = Color.RED;
+				Color fillColor = new Color(150, 0, 0);
 				if (illuminated) {
 					fillColor = new Color(255-ledSettings.getIntensity(), 
 							255-ledSettings.getIntensity(), 255);
 				}
 				g.setColor(fillColor);
 				g.fillOval(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
-			} else {
-				g.setColor(Color.BLACK);
-				g.drawOval(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
-			}
+			} 
+			g.setColor(Color.LIGHT_GRAY);
+			g.drawOval(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
 			g.setColor(Color.GRAY);
-			g.drawString(Integer.toString(ledSettings.getIntensity()), 
-					rectangle.x + rectangle.width / 2 - 10, rectangle.y + rectangle.height / 2);
+			int xPos = rectangle.x + rectangle.width / 2 - 10;
+			int yPos = rectangle.y + rectangle.height / 2;
+			g.drawString("R " + ledSettings.getRowPin(), xPos, yPos - 20);
+			g.drawString("C " + ledSettings.getColumnPin(), xPos, yPos);
+			g.drawString(Integer.toString(ledSettings.getIntensity()) + " mA", xPos - 10, yPos + 20);
 		}
 		g.dispose();
 	}

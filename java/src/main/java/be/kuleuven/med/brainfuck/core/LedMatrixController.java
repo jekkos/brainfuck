@@ -22,6 +22,7 @@ import org.jdesktop.beansbinding.Binding.ValueResult;
 import org.jdesktop.beansbinding.BindingGroup;
 import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.beansbinding.ELProperty;
+import org.jdesktop.beansbinding.PropertyStateEvent;
 import org.jdesktop.swingbinding.SwingBindings;
 
 import be.kuleuven.med.brainfuck.bsaf.AppComponent;
@@ -87,7 +88,7 @@ public class LedMatrixController {
 		valueBinding.addBindingListener(new AbstractBindingListener() {
 
 			@Override
-			public void synced(@SuppressWarnings("rawtypes") Binding binding) {
+			public void targetChanged(@SuppressWarnings("rawtypes") Binding binding, PropertyStateEvent event) {
 				@SuppressWarnings("rawtypes")
 				ValueResult targetValueForSource = binding.getTargetValueForSource();
 				LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel = ledMatrixGfxModel.getLedMatrixGfxSelectionModel();
@@ -107,7 +108,7 @@ public class LedMatrixController {
 		valueBinding.addBindingListener(new AbstractBindingListener() {
 
 			@Override
-			public void synced(@SuppressWarnings("rawtypes") Binding binding) {
+			public void targetChanged(@SuppressWarnings("rawtypes") Binding binding, PropertyStateEvent event) {
 				@SuppressWarnings("rawtypes")
 				ValueResult targetValueForSource = binding.getTargetValueForSource();
 				LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel = ledMatrixGfxModel.getLedMatrixGfxSelectionModel();

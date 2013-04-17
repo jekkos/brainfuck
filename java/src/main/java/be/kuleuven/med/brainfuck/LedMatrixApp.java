@@ -25,19 +25,19 @@ import org.jdesktop.application.Task.BlockingScope;
 import org.jdesktop.application.TaskService;
 import org.jdesktop.application.utils.AppHelper;
 
-import be.kuleuven.med.brainfuck.core.LedMatrixController;
-import be.kuleuven.med.brainfuck.core.LedMatrixGfxModel;
-import be.kuleuven.med.brainfuck.core.LedMatrixGfxView;
-import be.kuleuven.med.brainfuck.core.LedMatrixGfxModelBuilder;
-import be.kuleuven.med.brainfuck.core.LedMatrixPanelModel;
-import be.kuleuven.med.brainfuck.core.LedMatrixPanelView;
+import be.kuleuven.med.brainfuck.controller.LedMatrixController;
+import be.kuleuven.med.brainfuck.controller.SettingsManager;
+import be.kuleuven.med.brainfuck.domain.setting.ExperimentSettings;
+import be.kuleuven.med.brainfuck.domain.setting.LedMatrixSettings;
 import be.kuleuven.med.brainfuck.io.LedMatrixConnector;
 import be.kuleuven.med.brainfuck.io.SerialPortConnector;
 import be.kuleuven.med.brainfuck.io.ThorlabsConnector;
-import be.kuleuven.med.brainfuck.settings.ExperimentSettings;
-import be.kuleuven.med.brainfuck.settings.LedMatrixSettings;
-import be.kuleuven.med.brainfuck.settings.SettingsManager;
+import be.kuleuven.med.brainfuck.model.LedMatrixGfxModel;
+import be.kuleuven.med.brainfuck.model.LedMatrixPanelModel;
+import be.kuleuven.med.brainfuck.modelbuilder.LedMatrixGfxModelBuilder;
 import be.kuleuven.med.brainfuck.task.AbstractTask;
+import be.kuleuven.med.brainfuck.view.LedMatrixGfxView;
+import be.kuleuven.med.brainfuck.view.LedMatrixPanelView;
 
 import com.google.common.collect.Lists;
 

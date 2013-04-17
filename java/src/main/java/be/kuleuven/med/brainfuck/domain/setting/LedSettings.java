@@ -1,10 +1,9 @@
-package be.kuleuven.med.brainfuck.settings;
+package be.kuleuven.med.brainfuck.domain.setting;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import be.kuleuven.med.brainfuck.entity.LedPosition;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)

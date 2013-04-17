@@ -1,12 +1,12 @@
-package be.kuleuven.med.brainfuck.core;
+package be.kuleuven.med.brainfuck.model;
 
 import java.util.Collections;
 import java.util.List;
 
 import org.jdesktop.application.AbstractBean;
 
-import be.kuleuven.med.brainfuck.settings.ExperimentSettings;
-import be.kuleuven.med.brainfuck.settings.LedMatrixSettings;
+import be.kuleuven.med.brainfuck.domain.setting.ExperimentSettings;
+import be.kuleuven.med.brainfuck.domain.setting.LedMatrixSettings;
 
 import com.google.common.collect.Lists;
 

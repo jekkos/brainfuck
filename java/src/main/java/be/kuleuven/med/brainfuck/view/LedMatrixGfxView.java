@@ -1,4 +1,4 @@
-package be.kuleuven.med.brainfuck.core;
+package be.kuleuven.med.brainfuck.view;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -14,8 +14,10 @@ import java.util.Set;
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
-import be.kuleuven.med.brainfuck.entity.LedPosition;
-import be.kuleuven.med.brainfuck.settings.LedSettings;
+import be.kuleuven.med.brainfuck.controller.LedMatrixController;
+import be.kuleuven.med.brainfuck.domain.setting.LedPosition;
+import be.kuleuven.med.brainfuck.domain.setting.LedSettings;
+import be.kuleuven.med.brainfuck.model.LedMatrixGfxModel;
 
 import com.google.common.collect.Maps;
 

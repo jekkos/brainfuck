@@ -1,4 +1,4 @@
-package be.kuleuven.med.brainfuck.bsaf;
+package be.kuleuven.med.brainfuck.component;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

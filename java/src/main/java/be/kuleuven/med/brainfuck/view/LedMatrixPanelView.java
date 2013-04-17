@@ -1,11 +1,11 @@
-package be.kuleuven.med.brainfuck.core;
+package be.kuleuven.med.brainfuck.view;
 
 import static be.kuleuven.med.brainfuck.LedMatrixApp.SAVE_SETTINGS_ACTION;
-import static be.kuleuven.med.brainfuck.core.LedMatrixController.INIT_LED_MATRIX_CONNECTOR_ACTION;
-import static be.kuleuven.med.brainfuck.core.LedMatrixController.INIT_THORLABS_CONNECTOR_ACTION;
-import static be.kuleuven.med.brainfuck.core.LedMatrixController.START_EXPERIMENT_ACTION;
-import static be.kuleuven.med.brainfuck.core.LedMatrixController.TOGGLE_LED_ACTION;
-import static be.kuleuven.med.brainfuck.core.LedMatrixController.UPDATE_LED_MATRIX_ACTION;
+import static be.kuleuven.med.brainfuck.controller.LedMatrixController.INIT_LED_MATRIX_CONNECTOR_ACTION;
+import static be.kuleuven.med.brainfuck.controller.LedMatrixController.INIT_THORLABS_CONNECTOR_ACTION;
+import static be.kuleuven.med.brainfuck.controller.LedMatrixController.START_EXPERIMENT_ACTION;
+import static be.kuleuven.med.brainfuck.controller.LedMatrixController.TOGGLE_LED_ACTION;
+import static be.kuleuven.med.brainfuck.controller.LedMatrixController.UPDATE_LED_MATRIX_ACTION;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,7 +32,8 @@ import net.miginfocom.swing.MigLayout;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.application.TaskMonitor;
 
-import be.kuleuven.med.brainfuck.settings.LedSettings;
+import be.kuleuven.med.brainfuck.controller.LedMatrixController;
+import be.kuleuven.med.brainfuck.domain.setting.LedSettings;
 
 public class LedMatrixPanelView extends JPanel {
 

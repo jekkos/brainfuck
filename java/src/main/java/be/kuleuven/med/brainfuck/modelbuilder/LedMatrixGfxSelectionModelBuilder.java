@@ -1,9 +1,10 @@
-package be.kuleuven.med.brainfuck.core;
+package be.kuleuven.med.brainfuck.modelbuilder;
 
 import java.util.Collections;
 import java.util.Set;
 
-import be.kuleuven.med.brainfuck.settings.LedSettings;
+import be.kuleuven.med.brainfuck.domain.setting.LedSettings;
+import be.kuleuven.med.brainfuck.model.LedMatrixGfxSelectionModel;
 
 import com.google.common.collect.Sets;
 

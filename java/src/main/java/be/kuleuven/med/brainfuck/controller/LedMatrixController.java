@@ -1,4 +1,4 @@
-package be.kuleuven.med.brainfuck.core;
+package be.kuleuven.med.brainfuck.controller;
 
 import java.awt.event.ActionEvent;
 import java.util.EventObject;
@@ -26,14 +26,21 @@ import org.jdesktop.beansbinding.ELProperty;
 import org.jdesktop.beansbinding.PropertyStateEvent;
 import org.jdesktop.swingbinding.SwingBindings;
 
-import be.kuleuven.med.brainfuck.bsaf.AppComponent;
-import be.kuleuven.med.brainfuck.entity.LedPosition;
+import be.kuleuven.med.brainfuck.component.AppComponent;
+import be.kuleuven.med.brainfuck.domain.setting.ExperimentSettings;
+import be.kuleuven.med.brainfuck.domain.setting.LedPosition;
+import be.kuleuven.med.brainfuck.domain.setting.LedSettings;
 import be.kuleuven.med.brainfuck.io.LedMatrixConnector;
 import be.kuleuven.med.brainfuck.io.SerialPortConnector;
 import be.kuleuven.med.brainfuck.io.ThorlabsConnector;
-import be.kuleuven.med.brainfuck.settings.ExperimentSettings;
-import be.kuleuven.med.brainfuck.settings.LedSettings;
+import be.kuleuven.med.brainfuck.model.LedMatrixGfxModel;
+import be.kuleuven.med.brainfuck.model.LedMatrixGfxSelectionModel;
+import be.kuleuven.med.brainfuck.model.LedMatrixPanelModel;
+import be.kuleuven.med.brainfuck.modelbuilder.LedMatrixGfxModelBuilder;
+import be.kuleuven.med.brainfuck.modelbuilder.LedMatrixGfxSelectionModelBuilder;
 import be.kuleuven.med.brainfuck.task.AbstractTask;
+import be.kuleuven.med.brainfuck.view.LedMatrixGfxView;
+import be.kuleuven.med.brainfuck.view.LedMatrixPanelView;
 
 @AppComponent
 public class LedMatrixController {

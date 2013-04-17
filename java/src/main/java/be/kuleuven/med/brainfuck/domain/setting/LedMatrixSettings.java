@@ -1,4 +1,4 @@
-package be.kuleuven.med.brainfuck.settings;
+package be.kuleuven.med.brainfuck.domain.setting;
 
 import java.util.Collections;
 import java.util.List;
@@ -20,7 +20,7 @@ public class LedMatrixSettings {
 	
 	private int maxPortNumber = MAX_PORT_NUMBER;
 	
-	LedMatrixSettings() {	}
+	public LedMatrixSettings() {	}
 
 	public List<LedSettings> getLedSettingsList() {
 		return Collections.unmodifiableList(ledSettingsList);

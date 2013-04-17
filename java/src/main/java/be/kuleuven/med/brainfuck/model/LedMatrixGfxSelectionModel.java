@@ -1,11 +1,11 @@
-package be.kuleuven.med.brainfuck.core;
+package be.kuleuven.med.brainfuck.model;
 
 import java.util.Collections;
 import java.util.Set;
 
 import org.jdesktop.application.AbstractBean;
 
-import be.kuleuven.med.brainfuck.settings.LedSettings;
+import be.kuleuven.med.brainfuck.domain.setting.LedSettings;
 
 import com.google.common.collect.Sets;
 

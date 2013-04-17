@@ -15,7 +15,7 @@ import java.util.concurrent.SynchronousQueue;
 
 import org.apache.log4j.Logger;
 
-import be.kuleuven.med.brainfuck.settings.SerialPortSettings;
+import be.kuleuven.med.brainfuck.domain.setting.SerialPortSettings;
 
 import com.google.common.collect.Lists;
 

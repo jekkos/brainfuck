@@ -1,12 +1,12 @@
-package be.kuleuven.med.brainfuck.core;
+package be.kuleuven.med.brainfuck.model;
 
 import java.util.Map;
 
 import org.jdesktop.application.AbstractBean;
 
-import be.kuleuven.med.brainfuck.entity.LedPosition;
-import be.kuleuven.med.brainfuck.settings.LedMatrixSettings;
-import be.kuleuven.med.brainfuck.settings.LedSettings;
+import be.kuleuven.med.brainfuck.domain.setting.LedMatrixSettings;
+import be.kuleuven.med.brainfuck.domain.setting.LedPosition;
+import be.kuleuven.med.brainfuck.domain.setting.LedSettings;
 
 public class LedMatrixGfxModel extends AbstractBean {
 	
@@ -22,7 +22,7 @@ public class LedMatrixGfxModel extends AbstractBean {
 	
 	private boolean illuminated = false;
 	
-	LedMatrixGfxModel(LedMatrixSettings ledMatrixSettings, Map<LedPosition, LedSettings> ledSettingsMap) {
+	public LedMatrixGfxModel(LedMatrixSettings ledMatrixSettings, Map<LedPosition, LedSettings> ledSettingsMap) {
 		this.ledMatrixSettings = ledMatrixSettings;
 		this.ledSettingsMap = ledSettingsMap;
 	}
@@ -54,7 +54,7 @@ public class LedMatrixGfxModel extends AbstractBean {
 	public void setLedMatrixGfxSelectionModel(
 			LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel) {
 		firePropertyChange(LED_MATRIX_GFX_SELECTION_MODEL, 
-				this.ledMatrixGfxSelectionModel = ledMatrixGfxSelectionModel, ledMatrixGfxSelectionModel);
+				this.ledMatrixGfxSelectionModel, this.ledMatrixGfxSelectionModel = ledMatrixGfxSelectionModel);
 	}
 	
 	public boolean isSelected(LedSettings ledSettings) {

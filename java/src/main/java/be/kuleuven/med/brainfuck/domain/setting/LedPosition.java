@@ -1,4 +1,4 @@
-package be.kuleuven.med.brainfuck.entity;
+package be.kuleuven.med.brainfuck.domain.setting;
 
 import javax.xml.bind.annotation.XmlRootElement;
 

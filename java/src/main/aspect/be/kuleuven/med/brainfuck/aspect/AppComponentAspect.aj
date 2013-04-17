@@ -15,8 +15,8 @@ import org.jdesktop.application.TaskMonitor;
 import org.jdesktop.application.TaskService;
 
 import be.kuleuven.med.brainfuck.LedMatrixApp;
-import be.kuleuven.med.brainfuck.bsaf.AppComponent;
-import be.kuleuven.med.brainfuck.bsaf.IAppComponent;
+import be.kuleuven.med.brainfuck.component.AppComponent;
+import be.kuleuven.med.brainfuck.component.IAppComponent;
 
 /**
  * This aspect will add common BSAF functionalities to classes implementing the {@link AppComponent} marker interface.

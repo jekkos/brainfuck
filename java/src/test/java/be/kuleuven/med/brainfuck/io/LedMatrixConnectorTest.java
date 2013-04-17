@@ -5,9 +5,9 @@ import static be.kuleuven.med.brainfuck.io.LedMatrixConnector.RETURN;
 import java.io.ByteArrayOutputStream;
 
 import junit.framework.TestCase;
-import be.kuleuven.med.brainfuck.entity.LedPosition;
-import be.kuleuven.med.brainfuck.settings.LedSettings;
-import be.kuleuven.med.brainfuck.settings.SerialPortSettings;
+import be.kuleuven.med.brainfuck.domain.setting.LedPosition;
+import be.kuleuven.med.brainfuck.domain.setting.LedSettings;
+import be.kuleuven.med.brainfuck.domain.setting.SerialPortSettings;
 
 
 public class LedMatrixConnectorTest extends TestCase {

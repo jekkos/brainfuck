@@ -144,14 +144,14 @@ public abstract class SerialPortConnector implements SerialPortEventListener {
 		}
 	}
 	
-	protected synchronized String waitForResponse() throws InterruptedException {
+	protected String waitForResponse() throws InterruptedException {
 		return queue.take();
 	}
 
 	/**
 	 * Handle an event on the serial port. Read the data and print it.
 	 */
-	public synchronized void serialEvent(SerialPortEvent oEvent) {
+	public void serialEvent(SerialPortEvent oEvent) {
 		if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 			try {
 				int available = getInput().available();

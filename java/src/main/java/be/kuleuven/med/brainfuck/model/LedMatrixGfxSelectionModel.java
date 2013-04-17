@@ -18,6 +18,8 @@ public class LedMatrixGfxSelectionModel extends AbstractBean {
 	public static final String ROW_SELECTED = "rowSelected";
 	
 	public static final String COLUMN_SELECTED = "columnSelected";
+	
+	public static final String INTENSITY = "intensity";
 
 	private Set<LedSettings> selectedLedSettings = Sets.newHashSet();
 
@@ -28,6 +30,8 @@ public class LedMatrixGfxSelectionModel extends AbstractBean {
 	private Integer rowPin;
 
 	private Integer columnPin;
+	
+	private int intensity = LedSettings.MAX_INTENSITY;
 	
 	public LedMatrixGfxSelectionModel() { }
 
@@ -73,6 +77,14 @@ public class LedMatrixGfxSelectionModel extends AbstractBean {
 
 	public void setColumnSelected(boolean columnSelected) {
 		firePropertyChange(COLUMN_SELECTED, this.columnSelected, this.columnSelected = columnSelected);
+	}
+	
+	public int getIntensity() {
+		return intensity;
+	}
+
+	public void setIntensity(int intensity) {
+		firePropertyChange(INTENSITY, this.intensity, this.intensity = intensity);
 	}
 
 	public Set<LedSettings> getSelectedLedSettings() {

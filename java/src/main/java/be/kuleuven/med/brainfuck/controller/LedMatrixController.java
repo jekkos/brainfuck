@@ -88,7 +88,20 @@ public class LedMatrixController {
 
 		BindingGroup bindingGroup = new BindingGroup();
 		Binding<?, Boolean, ? extends JComponent, Boolean> enabledBinding = null;
-		Binding<?, Integer, ? extends JComponent, String> valueBinding = null;
+		Binding<?, Integer, ? extends JComponent, ?> valueBinding = null;
+		// bind led matrix connector info
+		BeanProperty<LedMatrixPanelModel, List<String>> serialPortNamesProperty = BeanProperty.create("serialPortNames");
+		Binding<?, ?, ?, ?> comboBoxBinding = SwingBindings.createJComboBoxBinding(UpdateStrategy.READ_WRITE, ledMatrixPanelModel, serialPortNamesProperty, ledMatrixPanelView.getLedMatrixConnectorBox());
+		bindingGroup.addBinding(comboBoxBinding);
+		BeanProperty<JComboBox<?>, String> selectedItemProperty = BeanProperty.create("selectedItem");
+		BeanProperty<LedMatrixPanelModel, String> selectedLedMatrixPortNameProperty = BeanProperty.create("selectedLedMatrixPortName");
+		Binding<JComboBox<?>, String, LedMatrixPanelModel, String> selectedElementBinding = 
+				Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixPanelView.getLedMatrixConnectorBox(), selectedItemProperty, ledMatrixPanelModel, selectedLedMatrixPortNameProperty);
+		bindingGroup.addBinding(selectedElementBinding);
+		// bind led matrix connector info enabled state
+		ELProperty<LedMatrixPanelModel, Boolean> ledMatrixConnectorInitializedProperty = ELProperty.create("${!ledMatrixConnectorInitialized}");
+		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixPanelModel, ledMatrixConnectorInitializedProperty, ledMatrixPanelView.getLedMatrixConnectorBox(), ENABLED);
+		bindingGroup.addBinding(enabledBinding);
 		// bind width and height matrix properties
 		BeanProperty<LedMatrixPanelModel, Integer> widthProperty = BeanProperty.create("width");
 		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixPanelModel, widthProperty, ledMatrixPanelView.getRowTextField(), TEXT);
@@ -137,25 +150,16 @@ public class LedMatrixController {
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixGfxModel, columnSelectedProperty, ledMatrixPanelView.getColumnPinTextField(), ENABLED);
 		enabledBinding.setTargetNullValue(false);
 		bindingGroup.addBinding(enabledBinding);
-		// bind led matrix connector info
-		BeanProperty<LedMatrixPanelModel, List<String>> serialPortNamesProperty = BeanProperty.create("serialPortNames");
-		Binding<?, ?, ?, ?> comboBoxBinding = SwingBindings.createJComboBoxBinding(UpdateStrategy.READ_WRITE, ledMatrixPanelModel, serialPortNamesProperty, ledMatrixPanelView.getLedMatrixConnectorBox());
-		bindingGroup.addBinding(comboBoxBinding);
-		BeanProperty<JComboBox<?>, String> selectedItemProperty = BeanProperty.create("selectedItem");
-		BeanProperty<LedMatrixPanelModel, String> selectedLedMatrixPortNameProperty = BeanProperty.create("selectedLedMatrixPortName");
-		Binding<JComboBox<?>, String, LedMatrixPanelModel, String> selectedElementBinding = 
-				Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixPanelView.getLedMatrixConnectorBox(), selectedItemProperty, ledMatrixPanelModel, selectedLedMatrixPortNameProperty);
-		bindingGroup.addBinding(selectedElementBinding);
-		// bind serial port select box enabled state
-		ELProperty<LedMatrixPanelModel, Boolean> ledMatrixConnectorInitializedProperty = ELProperty.create("${!ledMatrixConnectorInitialized}");
-		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixPanelModel, ledMatrixConnectorInitializedProperty, ledMatrixPanelView.getLedMatrixConnectorBox(), ENABLED);
-		bindingGroup.addBinding(enabledBinding);
 		// bind led controls (just the enabled state)
+		BeanProperty<LedMatrixGfxModel, Integer> intensityProperty = BeanProperty.create("ledMatrixGfxSelectionModel.intensity");
+		BeanProperty<JSlider, Integer> valueProperty = BeanProperty.create("value");
+		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixGfxModel, intensityProperty, ledMatrixPanelView.getIntensitySlider(), valueProperty);
+		bindingGroup.addBinding(valueBinding);
 		ELProperty<LedMatrixController, Boolean> ledControlsEnabledProperty = ELProperty.create("${!ledMatrixGfxModel.ledMatrixGfxSelectionModel.cleared && ledMatrixPanelModel.ledMatrixConnectorInitialized && !ledMatrixPanelModel.experimentRunning}");
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, this, ledControlsEnabledProperty, ledMatrixPanelView.getIntensitySlider(), ENABLED);
-		bindingGroup.addBinding(enabledBinding);
+		//bindingGroup.addBinding(enabledBinding);
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, this, ledControlsEnabledProperty, ledMatrixPanelView.getToggleLedButton(), ENABLED);
-		bindingGroup.addBinding(enabledBinding);
+		//bindingGroup.addBinding(enabledBinding);
 		// bind thorlabs connector info 
 		comboBoxBinding = SwingBindings.createJComboBoxBinding(UpdateStrategy.READ_WRITE, ledMatrixPanelModel, serialPortNamesProperty, ledMatrixPanelView.getThorlabsConnectorBox());
 		bindingGroup.addBinding(comboBoxBinding);
@@ -385,14 +389,21 @@ public class LedMatrixController {
 					ledMatrixGfxModel.setIlluminated(illuminated);
 				} 
 				LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel = ledMatrixGfxModel.getLedMatrixGfxSelectionModel();
+				int index = 0; 
 				for (LedSettings ledSettings : ledMatrixGfxSelectionModel.getSelectedLedSettings()) {
 					if (source instanceof JSlider) {
 						JSlider slider = (JSlider) event.getSource();
-						ledSettings.setIntensity(slider.getValue());
+						int sliderValue = slider.getValue();
+						// don't change anything if slider didn't really move
+						if (index == 0 && ledSettings.getIntensity() == sliderValue) {
+							return null;
+						}
+						ledSettings.setIntensity(sliderValue);
 					}
 					boolean selected = ledMatrixGfxModel.isSelected(ledSettings);
 					thorlabsConnector.setLedOn(selected && illuminated);
 					ledMatrixConnector.toggleLed(ledSettings, selected && illuminated);
+					index++;
 				}
 				// update gfx illumination state
 				ledMatrixGfxView.repaint();

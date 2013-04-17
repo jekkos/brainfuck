@@ -45,6 +45,8 @@ public class LedMatrixGfxSelectionModelBuilder {
 		// set column properties
 		ledMatrixGfxSelectionModel.setColumnSelected(isColumnSelected(selectedLedSettings));
 		ledMatrixGfxSelectionModel.setColumnPin(findCommonColumnPin(selectedLedSettings));
+		// set intensity
+		ledMatrixGfxSelectionModel.setIntensity(findCommonIntensity(selectedLedSettings));
 		return ledMatrixGfxSelectionModel;
 	}
 	
@@ -62,6 +64,18 @@ public class LedMatrixGfxSelectionModelBuilder {
 	public LedMatrixGfxSelectionModelBuilder addLedSettings(LedSettings ledSettings) {
 		selectedLedSettings = Collections.singleton(ledSettings);
 		return this;
+	}
+	
+	private int findCommonIntensity(Set<LedSettings> selectedLedSettings) {
+		int result = LedSettings.MAX_INTENSITY;
+		for(LedSettings ledSettings : selectedLedSettings) {
+			if (result == LedSettings.MAX_INTENSITY) {
+				result = ledSettings.getIntensity();
+			} else if (ledSettings.getIntensity() != result) {
+				return result;
+			}
+		}
+		return result;
 	}
 	
 	private Integer findCommonRowPin(Set<LedSettings> selectedLedSettings) {

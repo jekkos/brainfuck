@@ -1,4 +1,4 @@
-package be.kuleuven.med.brainfuck.domain.setting;
+package be.kuleuven.med.brainfuck.domain.settings;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

@@ -1,8 +1,8 @@
 package be.kuleuven.med.brainfuck.domain.settingsbuilder;
 
-import be.kuleuven.med.brainfuck.domain.setting.LedMatrixSettings;
-import be.kuleuven.med.brainfuck.domain.setting.LedPosition;
-import be.kuleuven.med.brainfuck.domain.setting.LedSettings;
+import be.kuleuven.med.brainfuck.domain.settings.LedMatrixSettings;
+import be.kuleuven.med.brainfuck.domain.settings.LedPosition;
+import be.kuleuven.med.brainfuck.domain.settings.LedSettings;
 
 
 public class LedMatrixSettingsBuilder {

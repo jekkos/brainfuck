@@ -1,4 +1,4 @@
-package be.kuleuven.med.brainfuck.io;
+package be.kuleuven.med.brainfuck.connector;
 
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
@@ -15,7 +15,7 @@ import java.util.concurrent.SynchronousQueue;
 
 import org.apache.log4j.Logger;
 
-import be.kuleuven.med.brainfuck.domain.setting.SerialPortSettings;
+import be.kuleuven.med.brainfuck.domain.settings.SerialPortSettings;
 
 import com.google.common.collect.Lists;
 

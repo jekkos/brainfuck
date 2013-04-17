@@ -1,9 +1,9 @@
-package be.kuleuven.med.brainfuck.io;
+package be.kuleuven.med.brainfuck.connector;
 
 
 
-import be.kuleuven.med.brainfuck.domain.setting.LedSettings;
-import be.kuleuven.med.brainfuck.domain.setting.SerialPortSettings;
+import be.kuleuven.med.brainfuck.domain.settings.LedSettings;
+import be.kuleuven.med.brainfuck.domain.settings.SerialPortSettings;
 
 public class LedMatrixConnector extends SerialPortConnector {
 	

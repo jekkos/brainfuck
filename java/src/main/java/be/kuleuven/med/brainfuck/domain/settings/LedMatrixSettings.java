@@ -1,4 +1,4 @@
-package be.kuleuven.med.brainfuck.domain.setting;
+package be.kuleuven.med.brainfuck.domain.settings;
 
 import java.util.Collections;
 import java.util.List;

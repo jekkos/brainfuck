@@ -1,6 +1,6 @@
-package be.kuleuven.med.brainfuck.io;
+package be.kuleuven.med.brainfuck.connector;
 
-import be.kuleuven.med.brainfuck.domain.setting.SerialPortSettings;
+import be.kuleuven.med.brainfuck.domain.settings.SerialPortSettings;
 
 public class ThorlabsConnector extends SerialPortConnector {
 	

@@ -25,13 +25,13 @@ import org.jdesktop.application.Task.BlockingScope;
 import org.jdesktop.application.TaskService;
 import org.jdesktop.application.utils.AppHelper;
 
+import be.kuleuven.med.brainfuck.connector.LedMatrixConnector;
+import be.kuleuven.med.brainfuck.connector.SerialPortConnector;
+import be.kuleuven.med.brainfuck.connector.ThorlabsConnector;
 import be.kuleuven.med.brainfuck.controller.LedMatrixController;
 import be.kuleuven.med.brainfuck.controller.SettingsManager;
-import be.kuleuven.med.brainfuck.domain.setting.ExperimentSettings;
-import be.kuleuven.med.brainfuck.domain.setting.LedMatrixSettings;
-import be.kuleuven.med.brainfuck.io.LedMatrixConnector;
-import be.kuleuven.med.brainfuck.io.SerialPortConnector;
-import be.kuleuven.med.brainfuck.io.ThorlabsConnector;
+import be.kuleuven.med.brainfuck.domain.settings.ExperimentSettings;
+import be.kuleuven.med.brainfuck.domain.settings.LedMatrixSettings;
 import be.kuleuven.med.brainfuck.model.LedMatrixGfxModel;
 import be.kuleuven.med.brainfuck.model.LedMatrixPanelModel;
 import be.kuleuven.med.brainfuck.modelbuilder.LedMatrixGfxModelBuilder;
@@ -115,8 +115,6 @@ public class LedMatrixApp extends SingleFrameApplication {
 		// add to the panels
 		mainPanel.add(ledMatrixGfxView);
 		mainPanel.add(ledMatrixControlsView);
-		//StatusPanel statusPanel = new StatusPanel();
-		//mainPanel.add(statusPanel, "height 30!, gapleft push");
 		getMainFrame().add(mainPanel);
 		show(getMainFrame());
 		getMainFrame().pack();

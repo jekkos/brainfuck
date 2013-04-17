@@ -27,12 +27,12 @@ import org.jdesktop.beansbinding.PropertyStateEvent;
 import org.jdesktop.swingbinding.SwingBindings;
 
 import be.kuleuven.med.brainfuck.component.AppComponent;
-import be.kuleuven.med.brainfuck.domain.setting.ExperimentSettings;
-import be.kuleuven.med.brainfuck.domain.setting.LedPosition;
-import be.kuleuven.med.brainfuck.domain.setting.LedSettings;
-import be.kuleuven.med.brainfuck.io.LedMatrixConnector;
-import be.kuleuven.med.brainfuck.io.SerialPortConnector;
-import be.kuleuven.med.brainfuck.io.ThorlabsConnector;
+import be.kuleuven.med.brainfuck.connector.LedMatrixConnector;
+import be.kuleuven.med.brainfuck.connector.SerialPortConnector;
+import be.kuleuven.med.brainfuck.connector.ThorlabsConnector;
+import be.kuleuven.med.brainfuck.domain.settings.ExperimentSettings;
+import be.kuleuven.med.brainfuck.domain.settings.LedPosition;
+import be.kuleuven.med.brainfuck.domain.settings.LedSettings;
 import be.kuleuven.med.brainfuck.model.LedMatrixGfxModel;
 import be.kuleuven.med.brainfuck.model.LedMatrixGfxSelectionModel;
 import be.kuleuven.med.brainfuck.model.LedMatrixPanelModel;

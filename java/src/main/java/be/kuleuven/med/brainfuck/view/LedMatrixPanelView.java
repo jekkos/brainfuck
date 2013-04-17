@@ -33,7 +33,7 @@ import org.jdesktop.application.ResourceMap;
 import org.jdesktop.application.TaskMonitor;
 
 import be.kuleuven.med.brainfuck.controller.LedMatrixController;
-import be.kuleuven.med.brainfuck.domain.setting.LedSettings;
+import be.kuleuven.med.brainfuck.domain.settings.LedSettings;
 
 public class LedMatrixPanelView extends JPanel {
 

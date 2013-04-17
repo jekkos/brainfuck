@@ -31,9 +31,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import be.kuleuven.med.brainfuck.domain.setting.ExperimentSettings;
-import be.kuleuven.med.brainfuck.domain.setting.LedMatrixSettings;
-import be.kuleuven.med.brainfuck.domain.setting.SerialPortSettings;
+import be.kuleuven.med.brainfuck.domain.settings.ExperimentSettings;
+import be.kuleuven.med.brainfuck.domain.settings.LedMatrixSettings;
+import be.kuleuven.med.brainfuck.domain.settings.SerialPortSettings;
 import be.kuleuven.med.brainfuck.domain.settingsbuilder.LedMatrixSettingsBuilder;
 
 public class SettingsManager {

@@ -1,13 +1,14 @@
-package be.kuleuven.med.brainfuck.io;
+package be.kuleuven.med.brainfuck.connector.test;
 
-import static be.kuleuven.med.brainfuck.io.LedMatrixConnector.RETURN;
+import static be.kuleuven.med.brainfuck.connector.LedMatrixConnector.RETURN;
 
 import java.io.ByteArrayOutputStream;
 
 import junit.framework.TestCase;
-import be.kuleuven.med.brainfuck.domain.setting.LedPosition;
-import be.kuleuven.med.brainfuck.domain.setting.LedSettings;
-import be.kuleuven.med.brainfuck.domain.setting.SerialPortSettings;
+import be.kuleuven.med.brainfuck.connector.LedMatrixConnector;
+import be.kuleuven.med.brainfuck.domain.settings.LedPosition;
+import be.kuleuven.med.brainfuck.domain.settings.LedSettings;
+import be.kuleuven.med.brainfuck.domain.settings.SerialPortSettings;
 
 
 public class LedMatrixConnectorTest extends TestCase {

@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.jdesktop.application.AbstractBean;
 
-import be.kuleuven.med.brainfuck.domain.setting.ExperimentSettings;
-import be.kuleuven.med.brainfuck.domain.setting.LedMatrixSettings;
+import be.kuleuven.med.brainfuck.domain.settings.ExperimentSettings;
+import be.kuleuven.med.brainfuck.domain.settings.LedMatrixSettings;
 
 import com.google.common.collect.Lists;
 

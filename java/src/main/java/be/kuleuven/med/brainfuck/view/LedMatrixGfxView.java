@@ -15,8 +15,8 @@ import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
 import be.kuleuven.med.brainfuck.controller.LedMatrixController;
-import be.kuleuven.med.brainfuck.domain.setting.LedPosition;
-import be.kuleuven.med.brainfuck.domain.setting.LedSettings;
+import be.kuleuven.med.brainfuck.domain.settings.LedPosition;
+import be.kuleuven.med.brainfuck.domain.settings.LedSettings;
 import be.kuleuven.med.brainfuck.model.LedMatrixGfxModel;
 
 import com.google.common.collect.Maps;

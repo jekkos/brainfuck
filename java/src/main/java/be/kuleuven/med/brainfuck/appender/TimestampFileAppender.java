@@ -1,4 +1,4 @@
-package be.kuleuven.med.brainfuck.logging;
+package be.kuleuven.med.brainfuck.appender;
 
 /* 
  * Copyright 1999,2004 The Apache Software Foundation.

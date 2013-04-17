@@ -5,7 +5,7 @@ import java.util.Set;
 
 import org.jdesktop.application.AbstractBean;
 
-import be.kuleuven.med.brainfuck.domain.setting.LedSettings;
+import be.kuleuven.med.brainfuck.domain.settings.LedSettings;
 
 import com.google.common.collect.Sets;
 

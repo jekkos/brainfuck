@@ -20,6 +20,10 @@ public class LedMatrixGfxSelectionModel extends AbstractBean {
 	public static final String COLUMN_SELECTED = "columnSelected";
 	
 	public static final String INTENSITY = "intensity";
+	
+	public static final String FLICKER_FREQUENCY = "flickerFrequency";
+	
+	public static final String SECONDS_TO_RUN = "secondsToRun";
 
 	private Set<LedSettings> selectedLedSettings = Sets.newHashSet();
 
@@ -32,6 +36,10 @@ public class LedMatrixGfxSelectionModel extends AbstractBean {
 	private Integer columnPin;
 	
 	private int intensity = LedSettings.MAX_INTENSITY;
+	
+	private int flickerFrequency = LedSettings.MIN_FLICKER_FREQUENCY;
+	
+	private int secondsToRun;
 	
 	public LedMatrixGfxSelectionModel() { }
 
@@ -87,6 +95,22 @@ public class LedMatrixGfxSelectionModel extends AbstractBean {
 		firePropertyChange(INTENSITY, this.intensity, this.intensity = intensity);
 	}
 
+	public int getFlickerFrequency() {
+		return flickerFrequency;
+	}
+
+	public void setFlickerFrequency(int flickerFrequency) {
+		firePropertyChange(FLICKER_FREQUENCY, this.flickerFrequency, this.flickerFrequency = flickerFrequency);
+	}
+
+	public int getSecondsToRun() {
+		return secondsToRun;
+	}
+
+	public void setSecondsToRun(int secondsToRun) {
+		firePropertyChange(SECONDS_TO_RUN, this.secondsToRun, this.secondsToRun = secondsToRun);
+	}
+	
 	public Set<LedSettings> getSelectedLedSettings() {
 		return Collections.unmodifiableSet(selectedLedSettings);
 	}

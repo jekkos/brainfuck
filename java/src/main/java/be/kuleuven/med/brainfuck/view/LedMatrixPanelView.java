@@ -6,6 +6,7 @@ import static be.kuleuven.med.brainfuck.controller.LedMatrixController.INIT_THOR
 import static be.kuleuven.med.brainfuck.controller.LedMatrixController.START_EXPERIMENT_ACTION;
 import static be.kuleuven.med.brainfuck.controller.LedMatrixController.TOGGLE_LED_ACTION;
 import static be.kuleuven.med.brainfuck.controller.LedMatrixController.UPDATE_LED_MATRIX_ACTION;
+import static be.kuleuven.med.brainfuck.controller.LedMatrixController.UPDATE_SERIAL_PORTS_ACTION;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -63,6 +64,8 @@ public class LedMatrixPanelView extends JPanel {
 
 	private JTextField secondsToRunTextField;
 
+	private JTextField secondToRunTextField;
+
 	private final Icon idleIcon;
 
 	private int busyIconIndex = 0;
@@ -72,6 +75,8 @@ public class LedMatrixPanelView extends JPanel {
 		final ActionMap actionMap = ledMatrixController.getApplicationActionMap();
 		final ResourceMap resourceMap = ledMatrixController.getResourceMap();
 		
+		// add refresh button
+		add(new JButton(actionMap.get(UPDATE_SERIAL_PORTS_ACTION)));
 		// add save button
 		add(new JButton(actionMap.get(SAVE_SETTINGS_ACTION)), "wrap");
 		add(new JLabel(resourceMap.getString("ledMatrixControlLabel.text")));
@@ -101,6 +106,14 @@ public class LedMatrixPanelView extends JPanel {
 		columnPinTextField = createFormattedTextField();
 		add(columnPinTextField, "wrap, w 40");
 
+		add(new JLabel(resourceMap.getString("flickerFrequencyLabel.text")));
+		flickerFrequencyTextField = createFormattedTextField();
+		add(flickerFrequencyTextField, "w 40");
+		
+		add(new JLabel(resourceMap.getString("secondsToRunLabel.text")));
+		secondsToRunTextField = createFormattedTextField();
+		add(secondsToRunTextField, "w 40, wrap");
+		
 		// add led controls
 		intensitySlider = new JSlider(LedSettings.MIN_INTENSITY, LedSettings.MAX_INTENSITY, LedSettings.MAX_INTENSITY);
 		intensitySlider.setOrientation(JSlider.HORIZONTAL);
@@ -131,9 +144,6 @@ public class LedMatrixPanelView extends JPanel {
 		// add experiment controls		
 		add(new JLabel(resourceMap.getString("experimentControlLabel.text")));
 		add(new JSeparator(SwingConstants.HORIZONTAL), "growx, wrap");
-		add(new JLabel(resourceMap.getString("secondsToRunLabel.text")));
-		secondsToRunTextField = createFormattedTextField();
-		add(secondsToRunTextField, "w 40");
 		startExperimentButton = new JToggleButton(actionMap.get(START_EXPERIMENT_ACTION));
 		add(startExperimentButton, "wrap");
 		// add save settings button
@@ -223,6 +233,10 @@ public class LedMatrixPanelView extends JPanel {
 	public JSlider getIntensitySlider() {
 		return intensitySlider;
 	}
+	
+	public JTextField getSecondsToRunTextField() {
+		return secondToRunTextField;
+	}
 
 	public JToggleButton getToggleLedButton() {
 		return toggleLedButton;
@@ -230,10 +244,6 @@ public class LedMatrixPanelView extends JPanel {
 
 	public JTextField getFlickerFrequencyTextField() {
 		return flickerFrequencyTextField;
-	}
-
-	public JTextField getSecondsToRunTextField() {
-		return secondsToRunTextField;
 	}
 
 	public JToggleButton getStartExperimentButton() {

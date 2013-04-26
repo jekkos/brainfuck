@@ -20,6 +20,7 @@ public class LedMatrixGfxSelectionModelTest extends TestCase {
 		LedSettings ledSettings0 = ledMatrixModel.getLedSettings(LedPosition.ledPositionFor(1, 0));
 		ledSettings0.setRowPin(10);
 		ledSettings0.setColumnPin(5);
+		ledSettings0.setFlickerFrequency(2);
 		LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel = 
 				LedMatrixGfxSelectionModelBuilder.of(ledSettings0);
 		// just one selected, should be equal
@@ -31,6 +32,7 @@ public class LedMatrixGfxSelectionModelTest extends TestCase {
 		LedSettings ledSettings1 = ledMatrixModel.getLedSettings(ledPosition1);
 		ledSettings1.setRowPin(2);
 		ledSettings1.setColumnPin(5);
+		ledSettings1.setFlickerFrequency(2);
 		ledMatrixGfxSelectionModel = new LedMatrixGfxSelectionModelBuilder(ledMatrixGfxSelectionModel)
 			.addRemoveLedSettings(ledSettings1).build();
 		assertEquals(2, ledMatrixGfxSelectionModel.getSelectedLedSettings().size());
@@ -40,6 +42,7 @@ public class LedMatrixGfxSelectionModelTest extends TestCase {
 		assertEquals(Integer.valueOf(5), ledMatrixGfxSelectionModel.getColumnPin());
 		// no common row pin.. will show 0
 		assertNull(ledMatrixGfxSelectionModel.getRowPin());
+		assertEquals(2, ledMatrixGfxSelectionModel.getFlickerFrequency());
 		
 		assertTrue(ledMatrixGfxSelectionModel.getSelectedLedSettings().contains(ledSettings0));
 		assertTrue(ledMatrixGfxSelectionModel.getSelectedLedSettings().contains(ledSettings1));

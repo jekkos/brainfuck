@@ -47,6 +47,10 @@ public class LedMatrixGfxSelectionModelBuilder {
 		ledMatrixGfxSelectionModel.setColumnPin(findCommonColumnPin(selectedLedSettings));
 		// set intensity
 		ledMatrixGfxSelectionModel.setIntensity(findCommonIntensity(selectedLedSettings));
+		// set flicker frequency
+		ledMatrixGfxSelectionModel.setFlickerFrequency(findCommonFlickerFrequency(selectedLedSettings));
+		// set time to run
+		ledMatrixGfxSelectionModel.setSecondsToRun(findCommonTimeToRun(selectedLedSettings));
 		return ledMatrixGfxSelectionModel;
 	}
 	
@@ -64,6 +68,30 @@ public class LedMatrixGfxSelectionModelBuilder {
 	public LedMatrixGfxSelectionModelBuilder addLedSettings(LedSettings ledSettings) {
 		selectedLedSettings = Collections.singleton(ledSettings);
 		return this;
+	}
+	
+	private int findCommonTimeToRun(Set<LedSettings> selectedLedSettings) {
+		int result = LedSettings.DEFAULT_TIME_TO_RUN;
+		for(LedSettings ledSettings : selectedLedSettings) {
+			if (result == LedSettings.DEFAULT_TIME_TO_RUN) {
+				result = ledSettings.getTimeToRun();
+			} else if (ledSettings.getTimeToRun() != result) {
+				return result;
+			}
+		}
+		return result;
+	}
+	
+	private int findCommonFlickerFrequency(Set<LedSettings> selectedLedSettings) {
+		int result = LedSettings.MIN_FLICKER_FREQUENCY;
+		for(LedSettings ledSettings : selectedLedSettings) {
+			if (result == LedSettings.MIN_FLICKER_FREQUENCY) {
+				result = ledSettings.getFlickerFrequency();
+			} else if (ledSettings.getFlickerFrequency() != result) {
+				return result;
+			}
+		}
+		return result;
 	}
 	
 	private int findCommonIntensity(Set<LedSettings> selectedLedSettings) {

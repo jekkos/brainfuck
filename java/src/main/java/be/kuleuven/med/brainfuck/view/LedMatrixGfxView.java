@@ -84,6 +84,7 @@ public class LedMatrixGfxView extends JPanel {
 			g.drawString("R " + ledSettings.getRowPin(), xPos, yPos - 20);
 			g.drawString("C " + ledSettings.getColumnPin(), xPos, yPos);
 			g.drawString(Integer.toString(ledSettings.getIntensity()) + " mA", xPos - 10, yPos + 20);
+			g.drawString(Integer.toString(ledSettings.getFlickerFrequency()) + " Hz", xPos - 10, yPos + 40);
 		}
 		g.dispose();
 	}

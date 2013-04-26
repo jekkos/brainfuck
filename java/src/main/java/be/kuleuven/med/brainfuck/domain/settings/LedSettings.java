@@ -12,6 +12,10 @@ public class LedSettings {
 	public static final int MAX_INTENSITY = 254;
 	
 	public static final int MIN_INTENSITY = 0;
+	
+	public static final int MIN_FLICKER_FREQUENCY = 0;
+	
+	public static final int DEFAULT_TIME_TO_RUN = 2;
 
 	private LedPosition ledPosition;
 	
@@ -20,6 +24,10 @@ public class LedSettings {
 	private int columnPin;
 	
 	private int intensity = MAX_INTENSITY;
+	
+	private int flickerFrequency = MIN_FLICKER_FREQUENCY;
+	
+	private int timeToRun = DEFAULT_TIME_TO_RUN;
 	
 	public LedSettings() { }
 
@@ -73,6 +81,22 @@ public class LedSettings {
 
 	public void setIntensity(int intensity) {
 		this.intensity = intensity;
+	}
+
+	public int getFlickerFrequency() {
+		return flickerFrequency;
+	}
+
+	public void setFlickerFrequency(int flickerFrequency) {
+		this.flickerFrequency = flickerFrequency;
+	}
+
+	public int getTimeToRun() {
+		return timeToRun;
+	}
+
+	public void setTimeToRun(int timeToRun) {
+		this.timeToRun = timeToRun;
 	}
 	
 }

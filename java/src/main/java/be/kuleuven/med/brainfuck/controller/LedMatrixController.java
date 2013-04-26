@@ -150,16 +150,29 @@ public class LedMatrixController {
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixGfxModel, columnSelectedProperty, ledMatrixPanelView.getColumnPinTextField(), ENABLED);
 		enabledBinding.setTargetNullValue(false);
 		bindingGroup.addBinding(enabledBinding);
+		
+		ELProperty<LedMatrixController, Boolean> ledControlsEnabledProperty = ELProperty.create("${!ledMatrixGfxModel.ledMatrixGfxSelectionModel.cleared && ledMatrixPanelModel.ledMatrixConnectorInitialized && !ledMatrixPanelModel.experimentRunning}");
+		BeanProperty<LedMatrixPanelModel, Integer> secondsToRunProperty = BeanProperty.create("ledMatrixGfcSelectionModel.secondsToRun");
+		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixPanelModel, secondsToRunProperty, ledMatrixPanelView.getSecondsToRunTextField(), TEXT);
+		bindingGroup.addBinding(valueBinding);
+		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, this, ledControlsEnabledProperty, ledMatrixPanelView.getFlickerFrequencyTextField(), ENABLED);
+		bindingGroup.addBinding(enabledBinding);
+		BeanProperty<LedMatrixPanelModel, Integer> flickerFrequencyProperty = BeanProperty.create("ledMatrixGfcSelectionModel.flickerFrequency");
+		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixPanelModel, flickerFrequencyProperty, ledMatrixPanelView.getFlickerFrequencyTextField(), TEXT);
+		valueBinding.setTargetNullValue(0);
+		bindingGroup.addBinding(valueBinding);
+		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, this, ledControlsEnabledProperty, ledMatrixPanelView.getSecondsToRunTextField(), ENABLED);
+		bindingGroup.addBinding(enabledBinding);
+		
 		// bind led controls (just the enabled state)
 		BeanProperty<LedMatrixGfxModel, Integer> intensityProperty = BeanProperty.create("ledMatrixGfxSelectionModel.intensity");
 		BeanProperty<JSlider, Integer> valueProperty = BeanProperty.create("value");
 		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixGfxModel, intensityProperty, ledMatrixPanelView.getIntensitySlider(), valueProperty);
 		bindingGroup.addBinding(valueBinding);
-		ELProperty<LedMatrixController, Boolean> ledControlsEnabledProperty = ELProperty.create("${!ledMatrixGfxModel.ledMatrixGfxSelectionModel.cleared && ledMatrixPanelModel.ledMatrixConnectorInitialized && !ledMatrixPanelModel.experimentRunning}");
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, this, ledControlsEnabledProperty, ledMatrixPanelView.getIntensitySlider(), ENABLED);
-		//bindingGroup.addBinding(enabledBinding);
+		bindingGroup.addBinding(enabledBinding);
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, this, ledControlsEnabledProperty, ledMatrixPanelView.getToggleLedButton(), ENABLED);
-		//bindingGroup.addBinding(enabledBinding);
+		bindingGroup.addBinding(enabledBinding);
 		// bind thorlabs connector info 
 		comboBoxBinding = SwingBindings.createJComboBoxBinding(UpdateStrategy.READ_WRITE, ledMatrixPanelModel, serialPortNamesProperty, ledMatrixPanelView.getThorlabsConnectorBox());
 		bindingGroup.addBinding(comboBoxBinding);
@@ -174,15 +187,6 @@ public class LedMatrixController {
 		ELProperty<LedMatrixPanelModel, Boolean> experimentInitializedNotStarted = ELProperty.create("${ledMatrixConnectorInitialized && experimentInitialized && !experimentRunning}"); 
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixPanelModel, experimentInitializedNotStarted, ledMatrixPanelView.getSecondsToRunTextField(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
-		BeanProperty<LedMatrixPanelModel, Integer> secondsToRunProperty = BeanProperty.create("experimentSettings.secondsToRun");
-		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixPanelModel, secondsToRunProperty, ledMatrixPanelView.getSecondsToRunTextField(), TEXT);
-		bindingGroup.addBinding(valueBinding);
-		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixPanelModel, experimentInitializedNotStarted, ledMatrixPanelView.getFlickerFrequencyTextField(), ENABLED);
-		bindingGroup.addBinding(enabledBinding);
-		BeanProperty<LedMatrixPanelModel, Integer> flickerFrequencyProperty = BeanProperty.create("experimentSettings.flickerFrequency");
-		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixPanelModel, flickerFrequencyProperty, ledMatrixPanelView.getFlickerFrequencyTextField(), TEXT);
-		valueBinding.setTargetNullValue(0);
-		bindingGroup.addBinding(valueBinding);
 		ELProperty<LedMatrixPanelModel, Boolean> experimentInitialized = ELProperty.create("${ledMatrixConnectorInitialized && experimentInitialized}"); 
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixPanelModel, experimentInitialized, ledMatrixPanelView.getStartExperimentButton(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
@@ -402,6 +406,9 @@ public class LedMatrixController {
 					}
 					boolean selected = ledMatrixGfxModel.isSelected(ledSettings);
 					thorlabsConnector.setLedOn(selected && illuminated);
+					// set flicker frequency + intensity for this led
+					thorlabsConnector.setPwmFrequency(ledMatrixGfxSelectionModel.getFlickerFrequency());
+					thorlabsConnector.setPwmCurrent(ledMatrixGfxSelectionModel.getIntensity());
 					ledMatrixConnector.toggleLed(ledSettings, selected && illuminated);
 					index++;
 				}

@@ -15,7 +15,7 @@ public class LedSettings {
 	
 	public static final int MIN_FLICKER_FREQUENCY = 0;
 	
-	public static final int DEFAULT_TIME_TO_RUN = 2;
+	public static final int DEFAULT_SECONDS_TO_RUN = 2;
 
 	private LedPosition ledPosition;
 	
@@ -27,7 +27,7 @@ public class LedSettings {
 	
 	private int flickerFrequency = MIN_FLICKER_FREQUENCY;
 	
-	private int timeToRun = DEFAULT_TIME_TO_RUN;
+	private int secondsToRun = DEFAULT_SECONDS_TO_RUN;
 	
 	public LedSettings() { }
 
@@ -91,12 +91,12 @@ public class LedSettings {
 		this.flickerFrequency = flickerFrequency;
 	}
 
-	public int getTimeToRun() {
-		return timeToRun;
+	public int getSecondsToRun() {
+		return secondsToRun;
 	}
 
-	public void setTimeToRun(int timeToRun) {
-		this.timeToRun = timeToRun;
+	public void setSecondsToRun(int secondsToRun) {
+		this.secondsToRun = secondsToRun;
 	}
 	
 }

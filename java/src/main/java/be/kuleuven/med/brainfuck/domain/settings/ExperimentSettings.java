@@ -5,28 +5,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class ExperimentSettings {
 
-	public static final int MAX_FLICKER_FREQUENCY = 200;
-	
-	public static final int MIN_FLICKER_FREQUENCY = 0;
+	public static final int MIN_CYCLES_TO_RUN = 1;
 
-	private int flickerFrequency = MIN_FLICKER_FREQUENCY;
-	
-	private long secondsToRun;
+	private int cyclesToRun = MIN_CYCLES_TO_RUN;
 
-	public int getFlickerFrequency() {
-		return flickerFrequency;
+	public int getCyclesToRun() {
+		return cyclesToRun;
 	}
 
-	public void setFlickerFrequency(int flickerFrequency) {
-		this.flickerFrequency = flickerFrequency;
+	public void setCyclesToRun(int cyclesToRun) {
+		this.cyclesToRun = cyclesToRun;
 	}
 
-	public long getSecondsToRun() {
-		return secondsToRun;
-	}
-
-	public void setSecondsToRun(long secondsToRun) {
-		this.secondsToRun = secondsToRun;
-	}
-	
 }

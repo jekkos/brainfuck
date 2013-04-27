@@ -50,7 +50,7 @@ public class LedMatrixGfxSelectionModelBuilder {
 		// set flicker frequency
 		ledMatrixGfxSelectionModel.setFlickerFrequency(findCommonFlickerFrequency(selectedLedSettings));
 		// set time to run
-		ledMatrixGfxSelectionModel.setSecondsToRun(findCommonTimeToRun(selectedLedSettings));
+		ledMatrixGfxSelectionModel.setSecondsToRun(findCommonSecondsToRun(selectedLedSettings));
 		return ledMatrixGfxSelectionModel;
 	}
 	
@@ -70,36 +70,36 @@ public class LedMatrixGfxSelectionModelBuilder {
 		return this;
 	}
 	
-	private int findCommonTimeToRun(Set<LedSettings> selectedLedSettings) {
-		int result = LedSettings.DEFAULT_TIME_TO_RUN;
-		for(LedSettings ledSettings : selectedLedSettings) {
-			if (result == LedSettings.DEFAULT_TIME_TO_RUN) {
-				result = ledSettings.getTimeToRun();
-			} else if (ledSettings.getTimeToRun() != result) {
-				return result;
-			}
-		}
-		return result;
-	}
-	
-	private int findCommonFlickerFrequency(Set<LedSettings> selectedLedSettings) {
-		int result = LedSettings.MIN_FLICKER_FREQUENCY;
-		for(LedSettings ledSettings : selectedLedSettings) {
-			if (result == LedSettings.MIN_FLICKER_FREQUENCY) {
-				result = ledSettings.getFlickerFrequency();
-			} else if (ledSettings.getFlickerFrequency() != result) {
-				return result;
-			}
-		}
-		return result;
-	}
-	
 	private int findCommonIntensity(Set<LedSettings> selectedLedSettings) {
 		int result = LedSettings.MAX_INTENSITY;
 		for(LedSettings ledSettings : selectedLedSettings) {
 			if (result == LedSettings.MAX_INTENSITY) {
 				result = ledSettings.getIntensity();
 			} else if (ledSettings.getIntensity() != result) {
+				return result;
+			}
+		}
+		return result;
+	}
+	
+	private Integer findCommonSecondsToRun(Set<LedSettings> selectedLedSettings) {
+		Integer result = null;
+		for(LedSettings ledSettings : selectedLedSettings) {
+			if (result == null) {
+				result = ledSettings.getSecondsToRun();
+			} else if (ledSettings.getSecondsToRun() != result) {
+				return result;
+			}
+		}
+		return result;
+	}
+	
+	private Integer findCommonFlickerFrequency(Set<LedSettings> selectedLedSettings) {
+		Integer result = null;
+		for(LedSettings ledSettings : selectedLedSettings) {
+			if (result == null) {
+				result = ledSettings.getFlickerFrequency();
+			} else if (ledSettings.getFlickerFrequency() != result) {
 				return result;
 			}
 		}

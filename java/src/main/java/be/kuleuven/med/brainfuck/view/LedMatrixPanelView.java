@@ -64,7 +64,7 @@ public class LedMatrixPanelView extends JPanel {
 
 	private JTextField secondsToRunTextField;
 
-	private JTextField secondToRunTextField;
+	private JTextField cyclesToRunTextField;
 
 	private final Icon idleIcon;
 
@@ -137,13 +137,13 @@ public class LedMatrixPanelView extends JPanel {
 		add(thorlabsConnectorBox,"w :200:200");
 		JButton initThorlabsConnectorButton = new JButton(actionMap.get(INIT_THORLABS_CONNECTOR_ACTION));
 		add(initThorlabsConnectorButton, "wrap");
-		add(new JLabel(resourceMap.getString("flickerFrequencyLabel.text")));
-		flickerFrequencyTextField = createFormattedTextField();
-		add(flickerFrequencyTextField, "wrap, w 40");
 
 		// add experiment controls		
 		add(new JLabel(resourceMap.getString("experimentControlLabel.text")));
 		add(new JSeparator(SwingConstants.HORIZONTAL), "growx, wrap");
+		add(new JLabel(resourceMap.getString("cyclesToRunLabel.text")));
+		cyclesToRunTextField = createFormattedTextField();
+		add(cyclesToRunTextField, "wrap, w 40");
 		startExperimentButton = new JToggleButton(actionMap.get(START_EXPERIMENT_ACTION));
 		add(startExperimentButton, "wrap");
 		// add save settings button
@@ -235,7 +235,7 @@ public class LedMatrixPanelView extends JPanel {
 	}
 	
 	public JTextField getSecondsToRunTextField() {
-		return secondToRunTextField;
+		return secondsToRunTextField;
 	}
 
 	public JToggleButton getToggleLedButton() {
@@ -250,4 +250,8 @@ public class LedMatrixPanelView extends JPanel {
 		return startExperimentButton;
 	}
 
+	public JTextField getCyclesToRunTextField() {
+		return cyclesToRunTextField;
+	}
+	
 }

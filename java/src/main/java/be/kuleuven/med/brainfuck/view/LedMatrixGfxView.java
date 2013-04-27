@@ -81,10 +81,10 @@ public class LedMatrixGfxView extends JPanel {
 			g.setColor(Color.GRAY);
 			int xPos = rectangle.x + rectangle.width / 2 - 10;
 			int yPos = rectangle.y + rectangle.height / 2;
-			g.drawString("R " + ledSettings.getRowPin(), xPos, yPos - 20);
+			g.drawString("R " + ledSettings.getRowPin(), xPos, yPos - 15);
 			g.drawString("C " + ledSettings.getColumnPin(), xPos, yPos);
-			g.drawString(Integer.toString(ledSettings.getIntensity()) + " mA", xPos - 10, yPos + 20);
-			g.drawString(Integer.toString(ledSettings.getFlickerFrequency()) + " Hz", xPos - 10, yPos + 40);
+			g.drawString(Integer.toString(ledSettings.getIntensity()) + " mA", xPos - 10, yPos + 15);
+			g.drawString(Integer.toString(ledSettings.getFlickerFrequency()) + " Hz", xPos, yPos + 30);
 		}
 		g.dispose();
 	}

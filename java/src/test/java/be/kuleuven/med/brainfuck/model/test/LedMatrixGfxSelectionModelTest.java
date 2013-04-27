@@ -42,7 +42,7 @@ public class LedMatrixGfxSelectionModelTest extends TestCase {
 		assertEquals(Integer.valueOf(5), ledMatrixGfxSelectionModel.getColumnPin());
 		// no common row pin.. will show 0
 		assertNull(ledMatrixGfxSelectionModel.getRowPin());
-		assertEquals(2, ledMatrixGfxSelectionModel.getFlickerFrequency());
+		assertEquals(Integer.valueOf(2), ledMatrixGfxSelectionModel.getFlickerFrequency());
 		
 		assertTrue(ledMatrixGfxSelectionModel.getSelectedLedSettings().contains(ledSettings0));
 		assertTrue(ledMatrixGfxSelectionModel.getSelectedLedSettings().contains(ledSettings1));

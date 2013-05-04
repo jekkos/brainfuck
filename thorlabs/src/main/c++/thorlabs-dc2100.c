@@ -114,13 +114,13 @@ int round(float x) {
 
 ViStatus _VI_FUNC  viWrite         (ViSession vi, ViChar* viChar, ViUInt32 cnt, ViPUInt32 retCnt) {
 	// TODO cast char to unsigned char and call write !!
-	return viWrite(vi, (ViBuf*) viChar, cnt, retCnt);
+	return viWrite(vi, (ViBuf) *viChar, cnt, retCnt);
 }
 
 
 ViStatus _VI_FUNC  viRead         (ViSession vi, ViChar* viChar, ViUInt32 cnt, ViPUInt32 retCnt) {
 	// TODO cast char to unsigned char and call write !!
-	return viRead(vi, (ViBuf*) viChar, cnt, retCnt);
+	return viRead(vi, (ViBuf) *viChar, cnt, retCnt);
 }
 
 /*===========================================================================
@@ -136,6 +136,7 @@ ViStatus _VI_FUNC DC2100_init (ViRsrc resourceName, ViBoolean IDQuery, ViBoolean
 	DC2100_data_t	*data;
 	ViChar			name[DC2100_BUFFER_SIZE];
 
+	ViSession 	instr 	= VI_NULL;
 
 	//Open instrument session
 	if ((err = viOpenDefaultRM (&rm)) < 0) return (err);

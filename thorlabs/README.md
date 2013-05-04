@@ -14,7 +14,7 @@ You need the NI Visa 5.3 Runtime installed on your PC.
 
 Communication with Java
 -----------------------
-Currently I'm still looking into marrying Java and the DLL together to steer it from a previously designed Swing GUI. This part is not completely functional yet, but updates will keep coming
+At this moment communication between the Windows DLL and a Java application works. You can generate a JNA library using the excellent [JNAerator](http://code.google.com/p/jnaerator/) project. Don't forget to point your jna.library.path to the DLL folder when configuring your VM. For a correct string conversion between two worlds, you will also need to set -Djna.encoding=UTF8 as a second argument.i
 
 Product information
 -------------------

@@ -25,7 +25,6 @@ import org.jdesktop.application.Task.BlockingScope;
 import org.jdesktop.application.TaskService;
 import org.jdesktop.application.utils.AppHelper;
 
-import be.kuleuven.med.brainfuck.connector.SerialPortConnector;
 import be.kuleuven.med.brainfuck.connector.LedMatrixConnector;
 import be.kuleuven.med.brainfuck.connector.SerialPortConnector;
 import be.kuleuven.med.brainfuck.connector.ThorlabsConnector;

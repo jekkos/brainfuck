@@ -1,5 +1,6 @@
 package be.kuleuven.med.brainfuck.connector;
 
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
@@ -8,7 +9,6 @@ import com.sun.jna.NativeLibrary;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 import com.sun.jna.PointerType;
-import com.sun.jna.WString;
 import com.sun.jna.ptr.FloatByReference;
 import com.sun.jna.ptr.NativeLongByReference;
 import com.sun.jna.ptr.ShortByReference;
@@ -20,52 +20,56 @@ import com.sun.jna.win32.StdCallLibrary;
  * For help, please visit <a href="http://nativelibs4java.googlecode.com/">NativeLibs4Java</a> , <a href="http://rococoa.dev.java.net/">Rococoa</a>, or <a href="http://jna.dev.java.net/">JNA</a>.
  */
 public class ThorlabsDC2100Library implements StdCallLibrary {
-	public static String JNA_LIBRARY_NAME = "DC2100_Drv_32";
+	
+
+	public static final String JNA_LIBRARY_NAME = "thorlabs-dc2100-nativelib";
 	public static final NativeLibrary JNA_NATIVE_LIB = NativeLibrary.getInstance(ThorlabsDC2100Library.JNA_LIBRARY_NAME);
 	
 	static {
 		Native.register(ThorlabsDC2100Library.JNA_LIBRARY_NAME);
 	}
 	
-	public static final int VI_WARN_NSUP_ID_QUERY = (int)(0x3FFC0101);
-	public static final int STAT_LED_OPEN1_CHANGED = (int)0x0040;
-	public static final int VI_ERROR_NOT_SUPPORTED = (int)(((-2147483647 - 1) + 0x3FFC0805) + 2);
-	public static final int STAT_LED_LIMIT1_CHANGED = (int)0x0100;
-	public static final int VI_ERROR_GET_INSTR_ERROR = (int)((-2147483647 - 1) + 0x3FFC0805);
-	public static final int FOUR_CHANNEL_HEAD = (int)1;
-	public static final int ONE_CHANNEL_HEAD = (int)2;
-	public static final int UNKNOWN_HEAD = (int)254;
-	public static final int VI_ERROR_FAIL_ID_QUERY = (int)((-2147483647 - 1) + 0x3FFC0011);
-	public static final int MODUS_EXTERNAL_CONTROL = (int)2;
-	public static final int VI_WARN_NSUP_RESET = (int)(0x3FFC0102);
-	public static final int MODUS_PWM = (int)1;
-	public static final int NO_HEAD = (int)0;
-	public static final int STAT_NO_LED1 = (int)0x0020;
-	public static final int VI_ERROR_INV_RESPONSE = (int)((-2147483647 - 1) + 0x3FFC0012);
-	public static final int VI_TRUE = (int)(1);
-	public static final int STAT_IFC_REFRESH_CHANGED = (int)0x1000;
-	public static final int DC2100_BUFFER_SIZE = (int)256;
-	public static final int VI_ON = (int)(1);
-	public static final int VI_INSTR_WARNING_OFFSET = (int)(0x3FFC0900);
-	public static final int VI_WARN_NSUP_SELF_TEST = (int)(0x3FFC0103);
-	public static final int VI_FALSE = (int)(0);
-	public static final int VI_WARN_NSUP_REV_QUERY = (int)(0x3FFC0105);
-	public static final int VI_OFF = (int)(0);
-	public static final int VI_WARN_NSUP_ERROR_QUERY = (int)(0x3FFC0104);
-	public static final int VI_SUCCESS = (int)(0);
-	public static final int VI_ERROR_UNKNOWN_ATTRIBUTE = (int)(((-2147483647 - 1) + 0x3FFC0805) + 1);
-	public static final int NOT_SUPPORTED_HEAD = (int)253;
-	public static final int VI_ERROR_PARAMETER1 = (int)((-2147483647 - 1) + 0x3FFC0001);
-	public static final int STAT_LED_OPEN1 = (int)0x0080;
-	public static final int VI_ERROR_PARAMETER5 = (int)((-2147483647 - 1) + 0x3FFC0005);
-	public static final int VI_ERROR_PARAMETER4 = (int)((-2147483647 - 1) + 0x3FFC0004);
-	public static final int VI_ERROR_PARAMETER3 = (int)((-2147483647 - 1) + 0x3FFC0003);
-	public static final int VI_ERROR_PARAMETER2 = (int)((-2147483647 - 1) + 0x3FFC0002);
-	public static final int STAT_VCC_FAIL = (int)0x0002;
-	public static final int VI_ERROR_PARAMETER8 = (int)((-2147483647 - 1) + 0x3FFC0008);
-	public static final int VI_ERROR_PARAMETER6 = (int)((-2147483647 - 1) + 0x3FFC0006);
-	public static final int VI_ERROR_PARAMETER7 = (int)((-2147483647 - 1) + 0x3FFC0007);
-	public static final String DC2100_FIND_PATTERN = (String)"ASRL?*";
+	public static final String STRING_ENCODING = "UTF-8";
+	
+	public static final int VI_WARN_NSUP_ID_QUERY = 0x3FFC0101;
+	public static final int STAT_LED_OPEN1_CHANGED = 0x0040;
+	public static final int VI_ERROR_NOT_SUPPORTED = ((-2147483647 - 1) + 0x3FFC0805) + 2;
+	public static final int STAT_LED_LIMIT1_CHANGED = 0x0100;
+	public static final int VI_ERROR_GET_INSTR_ERROR = (-2147483647 - 1) + 0x3FFC0805;
+	public static final int FOUR_CHANNEL_HEAD = 1;
+	public static final int ONE_CHANNEL_HEAD = 2;
+	public static final int UNKNOWN_HEAD = 254;
+	public static final int VI_ERROR_FAIL_ID_QUERY = (-2147483647 - 1) + 0x3FFC0011;
+	public static final int MODUS_EXTERNAL_CONTROL = 2;
+	public static final int VI_WARN_NSUP_RESET = 0x3FFC0102;
+	public static final int MODUS_PWM = 1;
+	public static final int NO_HEAD = 0;
+	public static final int STAT_NO_LED1 = 0x0020;
+	public static final int VI_ERROR_INV_RESPONSE = (-2147483647 - 1) + 0x3FFC0012;
+	public static final int VI_TRUE = 1;
+	public static final int STAT_IFC_REFRESH_CHANGED = 0x1000;
+	public static final int DC2100_BUFFER_SIZE = 256;
+	public static final int VI_ON = 1;
+	public static final int VI_INSTR_WARNING_OFFSET = 0x3FFC0900;
+	public static final int VI_WARN_NSUP_SELF_TEST = 0x3FFC0103;
+	public static final int VI_FALSE = 0;
+	public static final int VI_WARN_NSUP_REV_QUERY = 0x3FFC0105;
+	public static final int VI_OFF = 0;
+	public static final int VI_WARN_NSUP_ERROR_QUERY = 0x3FFC0104;
+	public static final int VI_SUCCESS = 0;
+	public static final int VI_ERROR_UNKNOWN_ATTRIBUTE = ((-2147483647 - 1) + 0x3FFC0805) + 1;
+	public static final int NOT_SUPPORTED_HEAD = 253;
+	public static final int VI_ERROR_PARAMETER1 = (-2147483647 - 1) + 0x3FFC0001;
+	public static final int STAT_LED_OPEN1 = 0x0080;
+	public static final int VI_ERROR_PARAMETER5 = (-2147483647 - 1) + 0x3FFC0005;
+	public static final int VI_ERROR_PARAMETER4 = (-2147483647 - 1) + 0x3FFC0004;
+	public static final int VI_ERROR_PARAMETER3 = (-2147483647 - 1) + 0x3FFC0003;
+	public static final int VI_ERROR_PARAMETER2 = (-2147483647 - 1) + 0x3FFC0002;
+	public static final int STAT_VCC_FAIL = 0x0002;
+	public static final int VI_ERROR_PARAMETER8 = (-2147483647 - 1) + 0x3FFC0008;
+	public static final int VI_ERROR_PARAMETER6 = (-2147483647 - 1) + 0x3FFC0006;
+	public static final int VI_ERROR_PARAMETER7 = (-2147483647 - 1) + 0x3FFC0007;
+	public static final String DC2100_FIND_PATTERN = "ASRL?*";
 	/**
 	 * define<br>
 	 * Conversion Error : null<br>
@@ -89,23 +93,17 @@ public class ThorlabsDC2100Library implements StdCallLibrary {
 	public static final int DC2100_ERR_DESCR_BUFFER_SIZE = (int)512;
 	public static final int MODUS_CONST_CURRENT = (int)0;
 	public static final int STAT_VCC_FAIL_CHANGED = (int)0x0001;
-	/**
-	 * Original signature : <code>_VI_FUNC DC2100_init(ViRsrc, ViBoolean, ViBoolean, ViPSession)</code><br>
-	 * <i>native declaration : line 109</i><br>
-	 * @deprecated use the safer methods {@link #DC2100_init(java.nio.ByteBuffer, short, short, com.sun.jna.ptr.NativeLongByReference)} and {@link #DC2100_init(com.sun.jna.Pointer, short, short, com.sun.jna.ptr.NativeLongByReference)} instead
-	 */
-	@Deprecated 
-	public static native ThorlabsDC2100Library.__stdcall DC2100_init(Pointer resourceName, short IDQuery, short resetDevice, NativeLongByReference instrumentHandle);
+
 	/**
 	 * Original signature : <code>_VI_FUNC DC2100_init(ViRsrc, ViBoolean, ViBoolean, ViPSession)</code><br>
 	 * <i>native declaration : line 109</i>
 	 */
-	public static native ThorlabsDC2100Library.__stdcall DC2100_init(WString resourceName, int IDQuery, int resetDevice, NativeLongByReference instrumentHandle);
+	public static native int DC2100_init(ByteBuffer resourceName, int IDQuery, int resetDevice, Pointer instrumentHandle);
 	/**
 	 * Original signature : <code>_VI_FUNC DC2100_setLimitCurrent(ViSession, ViReal32)</code><br>
 	 * <i>native declaration : line 114</i>
 	 */
-	public static native ThorlabsDC2100Library.__stdcall DC2100_setLimitCurrent(NativeLong instrumentHandle, float limit);
+	public static native long DC2100_setLimitCurrent(NativeLong instrumentHandle, float limit);
 	/**
 	 * Original signature : <code>_VI_FUNC DC2100_getLimitCurrent(ViSession, ViPReal32)</code><br>
 	 * <i>native declaration : line 115</i><br>
@@ -166,7 +164,7 @@ public class ThorlabsDC2100Library implements StdCallLibrary {
 	 * Original signature : <code>_VI_FUNC DC2100_setConstCurrent(ViSession, ViReal32)</code><br>
 	 * <i>native declaration : line 138</i>
 	 */
-	public static native ThorlabsDC2100Library.__stdcall DC2100_setConstCurrent(NativeLong instrumentHandle, float current);
+	public static native long DC2100_setConstCurrent(NativeLong instrumentHandle, float current);
 	/**
 	 * Original signature : <code>_VI_FUNC DC2100_getConstCurrent(ViSession, ViPReal32)</code><br>
 	 * <i>native declaration : line 139</i><br>
@@ -178,7 +176,7 @@ public class ThorlabsDC2100Library implements StdCallLibrary {
 	 * Original signature : <code>_VI_FUNC DC2100_getConstCurrent(ViSession, ViPReal32)</code><br>
 	 * <i>native declaration : line 139</i>
 	 */
-	public static native long DC2100_getConstCurrent(NativeLong instrumentHandle, FloatBuffer current);
+	public static native NativeLong DC2100_getConstCurrent(NativeLong instrumentHandle, FloatBuffer current);
 	/**
 	 * Original signature : <code>_VI_FUNC DC2100_setPWMCurrent(ViSession, ViReal32)</code><br>
 	 * <i>native declaration : line 144</i>
@@ -269,7 +267,7 @@ public class ThorlabsDC2100Library implements StdCallLibrary {
 	 * Original signature : <code>_VI_FUNC DC2100_close(ViSession)</code><br>
 	 * <i>native declaration : line 210</i>
 	 */
-	public static native ThorlabsDC2100Library.__stdcall DC2100_close(NativeLong instrumentHandle);
+	public static native ThorlabsDC2100Library.__stdcall DC2100_close(Pointer instrumentHandle);
 	
 	
 	public static class __stdcall extends PointerType {

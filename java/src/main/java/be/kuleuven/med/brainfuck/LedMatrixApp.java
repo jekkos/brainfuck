@@ -25,9 +25,11 @@ import org.jdesktop.application.Task.BlockingScope;
 import org.jdesktop.application.TaskService;
 import org.jdesktop.application.utils.AppHelper;
 
+import be.kuleuven.med.brainfuck.connector.SerialPortConnector;
 import be.kuleuven.med.brainfuck.connector.LedMatrixConnector;
 import be.kuleuven.med.brainfuck.connector.SerialPortConnector;
 import be.kuleuven.med.brainfuck.connector.ThorlabsConnector;
+import be.kuleuven.med.brainfuck.connector.ThorlabsDC2100Connector;
 import be.kuleuven.med.brainfuck.controller.LedMatrixController;
 import be.kuleuven.med.brainfuck.controller.SettingsManager;
 import be.kuleuven.med.brainfuck.domain.settings.ExperimentSettings;
@@ -92,7 +94,7 @@ public class LedMatrixApp extends SingleFrameApplication {
 		int maxPortNumber = settingsManager.getLedMatrixSettings().getMaxPortNumber();
 		LedMatrixConnector ledMatrixConnector = new LedMatrixConnector(settingsManager.getLedMatrixPortSettings(), maxPortNumber);
 		serialPortConnectors.add(ledMatrixConnector);
-		ThorlabsConnector thorlabsConnector = new ThorlabsConnector(settingsManager.getThorLabsConnectorSettings());
+		ThorlabsConnector thorlabsConnector = new ThorlabsDC2100Connector(settingsManager.getThorLabsConnectorSettings());
 		serialPortConnectors.add(thorlabsConnector);
 		LedMatrixSettings ledMatrixSettings = settingsManager.getLedMatrixSettings();
 		ExperimentSettings experimentSettings = settingsManager.getExperimentSettings();

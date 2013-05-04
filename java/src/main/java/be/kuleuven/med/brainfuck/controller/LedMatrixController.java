@@ -30,6 +30,7 @@ import be.kuleuven.med.brainfuck.component.AppComponent;
 import be.kuleuven.med.brainfuck.connector.LedMatrixConnector;
 import be.kuleuven.med.brainfuck.connector.SerialPortConnector;
 import be.kuleuven.med.brainfuck.connector.ThorlabsConnector;
+import be.kuleuven.med.brainfuck.connector.ThorlabsDC2100Connector;
 import be.kuleuven.med.brainfuck.domain.settings.ExperimentSettings;
 import be.kuleuven.med.brainfuck.domain.settings.LedPosition;
 import be.kuleuven.med.brainfuck.domain.settings.LedSettings;
@@ -75,7 +76,8 @@ public class LedMatrixController {
 
 	private ThorlabsConnector thorlabsConnector;
 
-	public LedMatrixController(LedMatrixPanelModel ledMatrixPanelModel, LedMatrixGfxModel ledMatrixGfxModel, LedMatrixConnector ledMatrixConnector, ThorlabsConnector thorlabsConnector) {
+	public LedMatrixController(LedMatrixPanelModel ledMatrixPanelModel, LedMatrixGfxModel ledMatrixGfxModel, 
+			LedMatrixConnector ledMatrixConnector, ThorlabsConnector thorlabsConnector) {
 		this.ledMatrixPanelModel = ledMatrixPanelModel;
 		this.ledMatrixGfxModel = ledMatrixGfxModel;
 		this.ledMatrixConnector = ledMatrixConnector;

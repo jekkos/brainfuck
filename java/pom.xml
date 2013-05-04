@@ -5,6 +5,7 @@
 	<artifactId>brainfuck</artifactId>
 	<version>0.1-SNAPSHOT</version>
 	<description>An Arduino configurator for running experiments on a custom built LED array</description>
+	<inceptionYear>2013</inceptionYear>
 	<build>
 		<resources>
 			<resource>
@@ -147,6 +148,33 @@
 					<verbose>false</verbose>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack</id>
+						<phase>package</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>de.thorlabs</groupId>
+									<artifactId>thorlabs-dc2100-nativelib</artifactId>
+									<version>${thorlabs-dc2100.version}</version>
+									<classifier>natives-win-${architecture}</classifier>
+									<type>jar</type>
+									<includes>**/*.dll</includes>
+									<outputDirectory>${libFolderPath}</outputDirectory>
+									<overWrite>true</overWrite>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
@@ -159,6 +187,19 @@
 					<configuration>
 						<lifecycleMappingMetadata>
 							<pluginExecutions>
+							    <pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-dependency-plugin</artifactId>
+										<versionRange>[2.0,)</versionRange>
+										<goals>
+											<goal>unpack</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
 								<pluginExecution>
 									<pluginExecutionFilter>
 										<groupId>
@@ -209,8 +250,22 @@
 	   <dependency>
 			<groupId>net.java.dev.jna</groupId>
 			<artifactId>jna</artifactId>
-			<version>3.4.0</version>
+			<version>3.5.2</version>
 		</dependency>
+		<!-- <dependency>
+			<groupId>de.thorlabs</groupId>
+			<artifactId>thorlabs-dc2100-nativelib</artifactId>
+			<version>${thorlabs-dc2100.version}</version>
+			<classifier>natives-win-x86</classifier>
+			<scope>runtime</scope>
+		</dependency>-->	
+		<dependency>
+			<groupId>de.thorlabs</groupId>
+			<artifactId>thorlabs-dc2100-nativelib</artifactId>
+			<version>${thorlabs-dc2100.version}</version>
+			<classifier>natives-win-amd64</classifier>
+			<scope>runtime</scope>
+		</dependency>	
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
@@ -270,12 +325,26 @@
 				<timestamp>incremental</timestamp>
 			</properties>
 		</profile>
+		<profile>
+            <id>win</id>
+            <properties>
+                <platform>win</platform>
+                <architecture>${os.arch}</architecture>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+        </profile>
 	</profiles>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<maven.build.timestamp.format>ddMMyyyy-HHmmss</maven.build.timestamp.format>
 		<aspectj.version>1.7.2</aspectj.version>
+		<thorlabs-dc2100.version>0.1-SNAPSHOT</thorlabs-dc2100.version>
 
 		<!-- Keystore generation properties -->
 		<keystore.dnameCn>www.kuleuven.be</keystore.dnameCn>

@@ -115,10 +115,6 @@ public abstract class SerialPortConnector implements SerialPortEventListener {
 		this.input = input;
 	}
 
-	/**
-	 * This should be called when you stop using the port.
-	 * This will prevent port locking on platforms like Linux.
-	 */
 	public synchronized void close() {
 		if (isInitialized()) {
 			serialPort.removeEventListener();

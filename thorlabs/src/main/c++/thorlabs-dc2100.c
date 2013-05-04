@@ -112,17 +112,6 @@ int round(float x) {
 	return (floor(x + 0.5)); 
 }
 
-ViStatus _VI_FUNC  viWrite         (ViSession vi, ViChar* viChar, ViUInt32 cnt, ViPUInt32 retCnt) {
-	// TODO cast char to unsigned char and call write !!
-	return viWrite(vi, (ViBuf) *viChar, cnt, retCnt);
-}
-
-
-ViStatus _VI_FUNC  viRead         (ViSession vi, ViChar* viChar, ViUInt32 cnt, ViPUInt32 retCnt) {
-	// TODO cast char to unsigned char and call write !!
-	return viRead(vi, (ViBuf) *viChar, cnt, retCnt);
-}
-
 /*===========================================================================
  USER-CALLABLE FUNCTIONS (Exportable Functions)
 ===========================================================================*/
@@ -183,10 +172,10 @@ ViStatus _VI_FUNC DC2100_init (ViRsrc resourceName, ViBoolean IDQuery, ViBoolean
    // Sync
    if ((err = viWrite (*pInstr, "\n", 1, VI_NULL)) < 0) 	   		                              return DC2100_cleanup(pInstr, err);
 	//Delay(0.2);
-	Sleep(2000);
+	Sleep(200);
 	if ((err = viFlush (*pInstr, VI_ASRL_IN_BUF_DISCARD | VI_ASRL_OUT_BUF_DISCARD)) < 0)		   return DC2100_cleanup(pInstr, err);
 	//Delay(0.2);
-	Sleep(2000);
+	Sleep(200);
 	// Info query
 	if ((err = DC2100_idQuery (*pInstr, data->name, data->serial, data->firmware, data->manufacturer)) < 0)	 return DC2100_cleanup(pInstr, VI_ERROR_FAIL_ID_QUERY);
 
@@ -408,7 +397,7 @@ ViStatus _VI_FUNC DC2100_setConstCurrent (ViSession instr, ViReal32 current)
 	ViInt32	len;
 
 	// prepare the setting command
-	len = sprintf(buf, "CC %d\n", (ViUInt16)(round(current * A_MA_CONVERSION)));
+	len = sprintf(buf, "CC %d\n", (ViUInt16)(round(current)));
 	// transmit the setting command
 	if((err = viWrite(instr, buf, len, VI_NULL)) < 0)	return (err);
 	// ask for error

@@ -16,7 +16,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
-    <None Include="thorlabs-dc2100.def">
+    <None Include="src\main\resources\thorlabs-dc2100.def">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
@@ -41,9 +41,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\main\c++\dllmain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\main\c++\stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

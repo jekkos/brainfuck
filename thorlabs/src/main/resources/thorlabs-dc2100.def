@@ -1,16 +1,16 @@
-LIBRARY thorlabs-dc2100-nativelib
+LIBRARY "thorlabs-dc2100-nativelib"
 
 EXPORTS
-DC2100_init
-DC2100_setLimitCurrent
-DC2100_getLimitCurrent
-DC2100_setMaxLimit
-DC2100_getMaxLimit
-DC2100_setOperationMode
-DC2100_getOperationMode
-DC2100_setLedOnOff
-DC2100_getLedOnOff
-DC2100_setConstCurrent
+DC2100_init				
+DC2100_setLimitCurrent	
+DC2100_getLimitCurrent	
+DC2100_setMaxLimit		
+DC2100_getMaxLimit		
+DC2100_setOperationMode	
+DC2100_getOperationMode 
+DC2100_setLedOnOff		
+DC2100_getLedOnOff		
+DC2100_setConstCurrent  
 DC2100_getConstCurrent
 DC2100_setPWMCurrent
 DC2100_getPWMCurrent

@@ -170,7 +170,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="README.md" />
-    <None Include="thorlabs-dc2100.def" />
+    <None Include="src\main\resources\thorlabs-dc2100.def" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\main\include\stdafx.h" />
@@ -181,7 +181,6 @@
     <ClInclude Include="src\main\include\vpptype.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\main\c++\dllmain.cpp" />
     <ClCompile Include="src\main\c++\stdafx.cpp" />
     <ClCompile Include="src\main\c++\thorlabs-dc2100.c" />
   </ItemGroup>

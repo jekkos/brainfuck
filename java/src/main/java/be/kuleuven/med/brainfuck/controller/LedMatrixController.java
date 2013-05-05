@@ -11,7 +11,6 @@ import javax.swing.JSlider;
 import javax.swing.JToggleButton;
 import javax.swing.event.ChangeEvent;
 
-import org.apache.log4j.Logger;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Task;
 import org.jdesktop.application.Task.BlockingScope;
@@ -29,8 +28,8 @@ import org.jdesktop.swingbinding.SwingBindings;
 import be.kuleuven.med.brainfuck.component.AppComponent;
 import be.kuleuven.med.brainfuck.connector.LedMatrixConnector;
 import be.kuleuven.med.brainfuck.connector.SerialPortConnector;
-import be.kuleuven.med.brainfuck.connector.ThorlabsConnector;
 import be.kuleuven.med.brainfuck.connector.ThorlabsDC2100Connector;
+import be.kuleuven.med.brainfuck.connector.ThorlabsDC2100Connector.OperationMode;
 import be.kuleuven.med.brainfuck.domain.settings.ExperimentSettings;
 import be.kuleuven.med.brainfuck.domain.settings.LedPosition;
 import be.kuleuven.med.brainfuck.domain.settings.LedSettings;
@@ -74,10 +73,10 @@ public class LedMatrixController {
 
 	private LedMatrixConnector ledMatrixConnector;
 
-	private ThorlabsConnector thorlabsConnector;
+	private ThorlabsDC2100Connector thorlabsConnector;
 
 	public LedMatrixController(LedMatrixPanelModel ledMatrixPanelModel, LedMatrixGfxModel ledMatrixGfxModel, 
-			LedMatrixConnector ledMatrixConnector, ThorlabsConnector thorlabsConnector) {
+			LedMatrixConnector ledMatrixConnector, ThorlabsDC2100Connector thorlabsConnector) {
 		this.ledMatrixPanelModel = ledMatrixPanelModel;
 		this.ledMatrixGfxModel = ledMatrixGfxModel;
 		this.ledMatrixConnector = ledMatrixConnector;
@@ -340,7 +339,6 @@ public class LedMatrixController {
 
 	@Action(block=BlockingScope.APPLICATION)
 	public Task<?, ?> initThorlabsConnector(final ActionEvent event) {
-		
 		final String selectedThorlabsPortName  = ledMatrixPanelModel.getSelectedThorlabsPortName();
 		if (selectedThorlabsPortName != null && !"".equals(selectedThorlabsPortName) && 
 				!ledMatrixPanelModel.isThorlabsConnectorInitialized()) {
@@ -349,6 +347,8 @@ public class LedMatrixController {
 				protected Void doInBackground() throws Exception {
 					message("startMessage", selectedThorlabsPortName);
 					thorlabsConnector.initialize(selectedThorlabsPortName);
+					thorlabsConnector.setOperationMode(OperationMode.PWM);
+					thorlabsConnector.setPwmCounts(0);
 					// will disable enabled state of in the gui..
 					ledMatrixPanelModel.setThorlabsConnectorInitialized(true);
 					// should be updating the view on EDT
@@ -457,11 +457,7 @@ public class LedMatrixController {
 	
 	public void stopExperiment() {
 		clearSelection();
-		try {
-			thorlabsConnector.setLedOn(false);
-		} catch(InterruptedException exc) {
-			Logger.getLogger(getClass()).error(exc);
-		}
+		thorlabsConnector.setLedOn(false);
 		ledMatrixConnector.disableAllLeds();
 		ledMatrixGfxModel.setIlluminated(false);
 		ledMatrixGfxView.repaint();
@@ -515,8 +511,8 @@ public class LedMatrixController {
 					ExperimentSettings experimentSettings = ledMatrixPanelModel.getExperimentSettings();
 					message("startMessage", experimentSettings.getCyclesToRun());
 					for (int i = 0; i < experimentSettings.getCyclesToRun(); i++) {
-						for (int j = 0; i < ledMatrixGfxModel.getWidth(); i++) {
-							for (int k = 0; j < ledMatrixGfxModel.getHeight() && ledMatrixPanelModel.isExperimentRunning(); j++) {
+						for (int j = 0; j < ledMatrixGfxModel.getWidth(); j++) {
+							for (int k = 0; k < ledMatrixGfxModel.getHeight() && ledMatrixPanelModel.isExperimentRunning(); k++) {
 								LedPosition ledPosition = LedPosition.ledPositionFor(j, k);
 								LedSettings ledSettings = ledMatrixGfxModel.getLedSettings(ledPosition);
 								message("progressMessage", ledPosition);

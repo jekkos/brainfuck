@@ -1,11 +1,9 @@
 package be.kuleuven.med.brainfuck.connector;
 
-
-
 import be.kuleuven.med.brainfuck.domain.settings.LedSettings;
 import be.kuleuven.med.brainfuck.domain.settings.SerialPortSettings;
 
-public class LedMatrixConnector extends SerialPortConnector {
+public class LedMatrixConnector extends RXTXConnector {
 	
 	// default value for digital write
 	private static final String NO_VALUE = "00";
@@ -22,6 +20,20 @@ public class LedMatrixConnector extends SerialPortConnector {
 	private static final String ALL = "al";
 
 	private final int maxPortNumber;
+	
+	public static String buildAnalogWrite(boolean illuminated, int pin, int intensity) {
+		StringBuilder result = new StringBuilder(NO_VALUE).append(ANALOG_WRITE);
+		result.append(String.format("%04d", pin));
+		result.append(String.format("%04d", illuminated ? intensity : 0));
+		return result.toString();
+	}
+	
+	public static String buildDigitalWrite(boolean illuminated, int pin) {
+		StringBuilder result = new StringBuilder(NO_VALUE).append(DIGITAL_WRITE);
+		result.append(String.format("%04d", pin));
+		result.append(illuminated ? HIGH : LOW);
+		return result.toString();
+	}
 	
 	public LedMatrixConnector(SerialPortSettings serialPortSettings, int maxPortNumber) {
 		super(serialPortSettings);
@@ -56,20 +68,6 @@ public class LedMatrixConnector extends SerialPortConnector {
 	private String buildInitCommand(int pin) {
 		StringBuilder result = new StringBuilder(NO_VALUE);
 		result.append(PIN_MODE).append(pin).append(OUTPUT);
-		return result.toString();
-	}
-	
-	private String buildAnalogWrite(boolean illuminated, int pin, int intensity) {
-		StringBuilder result = new StringBuilder(NO_VALUE).append(ANALOG_WRITE);
-		result.append(String.format("%04d", pin));
-		result.append(String.format("%04d", illuminated ? intensity : 0));
-		return result.toString();
-	}
-	
-	private String buildDigitalWrite(boolean illuminated, int pin) {
-		StringBuilder result = new StringBuilder(NO_VALUE).append(DIGITAL_WRITE);
-		result.append(String.format("%04d", pin));
-		result.append(illuminated ? HIGH : LOW);
 		return result.toString();
 	}
 	

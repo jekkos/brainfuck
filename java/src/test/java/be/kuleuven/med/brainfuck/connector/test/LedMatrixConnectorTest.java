@@ -13,15 +13,15 @@ import be.kuleuven.med.brainfuck.domain.settings.SerialPortSettings;
 
 public class LedMatrixConnectorTest extends TestCase {
 
-	private static final String AW_10_LOW = "00aw010000";
-	private static final String AW_10_HIGH = "00aw010030";
+	private static final String AW_10_LOW = LedMatrixConnector.buildAnalogWrite(false, 10, 0);
+	private static final String AW_10_HIGH = LedMatrixConnector.buildAnalogWrite(false, 10, 30);
 
-	private static final String DW_11_LOW = "00dw011 LOW";
-	private static final String DW_11_HIGH = "00dw011HIGH";
-	private static final String DW_9_LOW = "00dw009 LOW";
-	private static final String DW_10_LOW = "00dw010 LOW";
-	private static final String DW_9_HIGH = "00dw009HIGH";
-	private static final String DW_10_HIGH = "00dw010HIGH";
+	private static final String DW_11_LOW = LedMatrixConnector.buildDigitalWrite(false, 11);
+	private static final String DW_11_HIGH = LedMatrixConnector.buildDigitalWrite(true, 11);
+	private static final String DW_9_LOW = LedMatrixConnector.buildDigitalWrite(false, 9);
+	private static final String DW_10_LOW = LedMatrixConnector.buildDigitalWrite(false, 10);
+	private static final String DW_9_HIGH = LedMatrixConnector.buildDigitalWrite(true, 9);
+	private static final String DW_10_HIGH = LedMatrixConnector.buildDigitalWrite(true, 10);
 	
 	private LedMatrixConnector ledMatrixConnector;
 	private ByteArrayOutputStream byteArrayOutputStream;

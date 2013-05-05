@@ -94,15 +94,8 @@ public class ThorlabsDC2100Library implements StdCallLibrary {
 	/**
 	 * Original signature : <code>_VI_FUNC DC2100_getLimitCurrent(ViSession, ViPReal32)</code><br>
 	 * <i>native declaration : line 115</i><br>
-	 * @deprecated use the safer methods {@link #DC2100_getLimitCurrent(com.sun.jna.NativeLong, java.nio.FloatBuffer)} and {@link #DC2100_getLimitCurrent(com.sun.jna.NativeLong, com.sun.jna.ptr.FloatByReference)} instead
 	 */
-	@Deprecated 
 	public static native int DC2100_getLimitCurrent(NativeLong instrumentHandle, FloatByReference limit);
-	/**
-	 * Original signature : <code>_VI_FUNC DC2100_getLimitCurrent(ViSession, ViPReal32)</code><br>
-	 * <i>native declaration : line 115</i>
-	 */
-	public static native int DC2100_getLimitCurrent(NativeLong instrumentHandle, FloatBuffer limit);
 	/**
 	 * Original signature : <code>_VI_FUNC DC2100_setMaxLimit(ViSession, ViReal32)</code><br>
 	 * <i>native declaration : line 120</i>
@@ -111,15 +104,8 @@ public class ThorlabsDC2100Library implements StdCallLibrary {
 	/**
 	 * Original signature : <code>_VI_FUNC DC2100_getMaxLimit(ViSession, ViPReal32)</code><br>
 	 * <i>native declaration : line 121</i><br>
-	 * @deprecated use the safer methods {@link #DC2100_getMaxLimit(com.sun.jna.NativeLong, java.nio.FloatBuffer)} and {@link #DC2100_getMaxLimit(com.sun.jna.NativeLong, com.sun.jna.ptr.FloatByReference)} instead
 	 */
-	@Deprecated 
 	public static native int DC2100_getMaxLimit(NativeLong instrumentHandle, FloatByReference limit);
-	/**
-	 * Original signature : <code>_VI_FUNC DC2100_getMaxLimit(ViSession, ViPReal32)</code><br>
-	 * <i>native declaration : line 121</i>
-	 */
-	public static native int DC2100_getMaxLimit(NativeLong instrumentHandle, FloatBuffer limit);
 	/**
 	 * Original signature : <code>_VI_FUNC DC2100_setOperationMode(ViSession, ViInt32)</code><br>
 	 * <i>native declaration : line 126</i>
@@ -148,15 +134,8 @@ public class ThorlabsDC2100Library implements StdCallLibrary {
 	/**
 	 * Original signature : <code>_VI_FUNC DC2100_getConstCurrent(ViSession, ViPReal32)</code><br>
 	 * <i>native declaration : line 139</i><br>
-	 * @deprecated use the safer methods {@link #DC2100_getConstCurrent(com.sun.jna.NativeLong, java.nio.FloatBuffer)} and {@link #DC2100_getConstCurrent(com.sun.jna.NativeLong, com.sun.jna.ptr.FloatByReference)} instead
 	 */
-	@Deprecated 
 	public static native int DC2100_getConstCurrent(NativeLong instrumentHandle, FloatByReference current);
-	/**
-	 * Original signature : <code>_VI_FUNC DC2100_getConstCurrent(ViSession, ViPReal32)</code><br>
-	 * <i>native declaration : line 139</i>
-	 */
-	public static native int DC2100_getConstCurrent(NativeLong instrumentHandle, FloatBuffer current);
 	/**
 	 * Original signature : <code>_VI_FUNC DC2100_setPWMCurrent(ViSession, ViReal32)</code><br>
 	 * <i>native declaration : line 144</i>
@@ -165,15 +144,8 @@ public class ThorlabsDC2100Library implements StdCallLibrary {
 	/**
 	 * Original signature : <code>_VI_FUNC DC2100_getPWMCurrent(ViSession, ViPReal32)</code><br>
 	 * <i>native declaration : line 145</i><br>
-	 * @deprecated use the safer methods {@link #DC2100_getPWMCurrent(com.sun.jna.NativeLong, java.nio.FloatBuffer)} and {@link #DC2100_getPWMCurrent(com.sun.jna.NativeLong, com.sun.jna.ptr.FloatByReference)} instead
 	 */
-	@Deprecated 
 	public static native int DC2100_getPWMCurrent(NativeLong instrumentHandle, FloatByReference current);
-	/**
-	 * Original signature : <code>_VI_FUNC DC2100_getPWMCurrent(ViSession, ViPReal32)</code><br>
-	 * <i>native declaration : line 145</i>
-	 */
-	public static native int DC2100_getPWMCurrent(NativeLong instrumentHandle, FloatBuffer current);
 	/**
 	 * Original signature : <code>_VI_FUNC DC2100_setPWMFrequency(ViSession, ViInt32)</code><br>
 	 * <i>native declaration : line 150</i>

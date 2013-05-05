@@ -38,6 +38,12 @@ public class ThorlabsDC2100ConnectorTest extends TestCase {
 		assertEquals(2, thorlabsConnector.getPwmFrequency());
 	}
 	
+	public void testCurrentLimiting() {
+		assertTrue(thorlabsConnector.setOperationMode(OperationMode.CONSTANT_CURRENT));
+		assertTrue(thorlabsConnector.setCurrentLimit(25));
+		assertEquals(25, thorlabsConnector.getCurrentLimit());
+		assertTrue(thorlabsConnector.setConstantCurrent(30));
+	}
 	
 	public void testLedOnOff() {
 		assertTrue(thorlabsConnector.setLedOn(true));

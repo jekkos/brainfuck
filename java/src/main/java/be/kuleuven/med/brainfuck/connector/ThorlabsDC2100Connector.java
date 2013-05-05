@@ -118,6 +118,18 @@ public class ThorlabsDC2100Connector extends SerialPortConnector {
 		return Float.valueOf(result.getValue()).intValue();
 	}
 	
+	public int getCurrentLimit() {
+		FloatByReference result = new FloatByReference();
+		ThorlabsDC2100Library.DC2100_getLimitCurrent(sessionHandle.getValue(), result);
+		return Float.valueOf(result.getValue()).intValue();
+	}
+	
+	public boolean setCurrentLimit(int current) {
+		float currentLimit = Integer.valueOf(current).floatValue();
+		int result = ThorlabsDC2100Library.DC2100_setLimitCurrent(sessionHandle.getValue(), currentLimit);
+		return isDeviceOk(result);
+	}
+	
 	public OperationMode getOperationMode() {
 		NativeLongByReference result = new NativeLongByReference();
 		ThorlabsDC2100Library.DC2100_getOperationMode(sessionHandle.getValue(), result);

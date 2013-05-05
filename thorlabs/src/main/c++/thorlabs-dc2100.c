@@ -107,11 +107,6 @@ static void                	DC2100_dynErrlist_free	(DC2100_errDescrDyn_t *list);
 static ViStatus            	DC2100_dynErrlist_lookup	(DC2100_errDescrDyn_t *list, ViStatus err, ViChar** descr);
 static DC2100_errDescrDyn_t*	DC2100_dynErrlist_add		(DC2100_errDescrDyn_t *list, ViStatus err, ViChar* descr);
 
-// Patches to compile driver without utility.h
-int round(float x) { 
-	return (floor(x + 0.5)); 
-}
-
 /*===========================================================================
  USER-CALLABLE FUNCTIONS (Exportable Functions)
 ===========================================================================*/
@@ -196,7 +191,7 @@ ViStatus _VI_FUNC DC2100_setLimitCurrent (ViSession instr, ViReal32 limit)
 	ViInt32	len;
 
 	// prepare the setting command
-	len = sprintf(buf, "L %d\n", (ViUInt16)(round(limit * A_MA_CONVERSION)));
+	len = sprintf(buf, "L %d\n", (ViUInt16) limit);
 	// transmit the setting command
 	if((err = viWrite(instr, buf, len, VI_NULL)) < 0)	return (err);
 	// ask for error
@@ -229,7 +224,7 @@ ViStatus _VI_FUNC DC2100_getLimitCurrent (ViSession instr, ViPReal32 limit)
 	{
 		// parse answer
 		if(sscanf(buf, " %d \n", &tmp) < 1)                                      			return (VI_ERROR_INV_RESPONSE);
-		*limit = (ViReal32)tmp / A_MA_CONVERSION;
+		*limit = (ViReal32)tmp;
 	}
    // ask for error
 	if(err = DC2100_getLastError(instr, &ret))															return(err);
@@ -247,7 +242,7 @@ ViStatus _VI_FUNC DC2100_setMaxLimit (ViSession instr, ViReal32 limit)
 	ViInt32	len;
 
 	// prepare the setting command
-	len = sprintf(buf, "ML %d\n", (ViUInt16)(round(limit * A_MA_CONVERSION)));
+	len = sprintf(buf, "ML %d\n", (ViUInt16)limit);
 	// transmit the setting command
 	if((err = viWrite(instr, buf, len, VI_NULL)) < 0)	return (err);
 	// ask for error
@@ -279,7 +274,7 @@ ViStatus _VI_FUNC DC2100_getMaxLimit (ViSession instr, ViPReal32 limit)
 	{
 		// parse answer
 		if(sscanf(buf, " %d \n", &tmp) < 1)                               					return (VI_ERROR_INV_RESPONSE);
-		*limit = (ViReal32)tmp / A_MA_CONVERSION;
+		*limit = (ViReal32)tmp;
    }
 	// ask for error
 	if(err = DC2100_getLastError(instr, &ret))															return(err);
@@ -397,7 +392,7 @@ ViStatus _VI_FUNC DC2100_setConstCurrent (ViSession instr, ViReal32 current)
 	ViInt32	len;
 
 	// prepare the setting command
-	len = sprintf(buf, "CC %d\n", (ViUInt16)(round(current)));
+	len = sprintf(buf, "CC %d\n", (ViUInt16) current);
 	// transmit the setting command
 	if((err = viWrite(instr, buf, len, VI_NULL)) < 0)	return (err);
 	// ask for error
@@ -429,7 +424,7 @@ ViStatus _VI_FUNC DC2100_getConstCurrent (ViSession instr, ViPReal32 current)
 	{
 		// parse answer
 		if(sscanf(buf, " %d \n", &tmp) < 1)                                   				return (VI_ERROR_INV_RESPONSE);
-		*current = (ViReal32)tmp / A_MA_CONVERSION;
+		*current = (ViReal32)tmp;
 	}
    // ask for error
 	if(err = DC2100_getLastError(instr, &ret))															return(err);
@@ -448,7 +443,7 @@ ViStatus _VI_FUNC DC2100_setPWMCurrent (ViSession instr, ViReal32 current)
 	ViInt32	len;
 
 	// prepare the setting command
-	len = sprintf(buf, "PC %d\n", (ViUInt16)(round(current * A_MA_CONVERSION)));
+	len = sprintf(buf, "PC %d\n", (ViUInt16) current);
 	// transmit the setting command
 	if((err = viWrite(instr, buf, len, VI_NULL)) < 0)	return (err);
 	// ask for error
@@ -481,7 +476,7 @@ ViStatus _VI_FUNC DC2100_getPWMCurrent (ViSession instr, ViPReal32 current)
 	{
 		// parse answer
 		if(sscanf(buf, " %d \n", &tmp) < 1)                                   				return (VI_ERROR_INV_RESPONSE);
-		*current = (ViReal32)tmp / A_MA_CONVERSION;
+		*current = (ViReal32)tmp;
 	}
    // ask for error
 	if(err = DC2100_getLastError(instr, &ret))															return(err);

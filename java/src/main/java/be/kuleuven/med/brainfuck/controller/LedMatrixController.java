@@ -428,6 +428,7 @@ public class LedMatrixController {
 				} 
 				LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel = ledMatrixGfxModel.getLedMatrixGfxSelectionModel();
 				int index = 0; 
+				boolean atLeastOneSelected = false;
 				for (LedSettings ledSettings : ledMatrixGfxSelectionModel.getSelectedLedSettings()) {
 					if (source instanceof JSlider) {
 						JSlider slider = (JSlider) event.getSource();
@@ -439,13 +440,15 @@ public class LedMatrixController {
 						ledSettings.setIntensity(sliderValue);
 					}
 					boolean selected = ledMatrixGfxModel.isSelected(ledSettings);
-					thorlabsConnector.setLedOn(selected && illuminated);
-					// set flicker frequency + intensity for this led
-					thorlabsConnector.setPwmFrequency(ledMatrixGfxSelectionModel.getFlickerFrequency());
-					thorlabsConnector.setPwmCurrent(ledMatrixGfxSelectionModel.getIntensity());
+					atLeastOneSelected |= selected;
 					ledMatrixConnector.toggleLed(ledSettings, selected && illuminated);
+					// set flicker frequency + intensity for this led
 					index++;
 				}
+				// first set led state, then poweron the PSU
+				thorlabsConnector.setPwmFrequency(ledMatrixGfxSelectionModel.getFlickerFrequency());
+				thorlabsConnector.setPwmCurrent(ledMatrixGfxSelectionModel.getIntensity());
+				thorlabsConnector.setLedOn(atLeastOneSelected && illuminated);
 				// update gfx illumination state
 				ledMatrixGfxView.repaint();
 				message("endMessage");

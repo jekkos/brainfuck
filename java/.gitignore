@@ -1,3 +1,4 @@
 # ignore maven build output
 target/
 *.log
+/logs

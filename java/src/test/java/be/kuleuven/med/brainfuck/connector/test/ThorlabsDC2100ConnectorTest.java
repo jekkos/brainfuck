@@ -42,6 +42,7 @@ public class ThorlabsDC2100ConnectorTest extends TestCase {
 		assertTrue(thorlabsConnector.setOperationMode(OperationMode.CONSTANT_CURRENT));
 		assertTrue(thorlabsConnector.setCurrentLimit(25));
 		assertEquals(25, thorlabsConnector.getCurrentLimit());
+		// TODO is this expected behavior?
 		assertTrue(thorlabsConnector.setConstantCurrent(30));
 	}
 	

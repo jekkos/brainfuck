@@ -38,8 +38,11 @@ public class ThorlabsDC2100Connector extends SerialPortConnector {
 	}
 	
 	public boolean close() {
-		int result = ThorlabsDC2100Library.DC2100_close(sessionHandle.getValue());
-		return isDeviceOk(result);
+		if (isInitialized()) {
+			int result = ThorlabsDC2100Library.DC2100_close(sessionHandle.getValue());
+			return isDeviceOk(result);
+		}
+		return false;
 	}
 
 	public boolean isInitialized() {
@@ -47,106 +50,157 @@ public class ThorlabsDC2100Connector extends SerialPortConnector {
 	}
 
 	public boolean isLedOn() {
-		ShortByReference result = new ShortByReference();
-		ThorlabsDC2100Library.DC2100_getLedOnOff(sessionHandle.getValue(), result);
-		return ThorlabsDC2100Library.VI_ON == Short.valueOf(result.getValue()).intValue();
+		if (isInitialized()) {
+			ShortByReference result = new ShortByReference();
+			ThorlabsDC2100Library.DC2100_getLedOnOff(sessionHandle.getValue(), result);
+			return ThorlabsDC2100Library.VI_ON == Short.valueOf(result.getValue()).intValue();
+		}
+		return false;
 	}
 	
 	public boolean setLedOn(boolean on) {
-		int ledState = on ? ThorlabsDC2100Library.VI_ON : ThorlabsDC2100Library.VI_OFF;
-		int result = ThorlabsDC2100Library.DC2100_setLedOnOff(sessionHandle.getValue(), ledState);
-		return isDeviceOk(result);
+		if (isInitialized()) {
+			int ledState = on ? ThorlabsDC2100Library.VI_ON : ThorlabsDC2100Library.VI_OFF;
+			int result = ThorlabsDC2100Library.DC2100_setLedOnOff(sessionHandle.getValue(), ledState);
+			return isDeviceOk(result);
+		}
+		return false;
 	}
 	
 	public int getPwmFrequency() {
-		NativeLongByReference result = new NativeLongByReference();
-		ThorlabsDC2100Library.DC2100_getPWMFrequency(sessionHandle.getValue(), result);
-		return result.getValue().intValue();
+		if (isInitialized()) {
+			NativeLongByReference result = new NativeLongByReference();
+			ThorlabsDC2100Library.DC2100_getPWMFrequency(sessionHandle.getValue(), result);
+			return result.getValue().intValue();
+		}
+		return -1;
 	}
 	
 	public boolean setPwmFrequency(int frequency) {
-		NativeLong pwmFrequency = new NativeLong(Integer.valueOf(frequency).longValue());
-		int result = ThorlabsDC2100Library.DC2100_setPWMFrequency(sessionHandle.getValue(), pwmFrequency);
-		return isDeviceOk(result);
+		if (isInitialized()) {
+			NativeLong pwmFrequency = new NativeLong(Integer.valueOf(frequency).longValue());
+			int result = ThorlabsDC2100Library.DC2100_setPWMFrequency(sessionHandle.getValue(), pwmFrequency);
+			return isDeviceOk(result);
+		}
+		return false;
 	}
 	
 	public int getPwmCurrent() {
-		FloatByReference result = new FloatByReference();
-		ThorlabsDC2100Library.DC2100_getPWMCurrent(sessionHandle.getValue(), result);
-		return Float.valueOf(result.getValue()).intValue();
+		if (isInitialized()) {
+			FloatByReference result = new FloatByReference();
+			ThorlabsDC2100Library.DC2100_getPWMCurrent(sessionHandle.getValue(), result);
+			return Float.valueOf(result.getValue()).intValue();
+		}
+		return -1;
 	}
 	
 	public boolean setPwmCurrent(int current) {
-		float pwmCurrent = Integer.valueOf(current).floatValue();
-		int result = ThorlabsDC2100Library.DC2100_setPWMCurrent(sessionHandle.getValue(), pwmCurrent);
-		return isDeviceOk(result);
+		if (isInitialized()) {
+			float pwmCurrent = Integer.valueOf(current).floatValue();
+			int result = ThorlabsDC2100Library.DC2100_setPWMCurrent(sessionHandle.getValue(), pwmCurrent);
+			return isDeviceOk(result);
+		}
+		return false;
 	}
 	
 	public int getDutyCycle() {
-		NativeLongByReference result = new NativeLongByReference();
-		ThorlabsDC2100Library.DC2100_getPWMDutyCycle(sessionHandle.getValue(), result);
-		return result.getValue().intValue();
+		if (isInitialized()) {
+			NativeLongByReference result = new NativeLongByReference();
+			ThorlabsDC2100Library.DC2100_getPWMDutyCycle(sessionHandle.getValue(), result);
+			return result.getValue().intValue();
+		}
+		return -1;
 	}
 	
 	public boolean setDutyCycle(int dutyCycle) {
-		NativeLong pwmDutyCycle = new NativeLong(Integer.valueOf(dutyCycle).longValue());
-		int result = ThorlabsDC2100Library.DC2100_setPWMDutyCycle(sessionHandle.getValue(), pwmDutyCycle);
-		return isDeviceOk(result);
+		if (isInitialized()) {
+			NativeLong pwmDutyCycle = new NativeLong(Integer.valueOf(dutyCycle).longValue());
+			int result = ThorlabsDC2100Library.DC2100_setPWMDutyCycle(sessionHandle.getValue(), pwmDutyCycle);
+			return isDeviceOk(result);
+		}
+		return false;
 	}
 	
 	public int getPwmCounts() {
-		NativeLongByReference result = new NativeLongByReference();
-		ThorlabsDC2100Library.DC2100_getPWMCounts(sessionHandle.getValue(), result);
-		return result.getValue().intValue();
+		if (isInitialized()) {
+			NativeLongByReference result = new NativeLongByReference();
+			ThorlabsDC2100Library.DC2100_getPWMCounts(sessionHandle.getValue(), result);
+			return result.getValue().intValue();
+		}
+		return -1;
 	}
 	
 	public boolean setPwmCounts(int counts) {
-		NativeLong pwmCounts = new NativeLong(counts);
-		int result = ThorlabsDC2100Library.DC2100_setPWMCounts(sessionHandle.getValue(), pwmCounts);
-		return isDeviceOk(result);
+		if (isInitialized()) {
+			NativeLong pwmCounts = new NativeLong(counts);
+			int result = ThorlabsDC2100Library.DC2100_setPWMCounts(sessionHandle.getValue(), pwmCounts);
+			return isDeviceOk(result);
+		}
+		return false;
 	}
 	
 	public boolean setConstantCurrent(int current) {
-		float constantCurrent = Integer.valueOf(current).floatValue();
-		int result = ThorlabsDC2100Library.DC2100_setConstCurrent(sessionHandle.getValue(), constantCurrent);
-		return isDeviceOk(result);
+		if (isInitialized()) {
+			float constantCurrent = Integer.valueOf(current).floatValue();
+			int result = ThorlabsDC2100Library.DC2100_setConstCurrent(sessionHandle.getValue(), constantCurrent);
+			return isDeviceOk(result);
+		}
+		return false;
 	}
 
 	public int getConstantCurrent() {
-		FloatByReference result = new FloatByReference();
-		ThorlabsDC2100Library.DC2100_getConstCurrent(sessionHandle.getValue(), result);
-		return Float.valueOf(result.getValue()).intValue();
+		if (isInitialized()) {
+			FloatByReference result = new FloatByReference();
+			ThorlabsDC2100Library.DC2100_getConstCurrent(sessionHandle.getValue(), result);
+			return Float.valueOf(result.getValue()).intValue();
+		}
+		return -1;
 	}
 	
 	public int getCurrentLimit() {
-		FloatByReference result = new FloatByReference();
-		ThorlabsDC2100Library.DC2100_getLimitCurrent(sessionHandle.getValue(), result);
-		return Float.valueOf(result.getValue()).intValue();
+		if (isInitialized()) {
+			FloatByReference result = new FloatByReference();
+			ThorlabsDC2100Library.DC2100_getLimitCurrent(sessionHandle.getValue(), result);
+			return Float.valueOf(result.getValue()).intValue();
+		}
+		return -1;
 	}
 	
 	public boolean setCurrentLimit(int current) {
-		float currentLimit = Integer.valueOf(current).floatValue();
-		int result = ThorlabsDC2100Library.DC2100_setLimitCurrent(sessionHandle.getValue(), currentLimit);
-		return isDeviceOk(result);
+		if (isInitialized()) {
+			float currentLimit = Integer.valueOf(current).floatValue();
+			int result = ThorlabsDC2100Library.DC2100_setLimitCurrent(sessionHandle.getValue(), currentLimit);
+			return isDeviceOk(result);
+		}
+		return false;
 	}
 	
 	public OperationMode getOperationMode() {
-		NativeLongByReference result = new NativeLongByReference();
-		ThorlabsDC2100Library.DC2100_getOperationMode(sessionHandle.getValue(), result);
-		return OperationMode.findOperationMode(result.getValue().intValue());
+		if (isInitialized()) {
+			NativeLongByReference result = new NativeLongByReference();
+			ThorlabsDC2100Library.DC2100_getOperationMode(sessionHandle.getValue(), result);
+			return OperationMode.findOperationMode(result.getValue().intValue());
+		}
+		return OperationMode.NOT_INITIALIZED;
 	}
 	
 	public boolean setOperationMode(OperationMode mode) {
-		boolean result = setLedOn(false);
-		NativeLong operationMode = new NativeLong(mode.ordinal());
-		int operationModeResult = ThorlabsDC2100Library.DC2100_setOperationMode(sessionHandle.getValue(), operationMode);
-		return result && isDeviceOk(operationModeResult);
+		if (isInitialized()) {
+			boolean result = setLedOn(false);
+			NativeLong operationMode = new NativeLong(mode.ordinal());
+			int operationModeResult = ThorlabsDC2100Library.DC2100_setOperationMode(sessionHandle.getValue(), operationMode);
+			return result && isDeviceOk(operationModeResult);
+		}
+		return false;
 	}
 
 	public DriverStatus getStatus() {
-		NativeLongByReference result = new NativeLongByReference();
-		ThorlabsDC2100Library.DC2100_getStatusRegister(sessionHandle.getValue(), result);
-		return DriverStatus.findDriverStatus(result.getValue().intValue());
+		if (isInitialized()) {
+			NativeLongByReference result = new NativeLongByReference();
+			ThorlabsDC2100Library.DC2100_getStatusRegister(sessionHandle.getValue(), result);
+			return DriverStatus.findDriverStatus(result.getValue().intValue());
+		}
+		return DriverStatus.NO_LED;
 	}
 	
 	private boolean isDeviceOk(int result) {
@@ -186,7 +240,7 @@ public class ThorlabsDC2100Connector extends SerialPortConnector {
 	
 	public enum OperationMode {
 		
-		CONSTANT_CURRENT, PWM, EXTERNAL_CONTROL;
+		CONSTANT_CURRENT, PWM, EXTERNAL_CONTROL, NOT_INITIALIZED;
 		
 		public static OperationMode findOperationMode(int mode) {
 			for (OperationMode operationMode : values()) {

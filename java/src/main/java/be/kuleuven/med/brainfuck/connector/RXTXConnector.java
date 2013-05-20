@@ -74,7 +74,6 @@ public abstract class RXTXConnector extends SerialPortConnector implements Seria
 	}
 
 	public void initialize(String serialPortName) throws Exception {
-		CommPortIdentifier portId = null;
 		@SuppressWarnings("rawtypes")
 		Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();
 	
@@ -82,30 +81,30 @@ public abstract class RXTXConnector extends SerialPortConnector implements Seria
 		while (portEnum.hasMoreElements()) {
 			CommPortIdentifier currPortId = (CommPortIdentifier) portEnum.nextElement();
 			if (currPortId.getName().equals(serialPortName)) {
-				portId = currPortId;
+				getSerialPortSettings().setName(serialPortName);
+				// open serial port, and use class name for the appName.
+				serialPort = (SerialPort) currPortId.open(this.getClass().getName(),
+						TIME_OUT);
+			
+				// set port parameters
+				serialPort.setSerialPortParams(getSerialPortSettings().getDataRate(),
+						getSerialPortSettings().getDataBits(),
+						getSerialPortSettings().getStopBits(),
+						getSerialPortSettings().getParityBits());
+			
+				// open the streams
+				input = serialPort.getInputStream();
+				output = serialPort.getOutputStream();
+			
+				// add event listeners
+				serialPort.addEventListener(this);
+				serialPort.notifyOnDataAvailable(true);
+				
+				initializeConnector(serialPortName);
 				break;
 			}
 		}
-		getSerialPortSettings().setName(serialPortName);
-		// open serial port, and use class name for the appName.
-		serialPort = (SerialPort) portId.open(this.getClass().getName(),
-				TIME_OUT);
-	
-		// set port parameters
-		serialPort.setSerialPortParams(getSerialPortSettings().getDataRate(),
-				getSerialPortSettings().getDataBits(),
-				getSerialPortSettings().getStopBits(),
-				getSerialPortSettings().getParityBits());
-	
-		// open the streams
-		input = serialPort.getInputStream();
-		output = serialPort.getOutputStream();
-	
-		// add event listeners
-		serialPort.addEventListener(this);
-		serialPort.notifyOnDataAvailable(true);
 		
-		initializeConnector(serialPortName);
 	}
 
 	public synchronized boolean close() {

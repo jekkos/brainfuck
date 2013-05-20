@@ -5,8 +5,8 @@ CONFIGURATION
 
 The app will save an XML configuration file in the home directory of the current user.
 
-under linux this will be ~/.LedMatrixApp/settings.xml
-under windows this will be %APPDATA%/KULeuven/settings.xml
+under linux this will be `~/.LedMatrixApp/settings.xml`
+under windows this will be i`%APPDATA%/KULeuven/settings.xml`
 
 The config file is hand editable, and will be used to create the domain models at startup time.
 
@@ -26,7 +26,7 @@ Application can be built using Maven2 using the following goal
 DEPLOYING
 ---------
 
-Application can be built with Maven2 and deployed using the following goal
+Application can be deployed with Maven2 and deployed using the following goal
 
     mvn package
 

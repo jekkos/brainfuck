@@ -19,9 +19,63 @@
   </security>
   <update check="always" policy="prompt-update" />
 #end
-	<resources>
-		<j2se version="$j2seVersion" java-vm-args="-XX:+UseCompressedOops"/>
-		$dependencies
-		<application-desc main-class="$mainClass"/>
-	</resources>
+  <resources>
+  <j2se version="$j2seVersion" java-vm-args="-XX:+UseCompressedOops"/>
+   <resources>
+#foreach( $dependency in $fulldependencies )
+#if ( !$dependency.classifier.startsWith('natives') )
+   <jar href="$libFolder/${dependency.file.name}" />
+#end
+#end
+  </resources>
+  <resources os="Windows">
+#foreach( $dependency in $fulldependencies )
+#if ( $dependency.classifier == 'natives-win' )
+   <nativelib href="$libFolder/${dependency.file.name}" />
+#end
+#end
+  </resources>
+  <resources os="Windows" arch="x86">
+#foreach( $dependency in $fulldependencies )
+#if ( $dependency.classifier == 'natives-win-x86' )
+   <nativelib href="$libFolder/${dependency.file.name}" />
+#end
+#end
+  </resources>
+  <resources os="Windows" arch="amd64">
+#foreach( $dependency in $fulldependencies )
+#if ( $dependency.classifier == 'natives-win-amd64' )
+   <nativelib href="$libFolder/${dependency.file.name}" />
+#end
+#end
+  </resources>
+  <resources os="Mac OS X">
+#foreach( $dependency in $fulldependencies )
+#if ( $dependency.classifier == 'natives-mac' )
+   <nativelib href="$libFolder/${dependency.file.name}" />
+#end
+#end
+  </resources>
+  <resources os="Linux">
+#foreach( $dependency in $fulldependencies )
+#if ( $dependency.classifier == 'natives-linux' )
+   <nativelib href="$libFolder/${dependency.file.name}" />
+#end
+#end
+  </resources>
+  <resources os="Linux" arch="x86">
+#foreach( $dependency in $fulldependencies )
+#if ( $dependency.classifier == 'natives-linux-x86' )
+   <nativelib href="$libFolder/${dependency.file.name}" />
+#end
+#end
+  </resources>
+  <resources os="Linux" arch="amd64">
+#foreach( $dependency in $fulldependencies )
+#if ( $dependency.classifier == 'natives-linux-amd64' )
+   <nativelib href="$libFolder/${dependency.file.name}" />
+#end
+#end
+  </resources>
+  <application-desc main-class="$mainClass"/>
 </jnlp>

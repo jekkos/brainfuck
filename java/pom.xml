@@ -4,8 +4,14 @@
 	<groupId>be.kuleuven.med</groupId>
 	<artifactId>brainfuck</artifactId>
 	<version>0.1-SNAPSHOT</version>
+	<name>brainfuck</name>
 	<description>An Arduino configurator for running experiments on a custom built LED array</description>
 	<inceptionYear>2013</inceptionYear>
+	<url>http://www.kuleuven.be/molmed</url>
+	<organization>
+		<name>KuLeuven</name>
+		<url>http://www.kuleuven.be/molmed</url>		
+	</organization>
 	<build>
 		<resources>
 			<resource>
@@ -99,9 +105,9 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
+				<groupId>org.codehaus.mojo.webstart</groupId>
 				<artifactId>webstart-maven-plugin</artifactId>
-				<version>1.0-beta-3</version>
+				<version>1.0-alpha-2</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -129,7 +135,7 @@
 						<keypass>${keystore.password}</keypass>
 						<storepass>${keystore.password}</storepass>
 						<!--storetype>fillme</storetype -->
-						<alias>jdc</alias>
+						<alias>brainfuck.keys</alias>
 						<validity>180</validity>
 
 						<!-- only required for generating the keystore -->
@@ -246,6 +252,14 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>Maven2 Repo</id>
+			<name>Maven2 Repo</name>
+			<url>http://maven2.runwalk.be</url>
+			<layout>default</layout>
+		</pluginRepository>
+	</pluginRepositories>
 	<dependencies>
 	   <dependency>
 			<groupId>net.java.dev.jna</groupId>
@@ -353,7 +367,7 @@
 		<keystore.dnameSt>Vlaams Brabant</keystore.dnameSt>
 		<keystore.dnameC>Belgium</keystore.dnameC>
 		<keystore.dnameOu>None</keystore.dnameOu>
-		<keystore.location>${basedir}/src/main/jnlp/myKeys</keystore.location>
+		<keystore.location>${basedir}/src/main/jnlp/brainfuck.keys</keystore.location>
 		<keystore.password>yourPwd</keystore.password>
 		<!-- JNLP file generation properties -->
 		<mainClass>be.kuleuven.med.brainfuck.LedMatrixApp</mainClass>

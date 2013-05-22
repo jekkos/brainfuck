@@ -1,5 +1,9 @@
 package be.kuleuven.med.brainfuck.connector;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import be.kuleuven.med.brainfuck.domain.settings.LedMatrixSettings;
 import be.kuleuven.med.brainfuck.domain.settings.LedSettings;
 import be.kuleuven.med.brainfuck.domain.settings.SerialPortSettings;
 
@@ -57,8 +61,27 @@ public class LedMatrixConnector extends RXTXConnector {
 		}
 	}
 	
-	public void disableAllLeds() {
-		sendCommand(new StringBuilder(NO_VALUE).append(ALL).append(LOW).toString());
+	public void disableAllLeds(LedMatrixSettings ledMatrixSettings) {
+		Set<Integer> rowPins = new HashSet<>();
+		Set<Integer> columnPins = new HashSet<>();
+		for (LedSettings ledSettings : ledMatrixSettings.getLedSettingsList()) {
+			rowPins.add(ledSettings.getRowPin());
+			columnPins.add(ledSettings.getColumnPin());
+		}
+		disableRowPins(rowPins);
+		disableColumnPins(columnPins);
+	}
+	
+	public void disableRowPins(Set<Integer> rowPins) {
+		for (Integer rowPin : rowPins) {
+			sendCommand(buildDigitalWrite(false, rowPin));
+		}
+	}
+	
+	public void disableColumnPins(Set<Integer> columnPins) {
+		for (Integer columnPin : columnPins) {
+			sendCommand(buildDigitalWrite(true, columnPin));
+		}
 	}
 	
 	private boolean isMaxIntensity(LedSettings ledSettings) {

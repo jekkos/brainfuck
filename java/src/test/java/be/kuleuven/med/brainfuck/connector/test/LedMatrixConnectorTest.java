@@ -32,10 +32,10 @@ public class LedMatrixConnectorTest extends TestCase {
 		ledMatrixConnector.setOutput(byteArrayOutputStream);
 	}
 	
-	public void testDisableAllLeds() throws Exception {
-		ledMatrixConnector.disableAllLeds();
-		assertEquals("00al LOW" + RETURN, byteArrayOutputStream.toString());
-	}
+//	public void testDisableAllLeds() throws Exception {
+//		ledMatrixConnector.disableAllLeds();
+//		assertEquals("00al LOW" + RETURN, byteArrayOutputStream.toString());
+//	}
 	
 	public void testToggleLedDigital() throws Exception {
 		LedSettings ledSettings = new LedSettings(LedPosition.ledPositionFor(1, 0));

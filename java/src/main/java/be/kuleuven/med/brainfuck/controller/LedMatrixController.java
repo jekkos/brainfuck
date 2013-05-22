@@ -299,6 +299,8 @@ public class LedMatrixController {
 				protected Void doInBackground() throws Exception {
 					message("startMessage", selectedLedMatrixPortName);
 					ledMatrixConnector.initialize(selectedLedMatrixPortName);
+					// disabling all leds could also be done by using pullup/pulldown resistors?
+					ledMatrixConnector.disableAllLeds(ledMatrixGfxModel.getLedMatrixSettings());
 					// will disable enabled state of in the gui..
 					ledMatrixPanelModel.setLedMatrixConnectorInitialized(true);
 					// should be updating the view on EDT
@@ -461,7 +463,7 @@ public class LedMatrixController {
 	public void stopExperiment() {
 		clearSelection();
 		thorlabsConnector.setLedOn(false);
-		ledMatrixConnector.disableAllLeds();
+		ledMatrixConnector.disableAllLeds(ledMatrixGfxModel.getLedMatrixSettings());
 		ledMatrixGfxModel.setIlluminated(false);
 		ledMatrixGfxView.repaint();
 	}

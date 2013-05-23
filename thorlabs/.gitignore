@@ -1,10 +1,6 @@
 # Object files
 *.o
 
-# Libraries
-*.lib
-*.a
-
 # Shared objects (inc. Windows DLLs)
 *.dll
 *.so
@@ -15,3 +11,10 @@
 *.exe
 *.out
 *.app
+
+# Output folder
+target
+ipch
+
+# Other shit
+*.opensdf

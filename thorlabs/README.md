@@ -3,7 +3,7 @@ thorlabs-dc2100-nativelib
 
 This DLL is needed to communicate with the Thorlabs DC2100 High Power LED driver. Sources were originally published under LGPL and included with the installation CD of the device. However, to build and debug the source, I had to setup a Visual Studio project, putting all the bits and pieces together.
 
-Currently the project compiles OK for 64bit windows. Due to the lacking 32bit version of the nivisa.lib object file, 32bit is not there yet.
+Currently the project compiles OK for 32 and 64bit windows. Perhaps a port to Linux will come, but some windows dependencies will need to be factored out first.
 
 Project compilation & linkage
 -----------------------------

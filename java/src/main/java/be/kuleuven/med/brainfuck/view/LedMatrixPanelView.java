@@ -115,6 +115,7 @@ public class LedMatrixPanelView extends JPanel {
 		add(secondsToRunTextField, "w 40, wrap");
 		
 		// add led controls
+		// TODO replace slider with regular (bounded) text field
 		intensitySlider = new JSlider(LedSettings.MIN_INTENSITY, LedSettings.MAX_INTENSITY, LedSettings.MAX_INTENSITY);
 		intensitySlider.setOrientation(JSlider.HORIZONTAL);
 		intensitySlider.setPaintTicks(true);

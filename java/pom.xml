@@ -139,10 +139,19 @@
 						<validity>180</validity>
 
 						<!-- only required for generating the keystore -->
-						<!-- <dnameCn>${keystore.dnameCn}</dnameCn> <dnameOu>${keystore.dnameOu}</dnameOu> 
-							<dnameO>${keystore.dnameO}</dnameO> <dnameL>${keystore.dnameL}</dnameL> <dnameSt>${keystore.dnameSt}</dnameSt> 
-							<dnameC>${keystore.dnameC}></dnameC> <keystoreConfig> <delete>false</delete> 
-							<gen>true</gen> </keystoreConfig> <verify>true</verify> -->
+						<!-- 
+						<dnameCn>${keystore.dnameCn}</dnameCn> 
+						<dnameOu>${keystore.dnameOu}</dnameOu> 
+						<dnameO>${keystore.dnameO}</dnameO>
+						<dnameL>${keystore.dnameL}</dnameL>
+						<dnameSt>${keystore.dnameSt}</dnameSt> 
+						<dnameC>${keystore.dnameC}></dnameC>
+						<keystoreConfig> 
+						    <delete>false</delete> 
+							<gen>true</gen> 
+						</keystoreConfig>
+						<verify>true</verify>
+						 --> 
 						<!-- KEYSTORE MANAGEMENT -->
 					</sign>
 

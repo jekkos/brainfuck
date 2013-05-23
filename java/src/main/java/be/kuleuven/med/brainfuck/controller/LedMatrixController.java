@@ -347,6 +347,7 @@ public class LedMatrixController {
 			return new AbstractTask<Void, Void>(INIT_THORLABS_CONNECTOR_ACTION) {
 
 				protected Void doInBackground() throws Exception {
+					// TODO disable all leds when initializing communication with driver
 					message("startMessage", selectedThorlabsPortName);
 					thorlabsConnector.initialize(selectedThorlabsPortName);
 					thorlabsConnector.setOperationMode(OperationMode.PWM);
@@ -431,6 +432,7 @@ public class LedMatrixController {
 				LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel = ledMatrixGfxModel.getLedMatrixGfxSelectionModel();
 				int index = 0; 
 				boolean atLeastOneSelected = false;
+				// TODO remove slider logic
 				for (LedSettings ledSettings : ledMatrixGfxSelectionModel.getSelectedLedSettings()) {
 					if (source instanceof JSlider) {
 						JSlider slider = (JSlider) event.getSource();
@@ -450,6 +452,7 @@ public class LedMatrixController {
 				// first set led state, then poweron the PSU
 				thorlabsConnector.setPwmFrequency(ledMatrixGfxSelectionModel.getFlickerFrequency());
 				thorlabsConnector.setPwmCurrent(ledMatrixGfxSelectionModel.getIntensity());
+				// TODO for poweroff, this should happen BEFORE the last led is toggled off
 				thorlabsConnector.setLedOn(atLeastOneSelected && illuminated);
 				// update gfx illumination state
 				ledMatrixGfxView.repaint();

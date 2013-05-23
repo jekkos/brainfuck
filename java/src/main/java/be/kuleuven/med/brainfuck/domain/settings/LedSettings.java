@@ -8,8 +8,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LedSettings {
-
-	public static final int MAX_INTENSITY = 254;
+	// TODO make intensity configurable?
+	public static final int MAX_INTENSITY = 700;
 	
 	public static final int MIN_INTENSITY = 0;
 	

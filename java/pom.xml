@@ -275,13 +275,13 @@
 			<artifactId>jna</artifactId>
 			<version>3.5.2</version>
 		</dependency>
-		<!-- <dependency>
+		<dependency>
 			<groupId>de.thorlabs</groupId>
 			<artifactId>thorlabs-dc2100-nativelib</artifactId>
 			<version>${thorlabs-dc2100.version}</version>
 			<classifier>natives-win-x86</classifier>
 			<scope>runtime</scope>
-		</dependency>-->	
+		</dependency>	
 		<dependency>
 			<groupId>de.thorlabs</groupId>
 			<artifactId>thorlabs-dc2100-nativelib</artifactId>

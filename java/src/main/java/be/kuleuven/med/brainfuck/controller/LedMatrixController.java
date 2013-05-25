@@ -7,9 +7,7 @@ import java.util.List;
 import javax.swing.AbstractButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JSlider;
 import javax.swing.JToggleButton;
-import javax.swing.event.ChangeEvent;
 
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Task;
@@ -83,7 +81,7 @@ public class LedMatrixController {
 		this.thorlabsConnector = thorlabsConnector;
 	}
 
-	public void initViews(LedMatrixPanelView ledMatrixPanelView, LedMatrixGfxView ledMatrixGfxView) {
+	public void initViews(final LedMatrixPanelView ledMatrixPanelView, final LedMatrixGfxView ledMatrixGfxView) {
 		this.ledMatrixPanelView = ledMatrixPanelView;
 		this.ledMatrixGfxView = ledMatrixGfxView;
 
@@ -123,6 +121,7 @@ public class LedMatrixController {
 				for(LedSettings ledSettings : ledMatrixGfxSelectionModel.getSelectedLedSettings()) {
 					ledSettings.setRowPin((Integer) targetValueForSource.getValue());
 				}
+				ledMatrixGfxView.repaint();
 			}
 			
 		});
@@ -143,6 +142,7 @@ public class LedMatrixController {
 				for(LedSettings ledSettings : ledMatrixGfxSelectionModel.getSelectedLedSettings()) {
 					ledSettings.setColumnPin((Integer) targetValueForSource.getValue());
 				}
+				ledMatrixGfxView.repaint();
 			}
 			
 		});
@@ -165,6 +165,7 @@ public class LedMatrixController {
 				for(LedSettings ledSettings : ledMatrixGfxSelectionModel.getSelectedLedSettings()) {
 					ledSettings.setSecondsToRun((Integer) targetValueForSource.getValue());
 				}
+				ledMatrixGfxView.repaint();
 			}
 			
 		});
@@ -185,6 +186,7 @@ public class LedMatrixController {
 				for(LedSettings ledSettings : ledMatrixGfxSelectionModel.getSelectedLedSettings()) {
 					ledSettings.setFlickerFrequency((Integer) targetValueForSource.getValue());
 				}
+				ledMatrixGfxView.repaint();
 			}
 			
 		});
@@ -196,10 +198,23 @@ public class LedMatrixController {
 		// bind led controls (just the enabled state)
 		ELProperty<LedMatrixController, Boolean> ledControlsEnabledProperty = ELProperty.create("${!ledMatrixGfxModel.ledMatrixGfxSelectionModel.cleared && ledMatrixPanelModel.ledMatrixConnectorInitialized && !ledMatrixPanelModel.experimentRunning}");
 		BeanProperty<LedMatrixGfxModel, Integer> intensityProperty = BeanProperty.create("ledMatrixGfxSelectionModel.intensity");
-		BeanProperty<JSlider, Integer> valueProperty = BeanProperty.create("value");
-		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixGfxModel, intensityProperty, ledMatrixPanelView.getIntensitySlider(), valueProperty);
+		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixGfxModel, intensityProperty, ledMatrixPanelView.getIntensityTextField(), TEXT);
+		valueBinding.addBindingListener(new AbstractBindingListener() {
+
+			@Override
+			public void targetChanged(@SuppressWarnings("rawtypes") Binding binding, PropertyStateEvent event) {
+				@SuppressWarnings("rawtypes")
+				ValueResult targetValueForSource = binding.getTargetValueForSource();
+				LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel = ledMatrixGfxModel.getLedMatrixGfxSelectionModel();
+				for(LedSettings ledSettings : ledMatrixGfxSelectionModel.getSelectedLedSettings()) {
+					ledSettings.setIntensity(((Integer) targetValueForSource.getValue()));
+				}
+				ledMatrixGfxView.repaint();
+			}
+			
+		});
 		bindingGroup.addBinding(valueBinding);
-		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, this, ledControlsEnabledProperty, ledMatrixPanelView.getIntensitySlider(), ENABLED);
+		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, this, ledControlsEnabledProperty, ledMatrixPanelView.getIntensityTextField(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
 		enabledBinding = Bindings.createAutoBinding(UpdateStrategy.READ, this, ledControlsEnabledProperty, ledMatrixPanelView.getToggleLedButton(), ENABLED);
 		bindingGroup.addBinding(enabledBinding);
@@ -409,13 +424,19 @@ public class LedMatrixController {
 		};
 	}
 
-	public void adjustIntensity(ChangeEvent event) {
-		getContext().getTaskService().execute(buildToggleLedTask(event));
-	}
-
 	@Action
 	public Task<?, ?> toggleLed(final ActionEvent event) {
 		return buildToggleLedTask(event);
+	}
+	
+	private boolean isAtLeastOneLedSelected() {
+		LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel = ledMatrixGfxModel.getLedMatrixGfxSelectionModel();
+		for (LedSettings ledSettings : ledMatrixGfxSelectionModel.getSelectedLedSettings()) {
+			if (ledMatrixGfxModel.isSelected(ledSettings)) {
+				return true;
+			} 
+		}
+		return false;
 	}
 
 	private Task<?, ?> buildToggleLedTask(final EventObject event) {
@@ -430,30 +451,23 @@ public class LedMatrixController {
 					ledMatrixGfxModel.setIlluminated(illuminated);
 				} 
 				LedMatrixGfxSelectionModel ledMatrixGfxSelectionModel = ledMatrixGfxModel.getLedMatrixGfxSelectionModel();
-				int index = 0; 
-				boolean atLeastOneSelected = false;
-				// TODO remove slider logic
-				for (LedSettings ledSettings : ledMatrixGfxSelectionModel.getSelectedLedSettings()) {
-					if (source instanceof JSlider) {
-						JSlider slider = (JSlider) event.getSource();
-						int sliderValue = slider.getValue();
-						// don't change anything if slider didn't really move
-						if (index == 0 && ledSettings.getIntensity() == sliderValue) {
-							return null;
-						}
-						ledSettings.setIntensity(sliderValue);
+				Integer flickerFrequency = ledMatrixGfxSelectionModel.getFlickerFrequency();
+				int frequency = flickerFrequency == null ? 0 : flickerFrequency;
+				int intensity = ledMatrixGfxSelectionModel.getIntensity();
+				thorlabsConnector.applySettings(frequency, intensity);
+				if (isAtLeastOneLedSelected()) {
+					for (LedSettings ledSettings : ledMatrixGfxSelectionModel.getSelectedLedSettings()) {
+						boolean selected = ledMatrixGfxModel.isSelected(ledSettings);
+						ledMatrixConnector.toggleLed(ledSettings, selected && illuminated);
 					}
-					boolean selected = ledMatrixGfxModel.isSelected(ledSettings);
-					atLeastOneSelected |= selected;
-					ledMatrixConnector.toggleLed(ledSettings, selected && illuminated);
-					// set flicker frequency + intensity for this led
-					index++;
+					thorlabsConnector.setLedOn(true);
+				} else {
+					thorlabsConnector.setLedOn(false);
+					for (LedSettings ledSettings : ledMatrixGfxSelectionModel.getSelectedLedSettings()) {
+						boolean selected = ledMatrixGfxModel.isSelected(ledSettings);
+						ledMatrixConnector.toggleLed(ledSettings, selected && illuminated);
+					}
 				}
-				// first set led state, then poweron the PSU
-				thorlabsConnector.setPwmFrequency(ledMatrixGfxSelectionModel.getFlickerFrequency());
-				thorlabsConnector.setPwmCurrent(ledMatrixGfxSelectionModel.getIntensity());
-				// TODO for poweroff, this should happen BEFORE the last led is toggled off
-				thorlabsConnector.setLedOn(atLeastOneSelected && illuminated);
 				// update gfx illumination state
 				ledMatrixGfxView.repaint();
 				message("endMessage");

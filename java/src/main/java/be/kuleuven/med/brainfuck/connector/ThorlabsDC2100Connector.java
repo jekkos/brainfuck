@@ -3,6 +3,7 @@ package be.kuleuven.med.brainfuck.connector;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
+import be.kuleuven.med.brainfuck.domain.settings.LedSettings;
 import be.kuleuven.med.brainfuck.domain.settings.SerialPortSettings;
 
 import com.sun.jna.Native;
@@ -193,7 +194,22 @@ public class ThorlabsDC2100Connector extends SerialPortConnector {
 		}
 		return false;
 	}
-
+	
+	/**
+	 * Apply the settings contained in the {@link LedSettings} object
+	 * @param ledSettings The ledSettings object containing the required parameter
+	 */
+	public void applySettings(int flickerFrequency, int intensity) {
+		if (flickerFrequency == 0) {
+			setOperationMode(OperationMode.CONSTANT_CURRENT);
+			setConstantCurrent(intensity);
+		} else {
+			setOperationMode(OperationMode.PWM);
+			setPwmFrequency(flickerFrequency);
+			setPwmCurrent(intensity);
+		}
+	}
+	
 	public DriverStatus getStatus() {
 		if (isInitialized()) {
 			NativeLongByReference result = new NativeLongByReference();

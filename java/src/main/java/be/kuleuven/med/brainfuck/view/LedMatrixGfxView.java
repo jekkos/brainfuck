@@ -68,11 +68,12 @@ public class LedMatrixGfxView extends JPanel {
 			// set a nice color..
 			Rectangle rectangle = shape.getBounds();
 			if (selected) {
-				Color fillColor = new Color(150, 0, 0);
-				// TODO interpolate colors according to max intensity
+				Color fillColor = new Color(200, 0, 0);
 				if (illuminated) {
-					fillColor = new Color(255-ledSettings.getIntensity(), 
-							255-ledSettings.getIntensity(), 255);
+					double intensity = ledSettings.getIntensity() * 1.0;
+					intensity = 255 * intensity / LedSettings.MAX_INTENSITY;
+					fillColor = new Color(255-(int) intensity, 
+							255-(int) intensity, 255);
 				}
 				g.setColor(fillColor);
 				g.fillOval(rectangle.x, rectangle.y, rectangle.width, rectangle.height);

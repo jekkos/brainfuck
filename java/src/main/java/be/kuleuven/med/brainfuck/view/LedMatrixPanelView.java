@@ -20,13 +20,10 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
-import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -34,7 +31,6 @@ import org.jdesktop.application.ResourceMap;
 import org.jdesktop.application.TaskMonitor;
 
 import be.kuleuven.med.brainfuck.controller.LedMatrixController;
-import be.kuleuven.med.brainfuck.domain.settings.LedSettings;
 
 public class LedMatrixPanelView extends JPanel {
 
@@ -53,8 +49,8 @@ public class LedMatrixPanelView extends JPanel {
 	private final JComboBox<String> thorlabsConnectorBox;
 
 	private JButton updateLedMatrixButton;
-
-	private JSlider intensitySlider;
+	
+	private JTextField intensityTextField;
 
 	private JToggleButton toggleLedButton;
 
@@ -114,20 +110,10 @@ public class LedMatrixPanelView extends JPanel {
 		secondsToRunTextField = createFormattedTextField();
 		add(secondsToRunTextField, "w 40, wrap");
 		
-		// add led controls
-		// TODO replace slider with regular (bounded) text field
-		intensitySlider = new JSlider(LedSettings.MIN_INTENSITY, LedSettings.MAX_INTENSITY, LedSettings.MAX_INTENSITY);
-		intensitySlider.setOrientation(JSlider.HORIZONTAL);
-		intensitySlider.setPaintTicks(true);
-		intensitySlider.setMajorTickSpacing(32);
-		intensitySlider.addChangeListener(new ChangeListener() {
-
-			public void stateChanged(ChangeEvent event) {
-				ledMatrixController.adjustIntensity(event);
-			}
-
-		});
-		add(intensitySlider, "growx");
+		add(new JLabel(resourceMap.getString("intensityLabel.text")));
+		intensityTextField = createFormattedTextField();
+		add(intensityTextField, "w 40");
+		
 		toggleLedButton = new JToggleButton(actionMap.get(TOGGLE_LED_ACTION));
 		add(toggleLedButton, "wrap");
 
@@ -230,11 +216,11 @@ public class LedMatrixPanelView extends JPanel {
 	public JTextField getRowPinTextField() {
 		return rowPinTextField;
 	}
-
-	public JSlider getIntensitySlider() {
-		return intensitySlider;
-	}
 	
+	public JTextField getIntensityTextField() {
+		return intensityTextField;
+	}
+
 	public JTextField getSecondsToRunTextField() {
 		return secondsToRunTextField;
 	}

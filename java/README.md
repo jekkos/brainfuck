@@ -1,4 +1,8 @@
-This application is deveveloped to conduct exeperiments with a self built LED Matrix on in vivo brain cells.
+This application is developed to be used with a custom built high power led matrix to develop a new test methodology for in vitro optogenetics.
+
+LIVE DEMO
+---------
+A short [youtube video](http://www.youtube.com/watch?v=n9LuOjYpKvs) showing the whole setup in action. 
 
 CONFIGURATION
 -------------

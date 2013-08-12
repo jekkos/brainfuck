@@ -1,4 +1,8 @@
-This application is deveveloped to conduct exeperiments with a self built LED Matrix on in vivo brain cells.
+This application is developed to be used with a custom built high power led matrix to perform medium-throughput screening assays in light-sensitive neuronal cells using optogenetic tools. By using viral vector-mediated delivery of ChannelRhodopsin2 it is possible to test for readouts of neuronal activity in well-defined pathlogoical conditions. 
+
+LIVE DEMO
+---------
+A short [youtube video](http://www.youtube.com/watch?v=n9LuOjYpKvs) showing the whole setup in action. 
 
 CONFIGURATION
 -------------
@@ -8,7 +12,7 @@ The app will save an XML configuration file in the home directory of the current
 under linux this will be `~/.LedMatrixApp/settings.xml`
 under windows this will be i`%APPDATA%/KULeuven/settings.xml`
 
-The config file is hand editable, and will be used to create the domain models at startup time.
+The config file is editable, and will be used to create the domain models at startup time.
 
 BUILDING
 --------

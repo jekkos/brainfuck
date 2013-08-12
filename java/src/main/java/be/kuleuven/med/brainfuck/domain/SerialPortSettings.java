@@ -1,4 +1,4 @@
-package be.kuleuven.med.brainfuck.domain.settings;
+package be.kuleuven.med.brainfuck.domain;
 
 import gnu.io.SerialPort;
 

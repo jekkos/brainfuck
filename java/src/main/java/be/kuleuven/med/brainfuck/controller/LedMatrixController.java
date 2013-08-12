@@ -28,14 +28,14 @@ import be.kuleuven.med.brainfuck.connector.LedMatrixConnector;
 import be.kuleuven.med.brainfuck.connector.SerialPortConnector;
 import be.kuleuven.med.brainfuck.connector.ThorlabsDC2100Connector;
 import be.kuleuven.med.brainfuck.connector.ThorlabsDC2100Connector.OperationMode;
-import be.kuleuven.med.brainfuck.domain.settings.ExperimentSettings;
-import be.kuleuven.med.brainfuck.domain.settings.LedPosition;
-import be.kuleuven.med.brainfuck.domain.settings.LedSettings;
+import be.kuleuven.med.brainfuck.domain.ExperimentSettings;
+import be.kuleuven.med.brainfuck.domain.LedPosition;
+import be.kuleuven.med.brainfuck.domain.LedSettings;
 import be.kuleuven.med.brainfuck.model.LedMatrixGfxModel;
 import be.kuleuven.med.brainfuck.model.LedMatrixGfxSelectionModel;
 import be.kuleuven.med.brainfuck.model.LedMatrixPanelModel;
-import be.kuleuven.med.brainfuck.modelbuilder.LedMatrixGfxModelBuilder;
-import be.kuleuven.med.brainfuck.modelbuilder.LedMatrixGfxSelectionModelBuilder;
+import be.kuleuven.med.brainfuck.model.builder.LedMatrixGfxModelBuilder;
+import be.kuleuven.med.brainfuck.model.builder.LedMatrixGfxSelectionModelBuilder;
 import be.kuleuven.med.brainfuck.task.AbstractTask;
 import be.kuleuven.med.brainfuck.view.LedMatrixGfxView;
 import be.kuleuven.med.brainfuck.view.LedMatrixPanelView;
@@ -198,7 +198,7 @@ public class LedMatrixController {
 		// bind led controls (just the enabled state)
 		ELProperty<LedMatrixController, Boolean> ledControlsEnabledProperty = ELProperty.create("${!ledMatrixGfxModel.ledMatrixGfxSelectionModel.cleared && ledMatrixPanelModel.ledMatrixConnectorInitialized && !ledMatrixPanelModel.experimentRunning}");
 		BeanProperty<LedMatrixGfxModel, Integer> intensityProperty = BeanProperty.create("ledMatrixGfxSelectionModel.intensity");
-		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ, ledMatrixGfxModel, intensityProperty, ledMatrixPanelView.getIntensityTextField(), TEXT);
+		valueBinding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, ledMatrixGfxModel, intensityProperty, ledMatrixPanelView.getIntensityTextField(), TEXT);
 		valueBinding.addBindingListener(new AbstractBindingListener() {
 
 			@Override
@@ -456,16 +456,18 @@ public class LedMatrixController {
 				int intensity = ledMatrixGfxSelectionModel.getIntensity();
 				thorlabsConnector.applySettings(frequency, intensity);
 				if (isAtLeastOneLedSelected()) {
-					for (LedSettings ledSettings : ledMatrixGfxSelectionModel.getSelectedLedSettings()) {
-						boolean selected = ledMatrixGfxModel.isSelected(ledSettings);
-						ledMatrixConnector.toggleLed(ledSettings, selected && illuminated);
-					}
-					thorlabsConnector.setLedOn(true);
-				} else {
-					thorlabsConnector.setLedOn(false);
-					for (LedSettings ledSettings : ledMatrixGfxSelectionModel.getSelectedLedSettings()) {
-						boolean selected = ledMatrixGfxModel.isSelected(ledSettings);
-						ledMatrixConnector.toggleLed(ledSettings, selected && illuminated);
+					if (illuminated) {
+						for (LedSettings ledSettings : ledMatrixGfxSelectionModel.getSelectedLedSettings()) {
+							boolean selected = ledMatrixGfxModel.isSelected(ledSettings);
+							ledMatrixConnector.toggleLed(ledSettings, selected && illuminated);
+						}
+						thorlabsConnector.setLedOn(true);
+					} else {
+						thorlabsConnector.setLedOn(false);
+						for (LedSettings ledSettings : ledMatrixGfxSelectionModel.getSelectedLedSettings()) {
+							boolean selected = ledMatrixGfxModel.isSelected(ledSettings);
+							ledMatrixConnector.toggleLed(ledSettings, selected && illuminated);
+						}
 					}
 				}
 				// update gfx illumination state
@@ -539,10 +541,10 @@ public class LedMatrixController {
 								LedSettings ledSettings = ledMatrixGfxModel.getLedSettings(ledPosition);
 								message("progressMessage", ledPosition);
 								// will set intensity for thorlabs driver in case it's connected??
-								int flickerFrequency = ledSettings.getFlickerFrequency();
-								thorlabsConnector.setPwmFrequency(flickerFrequency);
-								thorlabsConnector.setPwmCurrent(ledSettings.getIntensity());
-								doPeriodicToggle(ledSettings, flickerFrequency, ledSettings.getSecondsToRun());
+								int frequency = ledSettings.getFlickerFrequency();
+								int intensity = ledSettings.getIntensity();
+								thorlabsConnector.applySettings(frequency, intensity);
+								doPeriodicToggle(ledSettings, frequency, ledSettings.getSecondsToRun());
 							}
 						}
 					}

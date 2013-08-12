@@ -3,7 +3,7 @@ package be.kuleuven.med.brainfuck.connector.test;
 import junit.framework.TestCase;
 import be.kuleuven.med.brainfuck.connector.ThorlabsDC2100Connector;
 import be.kuleuven.med.brainfuck.connector.ThorlabsDC2100Connector.OperationMode;
-import be.kuleuven.med.brainfuck.domain.settings.SerialPortSettings;
+import be.kuleuven.med.brainfuck.domain.SerialPortSettings;
 
 public class ThorlabsDC2100ConnectorTest extends TestCase {
 

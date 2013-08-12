@@ -3,14 +3,14 @@ package be.kuleuven.med.brainfuck.model.test;
 import java.util.Collections;
 
 import junit.framework.TestCase;
-import be.kuleuven.med.brainfuck.domain.settings.LedMatrixSettings;
-import be.kuleuven.med.brainfuck.domain.settings.LedPosition;
-import be.kuleuven.med.brainfuck.domain.settings.LedSettings;
-import be.kuleuven.med.brainfuck.domain.settingsbuilder.LedMatrixSettingsBuilder;
+import be.kuleuven.med.brainfuck.domain.LedMatrixSettings;
+import be.kuleuven.med.brainfuck.domain.LedPosition;
+import be.kuleuven.med.brainfuck.domain.LedSettings;
+import be.kuleuven.med.brainfuck.domain.builder.LedMatrixSettingsBuilder;
 import be.kuleuven.med.brainfuck.model.LedMatrixGfxModel;
 import be.kuleuven.med.brainfuck.model.LedMatrixGfxSelectionModel;
-import be.kuleuven.med.brainfuck.modelbuilder.LedMatrixGfxModelBuilder;
-import be.kuleuven.med.brainfuck.modelbuilder.LedMatrixGfxSelectionModelBuilder;
+import be.kuleuven.med.brainfuck.model.builder.LedMatrixGfxModelBuilder;
+import be.kuleuven.med.brainfuck.model.builder.LedMatrixGfxSelectionModelBuilder;
 
 public class LedMatrixGfxSelectionModelTest extends TestCase {
 

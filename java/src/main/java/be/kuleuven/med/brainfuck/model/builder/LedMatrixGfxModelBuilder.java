@@ -1,10 +1,10 @@
-package be.kuleuven.med.brainfuck.modelbuilder;
+package be.kuleuven.med.brainfuck.model.builder;
 
 import java.util.Map;
 
-import be.kuleuven.med.brainfuck.domain.settings.LedMatrixSettings;
-import be.kuleuven.med.brainfuck.domain.settings.LedPosition;
-import be.kuleuven.med.brainfuck.domain.settings.LedSettings;
+import be.kuleuven.med.brainfuck.domain.LedMatrixSettings;
+import be.kuleuven.med.brainfuck.domain.LedPosition;
+import be.kuleuven.med.brainfuck.domain.LedSettings;
 import be.kuleuven.med.brainfuck.model.LedMatrixGfxModel;
 
 import com.google.common.collect.Maps;

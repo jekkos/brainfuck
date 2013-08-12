@@ -7,7 +7,7 @@ import java.util.Enumeration;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.SynchronousQueue;
 
-import be.kuleuven.med.brainfuck.domain.settings.SerialPortSettings;
+import be.kuleuven.med.brainfuck.domain.SerialPortSettings;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;

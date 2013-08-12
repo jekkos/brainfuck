@@ -3,9 +3,9 @@ package be.kuleuven.med.brainfuck.connector;
 import java.util.HashSet;
 import java.util.Set;
 
-import be.kuleuven.med.brainfuck.domain.settings.LedMatrixSettings;
-import be.kuleuven.med.brainfuck.domain.settings.LedSettings;
-import be.kuleuven.med.brainfuck.domain.settings.SerialPortSettings;
+import be.kuleuven.med.brainfuck.domain.LedMatrixSettings;
+import be.kuleuven.med.brainfuck.domain.LedSettings;
+import be.kuleuven.med.brainfuck.domain.SerialPortSettings;
 
 public class LedMatrixConnector extends RXTXConnector {
 	

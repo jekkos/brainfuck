@@ -1,4 +1,4 @@
-package be.kuleuven.med.brainfuck.domain.settings;
+package be.kuleuven.med.brainfuck.domain;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LedSettings {
 	// TODO make intensity configurable?
-	public static final int MAX_INTENSITY = 700;
+	public static final int MAX_INTENSITY = 800;
 	
 	public static final int MIN_INTENSITY = 0;
 	

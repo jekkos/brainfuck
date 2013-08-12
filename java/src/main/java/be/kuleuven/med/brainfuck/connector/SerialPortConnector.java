@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import be.kuleuven.med.brainfuck.domain.settings.SerialPortSettings;
+import be.kuleuven.med.brainfuck.domain.SerialPortSettings;
 
 import com.google.common.collect.Lists;
 

@@ -31,10 +31,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import be.kuleuven.med.brainfuck.domain.settings.ExperimentSettings;
-import be.kuleuven.med.brainfuck.domain.settings.LedMatrixSettings;
-import be.kuleuven.med.brainfuck.domain.settings.SerialPortSettings;
-import be.kuleuven.med.brainfuck.domain.settingsbuilder.LedMatrixSettingsBuilder;
+import be.kuleuven.med.brainfuck.domain.ExperimentSettings;
+import be.kuleuven.med.brainfuck.domain.LedMatrixSettings;
+import be.kuleuven.med.brainfuck.domain.SerialPortSettings;
+import be.kuleuven.med.brainfuck.domain.builder.LedMatrixSettingsBuilder;
 
 public class SettingsManager {
 

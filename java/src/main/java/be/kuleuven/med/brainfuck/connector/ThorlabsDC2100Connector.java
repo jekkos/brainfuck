@@ -3,8 +3,8 @@ package be.kuleuven.med.brainfuck.connector;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
-import be.kuleuven.med.brainfuck.domain.settings.LedSettings;
-import be.kuleuven.med.brainfuck.domain.settings.SerialPortSettings;
+import be.kuleuven.med.brainfuck.domain.LedSettings;
+import be.kuleuven.med.brainfuck.domain.SerialPortSettings;
 
 import com.sun.jna.Native;
 import com.sun.jna.NativeLong;

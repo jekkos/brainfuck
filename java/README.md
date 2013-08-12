@@ -1,4 +1,4 @@
-This application is developed to be used with a custom built high power led matrix to develop a new test methodology for in vitro optogenetics.
+This application is developed to be used with a custom built high power led matrix to perform medium-throughput screening assays in light-sensitive neuronal cells using optogenetic tools. By using viral vector-mediated delivery of ChannelRhodopsin2 it is possible to test for readouts of neuronal activity in well-defined pathlogoical conditions. 
 
 LIVE DEMO
 ---------

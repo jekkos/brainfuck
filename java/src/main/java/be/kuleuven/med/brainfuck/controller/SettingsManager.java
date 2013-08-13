@@ -221,6 +221,10 @@ public class SettingsManager {
 		return getSettings().experimentSettings;
 	}
 	
+	public String getLogFileUploadUrl() {
+		return getSettings().logFileUploadUrl;
+	}
+	
 	@XmlRootElement
 	@XmlAccessorType(XmlAccessType.FIELD)
 	public static class Settings {
@@ -232,6 +236,9 @@ public class SettingsManager {
 		SerialPortSettings thorlabsConnectorSettings = new SerialPortSettings(SerialPortSettings.DATA_RATE_115200_BAUD);
 		
 		ExperimentSettings experimentSettings = new ExperimentSettings();
+
+		private String logFileUploadUrl = "http://your.upload.url";
+
 	}
 
 }

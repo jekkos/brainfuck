@@ -459,14 +459,15 @@ public class LedMatrixController {
 					if (illuminated) {
 						for (LedSettings ledSettings : ledMatrixGfxSelectionModel.getSelectedLedSettings()) {
 							boolean selected = ledMatrixGfxModel.isSelected(ledSettings);
-							ledMatrixConnector.toggleLed(ledSettings, selected && illuminated);
+							boolean analogWrite = !thorlabsConnector.isInitialized();
+							ledMatrixConnector.toggleLed(ledSettings, selected && illuminated, analogWrite);
 						}
 						thorlabsConnector.setLedOn(true);
 					} else {
 						thorlabsConnector.setLedOn(false);
 						for (LedSettings ledSettings : ledMatrixGfxSelectionModel.getSelectedLedSettings()) {
 							boolean selected = ledMatrixGfxModel.isSelected(ledSettings);
-							ledMatrixConnector.toggleLed(ledSettings, selected && illuminated);
+							ledMatrixConnector.toggleLed(ledSettings, selected && illuminated, false);
 						}
 					}
 				}
@@ -503,11 +504,11 @@ public class LedMatrixController {
 						updateSingleSelection(ledSettings);
 						ledMatrixGfxView.repaint();
 						message("progressMessage", ledSettings.getLedPosition());
-						ledMatrixConnector.toggleLed(ledSettings, true);
+						ledMatrixConnector.toggleLed(ledSettings, true, false);
 						thorlabsConnector.setLedOn(true);
 						Thread.sleep(timePerLed * 1000);
 						thorlabsConnector.setLedOn(false);
-						ledMatrixConnector.toggleLed(ledSettings, false);
+						ledMatrixConnector.toggleLed(ledSettings, false, false);
 						ledMatrixGfxModel.setIlluminated(false);
 					} else {
 						long endTime = System.currentTimeMillis() + timePerLed * 1000;
@@ -516,9 +517,9 @@ public class LedMatrixController {
 							updateSingleSelection(ledSettings);
 							ledMatrixGfxView.repaint();
 							message("progressMessage", ledSettings.getLedPosition());
-							ledMatrixConnector.toggleLed(ledSettings, true);
+							ledMatrixConnector.toggleLed(ledSettings, true, false);
 							Thread.sleep(flickerFrequency);
-							ledMatrixConnector.toggleLed(ledSettings, false);
+							ledMatrixConnector.toggleLed(ledSettings, false, false);
 							ledMatrixGfxModel.setIlluminated(false);
 						}
 					}

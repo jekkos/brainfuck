@@ -41,12 +41,12 @@ public class LedMatrixConnectorTest extends TestCase {
 		LedSettings ledSettings = new LedSettings(LedPosition.ledPositionFor(1, 0));
 		ledSettings.setRowPin(10);
 		ledSettings.setColumnPin(9);
-		ledMatrixConnector.toggleLed(ledSettings, true);
+		ledMatrixConnector.toggleLed(ledSettings, true, false);
 		StringBuilder result = new StringBuilder(DW_10_HIGH).append(RETURN);
 		result.append(DW_9_HIGH).append(RETURN);
 		assertEquals(result.toString(), byteArrayOutputStream.toString());
 		// turn led off
-		ledMatrixConnector.toggleLed(ledSettings, false);
+		ledMatrixConnector.toggleLed(ledSettings, false, false);
 		result.append(DW_10_LOW).append(RETURN);
 		result.append(DW_9_LOW).append(RETURN);
 		assertEquals(result.toString(), byteArrayOutputStream.toString());
@@ -57,13 +57,13 @@ public class LedMatrixConnectorTest extends TestCase {
 		ledSettings.setRowPin(10);
 		ledSettings.setColumnPin(11);
 		ledSettings.setIntensity(30);
-		ledMatrixConnector.toggleLed(ledSettings, true);
+		ledMatrixConnector.toggleLed(ledSettings, true, false);
 		StringBuilder result = new StringBuilder(AW_10_HIGH).append(RETURN);
 		// columns will use digital switching (p-channel)
 		result.append(DW_11_HIGH).append(RETURN);
 		assertEquals(result.toString(), byteArrayOutputStream.toString());
 		// turn led off
-		ledMatrixConnector.toggleLed(ledSettings, false);
+		ledMatrixConnector.toggleLed(ledSettings, false, false);
 		result.append(AW_10_LOW).append(RETURN);
 		result.append(DW_11_LOW).append(RETURN);
 		assertEquals(result.toString(), byteArrayOutputStream.toString());

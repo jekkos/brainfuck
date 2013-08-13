@@ -1,6 +1,8 @@
 package be.kuleuven.med.brainfuck.view;
 
 import static be.kuleuven.med.brainfuck.LedMatrixApp.SAVE_SETTINGS_ACTION;
+import static be.kuleuven.med.brainfuck.LedMatrixApp.UPLOAD_LOG_FILES_ACTION;
+
 import static be.kuleuven.med.brainfuck.controller.LedMatrixController.INIT_LED_MATRIX_CONNECTOR_ACTION;
 import static be.kuleuven.med.brainfuck.controller.LedMatrixController.INIT_THORLABS_CONNECTOR_ACTION;
 import static be.kuleuven.med.brainfuck.controller.LedMatrixController.START_EXPERIMENT_ACTION;
@@ -70,7 +72,8 @@ public class LedMatrixPanelView extends JPanel {
 		super(new MigLayout("nogrid, insets 10", "align right"));
 		final ActionMap actionMap = ledMatrixController.getApplicationActionMap();
 		final ResourceMap resourceMap = ledMatrixController.getResourceMap();
-		
+		// add upload button
+		add(new JButton(actionMap.get(UPLOAD_LOG_FILES_ACTION)));
 		// add refresh button
 		add(new JButton(actionMap.get(UPDATE_SERIAL_PORTS_ACTION)));
 		// add save button

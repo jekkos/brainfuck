@@ -15,11 +15,10 @@ import gnu.io.SerialPortEventListener;
 
 public abstract class RXTXConnector extends SerialPortConnector implements SerialPortEventListener {
 
+	public static final String RETURN = "\r\n";
 	/** Milliseconds to block while waiting for port open */
 	protected final static int TIME_OUT = 2000;
 	
-	public static final String RETURN = "\r\n";
-
 	protected SerialPort serialPort;
 	/** Buffered input stream from the port */
 	protected InputStream input;

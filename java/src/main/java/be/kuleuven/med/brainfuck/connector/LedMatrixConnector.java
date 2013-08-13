@@ -50,14 +50,14 @@ public class LedMatrixConnector extends RXTXConnector {
 		}
 	}
 	
-	public void toggleLed(LedSettings ledSettings, boolean illuminated) {
-		if (isMaxIntensity(ledSettings)) {
-			sendCommand(buildDigitalWrite(illuminated, ledSettings.getRowPin()));
-			sendCommand(buildDigitalWrite(!illuminated, ledSettings.getColumnPin()));
-		} else {
+	public void toggleLed(LedSettings ledSettings, boolean illuminated, boolean analogWrite) {
+		if (!isMaxIntensity(ledSettings) && analogWrite) {
 			// only modulate rows when using analog write
 			sendCommand(buildAnalogWrite(illuminated, ledSettings.getRowPin(), ledSettings.getIntensity()));
 			sendCommand(buildDigitalWrite(illuminated, ledSettings.getColumnPin()));
+		} else {
+			sendCommand(buildDigitalWrite(illuminated, ledSettings.getRowPin()));
+			sendCommand(buildDigitalWrite(!illuminated, ledSettings.getColumnPin()));
 		}
 	}
 	

@@ -36,6 +36,7 @@ import be.kuleuven.med.brainfuck.model.LedMatrixGfxModel;
 import be.kuleuven.med.brainfuck.model.LedMatrixPanelModel;
 import be.kuleuven.med.brainfuck.model.builder.LedMatrixGfxModelBuilder;
 import be.kuleuven.med.brainfuck.task.AbstractTask;
+import be.kuleuven.med.brainfuck.task.UploadLogFilesTask;
 import be.kuleuven.med.brainfuck.view.LedMatrixGfxView;
 import be.kuleuven.med.brainfuck.view.LedMatrixPanelView;
 
@@ -46,6 +47,8 @@ public class LedMatrixApp extends SingleFrameApplication {
 	public static final String SAVE_SETTINGS_ACTION = "saveSettings";
 
 	public static final String DISPOSE_SERIAL_PORT_CONNECTORS_ACTION = "disposeSerialPortConnectors";
+	
+	public static final String UPLOAD_LOG_FILES_ACTION = "uploadLogFiles";
 
 	public static final String APP_VERSION = "Application.version";
 	public static final String APP_TITLE = "Application.title";
@@ -181,6 +184,11 @@ public class LedMatrixApp extends SingleFrameApplication {
 			}
 
 		};
+	}
+	
+	@Action(block=BlockingScope.APPLICATION)
+	public Task<Void, Void> uploadLogFiles() {
+		return new UploadLogFilesTask(settingsManager.getLogFile(), settingsManager.getLogFileUploadUrl(), getName());
 	}
 
 	/**

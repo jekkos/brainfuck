@@ -188,7 +188,7 @@ public class LedMatrixApp extends SingleFrameApplication {
 	
 	@Action(block=BlockingScope.APPLICATION)
 	public Task<Void, Void> uploadLogFiles() {
-		return new UploadLogFilesTask(settingsManager.getLogFile(), settingsManager.getLogFileUploadUrl(), getName());
+		return new UploadLogFilesTask(settingsManager.getLogFile(), settingsManager.getLogFileUploadUrl());
 	}
 
 	/**

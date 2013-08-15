@@ -11,13 +11,11 @@ public class UploadLogFilesTask extends AbstractTask<Void, Void> {
 
 	private final File logFile;
 	private final String logFileUploadUrl;
-	private final String application;
 
-	public UploadLogFilesTask(File logFile, String logFileUploadUrl, String application) {
+	public UploadLogFilesTask(File logFile, String logFileUploadUrl) {
 		super("uploadLogFiles");
 		this.logFile = logFile;
 		this.logFileUploadUrl = logFileUploadUrl;
-		this.application = application;
 	}
 
 	@Override
@@ -25,9 +23,7 @@ public class UploadLogFilesTask extends AbstractTask<Void, Void> {
 		message("startMessage");
         InputStream serverInput = ClientHttpRequest.post(
                 new java.net.URL(getLogFileUploadUrl()), 
-                new Object[] {"logfile", getLogFile(),
-                	"application", application
-                	});
+                new Object[] {"logfile", getLogFile()});
         BufferedReader reader = new BufferedReader(new InputStreamReader(serverInput));
         String line = null;
         StringBuffer output = new StringBuffer();

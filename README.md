@@ -14,8 +14,8 @@ Project structure
 
 Interesting Links
 ----------------
-* good primer on using [http://www.embeddedrelated.com/showarticle/98.php](mosfets as switches) in high power applications
+* good primer on using [mosfets as switches](http://www.embeddedrelated.com/showarticle/98.php) in high power applications
 
 Project Movie
 -------------
-A short movie of an end-to-end test can be seen on [http://www.youtube.com/watch?v=n9LuOjYpKvs](Youtube)
+A short movie of an end-to-end test can be seen on [YouTube](http://www.youtube.com/watch?v=n9LuOjYpKvs)
